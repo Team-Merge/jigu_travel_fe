@@ -1,0 +1,20 @@
+
+button {
+    all: unset;
+    cursor: pointer;
+    padding: 8px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  button:active {
+    background-color: #D7D7D7;
+  }
+  
+  button:focus {
+    outline: none;
+  }
+/*   
+  button:hover {
+    background-color: #EAEAEA;
+  } */
