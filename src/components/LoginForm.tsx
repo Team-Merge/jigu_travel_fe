@@ -1,6 +1,7 @@
 // src/components/LoginForm.tsx
-
 import React from "react";
+import { FaUser, FaLock } from "react-icons/fa";
+import "../styles/Login.css";
 
 interface LoginFormProps {
   loginId: string;
@@ -20,28 +21,36 @@ const LoginForm: React.FC<LoginFormProps> = ({
   error,
 }) => {
   return (
-    <div>
-      <h2>로그인</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="login-form">
+      {error && <p className="error-message">{error}</p>}
+
       <form onSubmit={onSubmit}>
-        <label>아이디:</label>
-        <input
-          type="text"
-          value={loginId}
-          onChange={(e) => setLoginId(e.target.value)}
-          required
-        />
-        <br />
-        <label>비밀번호:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <br />
-        <button type="submit">로그인</button>
+        <div className="input-container">
+          <FaUser className="input-icon" />
+          <input
+            type="text"
+            placeholder="ID"
+            value={loginId}
+            onChange={(e) => setLoginId(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="input-container">
+          <FaLock className="input-icon" />
+          <input
+            type="password"
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit" className="login-button">Login</button>
       </form>
+
+      <p className="forgot-password">비밀번호를 까먹으셨나요?</p>
     </div>
   );
 };
