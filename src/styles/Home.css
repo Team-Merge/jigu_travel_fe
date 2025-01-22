@@ -1,0 +1,21 @@
+/* src/styles/Home.css */
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    min-height: 100vh;
+    width: 100%;
+    padding-top: 60px;
+    box-sizing: border-box;
+}
+
+.recommend-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    margin-top: 20px;
+}
