@@ -1,0 +1,15 @@
+{
+  "name": "team_merge",
+  "version": "1.0.0",
+  "description": "[![Since](https://img.shields.io/badge/since-2024.09.18-333333.svg)](https://github.com/Team-Merge)",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.1.6"
+  }
+}
