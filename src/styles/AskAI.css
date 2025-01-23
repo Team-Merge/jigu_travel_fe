@@ -1,91 +1,39 @@
-/* 전체 레이아웃 */
 .ask-ai {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100vh;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
 }
 
-/* 초기 화면 */
-.initial-screen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-}
-
-/* 업로드 버튼 */
-.upload-button {
+.main-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    height: 200px;
-    border: 2px dashed #007bff;
-    border-radius: 10px;
-    background-color: #fff;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    height: 100%;
 }
 
-.upload-button:hover {
-    background-color: #e6f0ff;
-}
-
-.camera-icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100px;
-    height: 100px;
-    background-color: #007bff;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
-
-.camera-icon {
-    width: 50%;
-    height: 50%;
-    filter: brightness(100%) invert(1);
-}
-
-.upload-button p {
-    font-size: 18px;
-    color: #007bff;
-    margin: 0;
-    text-align: center;
-}
-
-/* 메인 컨텐츠 */
 .main-content {
     display: flex;
     flex: 1;
-    height: calc(100vh - 60px); /* Header 제외 */
+    height: 100%;
 }
 
-/* 채팅창 섹션 */
 .chatbot-section {
-    flex: 1;
+    flex: 3; /* 3:7 비율 */
     display: flex;
     flex-direction: column;
+    justify-content: space-between; /* 채팅창을 하단에 고정 */
+    padding: 20px;
     background-color: #fff;
     border-right: 1px solid #ddd;
 }
 
-/* 채팅 메시지 목록 */
 .chatbot-messages {
     flex: 1;
-    padding: 20px;
-    overflow-y: auto; /* 스크롤 활성화 */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    overflow-y: auto;
+    margin-bottom: 10px; /* chat-input과의 간격 */
 }
 
-/* 메시지 스타일 */
 .message {
     display: flex;
     align-items: flex-start;
@@ -100,7 +48,6 @@
     justify-content: flex-start;
 }
 
-/* 프로필 이미지 */
 .profile-pic {
     width: 40px;
     height: 40px;
@@ -116,7 +63,6 @@
     object-fit: cover;
 }
 
-/* 말풍선 */
 .message-bubble {
     max-width: 70%;
     padding: 10px 15px;
@@ -127,7 +73,7 @@
 }
 
 .message.user .message-bubble {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     border-top-right-radius: 0;
 }
@@ -138,16 +84,13 @@
     border-top-left-radius: 0;
 }
 
-/* 채팅 입력창 */
 .chat-input {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 10px;
-    border-top: 1px solid #ddd;
     background-color: #fff;
-    position: sticky; /* 하단 고정 */
-    bottom: 0;
+    border-top: 1px solid #ddd;
 }
 
 .chat-input input {
@@ -161,53 +104,116 @@
 
 .chat-input button {
     padding: 10px 15px;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 25px;
     cursor: pointer;
     font-size: 14px;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 .chat-input button:hover {
-    background-color: #0056b3;
+    background-color: var(--secondary-color);
 }
 
-/* 이미지 섹션 */
 .image-section {
-    flex: 1.5;
+    flex: 7; /* 3:7 비율 */
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
+    height: 100%; /* 이미지 섹션이 전체 높이를 채움 */
 }
 
 .image-container {
+    width: 100%; /* 이미지 컨테이너가 섹션 전체를 채움 */
+    height: 100%; /* 이미지 컨테이너가 섹션 전체를 채움 */
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
+    border-radius: 10px;
+    background-color: #fff;
 }
 
 .uploaded-image {
-    max-width: 100%;
-    max-height: 80%;
+    width: 500px; /* 고정된 너비 */
+    height: 400px; /* 고정된 높이 */
+    object-fit: contain; /* 이미지 비율 유지 */
     border: 1px solid #ddd;
     border-radius: 10px;
+    background-color: #f9f9f9;
 }
 
+
 .retake-button {
-    padding: 10px 15px;
-    background-color: #007bff;
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px; /* 버튼과 이미지 간격 */
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
 .retake-button:hover {
-    background-color: #0056b3;
+    background-color: var(--secondary-color);
+}
+
+.initial-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--background-color);
+    overflow: hidden;
+    position: relative;
+}
+
+.upload-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+    border: 2px dashed var(--primary-color);
+    border-radius: 10px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+    background-color: #e6f0ff;
+}
+
+.camera-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.camera-icon {
+    width: 50%;
+    height: 50%;
+    filter: brightness(100%) invert(1);
+}
+
+.upload-button p {
+    font-size: 18px;
+    color: var(--primary-color);
+    margin: 0;
+    text-align: center;
 }
