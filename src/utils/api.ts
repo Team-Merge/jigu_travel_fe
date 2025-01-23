@@ -26,6 +26,35 @@ export const login = async (loginId: string, password: string) => {
   }
 };
 
+
+/** 회원가입 */
+export const register = async (userData: {
+  loginId: string;
+  password: string;
+  nickname: string;
+  birthDate: string;
+  gender: string;
+}) => {
+  try {
+    console.log("회원가입 요청 데이터:", userData);
+    
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+
+    const responseData = await response.json();
+    if (responseData.code !== 200) throw new Error(responseData.message);
+
+    console.log("회원가입 성공:", responseData.message);
+    return responseData;
+  } catch (error) {
+    console.error("회원가입 오류:", error);
+    throw error;
+  }
+};
+
 /** Access Token 갱신 (Refresh Token 사용) */
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {

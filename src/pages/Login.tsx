@@ -1,8 +1,10 @@
+// src/pages/Login.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../utils/api";
 import LoginForm from "../components/LoginForm";
 import Header from "../components/Header";
+import "../styles/Login.css";
 
 const Login: React.FC = () => {
   const [loginId, setLoginId] = useState<string>("");
@@ -22,16 +24,18 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <Header />
-      <LoginForm
-        loginId={loginId}
-        setLoginId={setLoginId}
-        password={password}
-        setPassword={setPassword}
-        onSubmit={handleSubmit}
-        error={error}
-      />
+      <div className="login-content">
+        <LoginForm
+          loginId={loginId}
+          setLoginId={setLoginId}
+          password={password}
+          setPassword={setPassword}
+          onSubmit={handleSubmit}
+          error={error}
+        />
+      </div>
     </div>
   );
 };
