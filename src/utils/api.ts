@@ -1,5 +1,9 @@
 // src/utils/api.ts
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.MODE === "development"
+    ? "http://localhost:8080"
+    : "http://jigu-travel.kro.kr:8080");
 
 /** 로그인 */
 export const login = async (loginId: string, password: string) => {
