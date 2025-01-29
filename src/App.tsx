@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import AuthLogin from "./pages/AuthLogin";
 import Register from "./pages/Register";
 import AskAI from "./pages/AskAI";
+import RecommendTravel from "./pages/RecommendTravel";
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
         <Route path="/auth/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
         <Route path="/ask-ai" element={<AskAI />} />
+        <Route path="/recommend-travel" element={<RecommendTravel />} />
 
         <Route path="*" element={<h2>404 - 페이지를 찾을 수 없습니다</h2>} />
       </Routes>

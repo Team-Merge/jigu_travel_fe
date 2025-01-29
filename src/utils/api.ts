@@ -107,6 +107,18 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   return response.json() as Promise<T>;
 };
 
+/** 사용자 정보 타입 정의 */
+export interface UserInfo {
+  userId: string;
+  loginId: string;
+  nickname: string;
+  birthDate: string;
+  gender: string;
+  location: string;
+  role: string;
+  isAdmin: boolean;
+}
+
 /** 사용자 정보 가져오기 */
 export const getUserInfo = async () => {
   const responseData = await fetchWithAuth(`${API_BASE_URL}/api/user/me`);
@@ -119,4 +131,38 @@ export const getUserInfo = async () => {
 export const logout = async () => {
   await fetchWithAuth(`${API_BASE_URL}/api/auth/logout`, { method: "POST" });
   localStorage.removeItem("jwt");
+};
+
+/** FastAPI 추천 요청 타입 */
+export interface RecommendationRequest {
+  age: number;
+  gender: number;
+  annual_travel_frequency: number;
+  selected_genres: string[];
+  method: string;
+}
+
+/** FastAPI 추천 응답 타입 */
+export interface RecommendationResponse {
+  category_scores: Record<string, number>;
+  top2_recommendations: string[];
+}
+
+/** FastAPI로 추천 요청 보내기 (`category_scores` 포함) */
+export const getRecommendations = async (requestData: RecommendationRequest): Promise<RecommendationResponse> => {
+  console.log("🔹 [DEBUG] 요청 데이터:", JSON.stringify(requestData));
+
+  // ✅ `fetchWithAuth`에서 이미 JSON으로 변환되므로 `response.json()` 호출 불필요
+  const responseData = await fetchWithAuth(`${API_BASE_URL}/api/ai/ai_classification/fetch`, {
+    method: "POST",
+    body: JSON.stringify(requestData),
+  });
+
+  console.log("🔹 [DEBUG] FastAPI 응답 (정제됨):", responseData);
+
+  if (responseData.code !== 200) {
+    throw new Error(`FastAPI 오류: ${responseData.message}`);
+  }
+
+  return responseData.data; // ✅ 중첩된 `data`만 반환
 };
