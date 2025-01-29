@@ -1,21 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion"; // framer-motion import
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import aiProfile from '../assets/images/ai-profile.png';
-
-
-
+import { TypingEffect } from '../components/TypingEffect'; // TypingEffect 컴포넌트 import
 
 interface AiGuideChatProps {
-    messages: { type: "user" | "bot"; text: string }[];
+    messages: { id: number; type: "user" | "bot"; text: string; isNew?: boolean }[];
     hasMore: boolean;
     loadMore: () => void;
 }
 
 const AiGuideChat: React.FC<AiGuideChatProps> = ({ messages, hasMore, loadMore }) => {
-    const [isLoadMore, setIsLoadMore] = useState(false); // 더보기 버튼 눌렀는지 여부
+    const [isLoadMore, setIsLoadMore] = useState(false);
     const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
-    // useEffect: 메시지가 변경될 때마다 실행
+    // 메시지가 변경될 때마다 스크롤 조정
     useEffect(() => {
         if (messagesContainerRef.current) {
             if (isLoadMore) {
@@ -26,19 +24,18 @@ const AiGuideChat: React.FC<AiGuideChatProps> = ({ messages, hasMore, loadMore }
                 messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
             }
         }
-    }, [messages, isLoadMore]); // messages 또는 isLoadMore가 변경될 때마다 실행
+    }, [messages, isLoadMore]);
 
     // 더보기 버튼 클릭 시 처리
     const handleLoadMore = async () => {
-        setIsLoadMore(true); // 더보기 버튼 클릭 시 상태 변경
-        await loadMore(); // 실제 데이터 로딩 함수 호출
-        setIsLoadMore(false); // 데이터 로딩이 끝난 후 isLoadMore 상태를 false로 리셋
+        setIsLoadMore(true);
+        await loadMore();
+        setIsLoadMore(false);
     };
 
     return (
         <div id="messagesContainer-scroll" ref={messagesContainerRef}>
             <div className="div-loadMoreButton">
-                {/* "더보기" 버튼을 messagesContainer 상단에 추가 */}
                 {hasMore && (
                     <button
                         id="loadMoreButton"
@@ -50,27 +47,70 @@ const AiGuideChat: React.FC<AiGuideChatProps> = ({ messages, hasMore, loadMore }
             </div>
 
             {/* 메시지 목록 표시 */}
-            {messages.map((message, index) => (
-                <motion.div
-                    key={index}
-                    className="chat-row"
-                    initial={{ y: 30, opacity: 0 }}  // 메시지가 처음에 보이지 않도록 설정
-                    animate={{ y: 0, opacity: 1 }}  // 메시지가 올라오면서 나타나는 애니메이션
-                    transition={{ type: "spring", duration: 1  }}  // 스프링 애니메이션 적용
-                >
-                    {/* 봇 메시지에만 아이콘 추가 */}
-                    {message.type === "bot" && (
-                        <img
-                            src={aiProfile} // 아이콘 이미지 경로
-                            alt="ai-profile"
-                        />
-                    )}
+            <AnimatePresence>
+                {messages.map((message) => (
+                    <motion.div
+                        key={message.id}
+                        className="chat-row"
+                        initial={{ y: 30, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ type: "spring", duration: 0.6 }}
+                    >
+                        {message.type === "bot" && (
+                            <img
+                                src={aiProfile}
+                                alt="ai-profile"
+                            />
+                        )}
 
-                    <div className={`message ${message.type}`}>
-                        {/* 메시지 내용 */}
-                        <div>{message.text}</div>
-                    </div>
-                </motion.div>
+                        <div className={`message ${message.type}`}>
+                            {message.text === "loading" ? (
+                                <LoadingAnimation />
+                            ) : message.type === "bot" && message.isNew ? (
+                                <TypingEffect text={message.text} />
+                            ) : (
+                                <div>{message.text}</div>
+                            )}
+                        </div>
+                    </motion.div>
+                ))}
+            </AnimatePresence>
+        </div>
+    );
+};
+
+const LoadingAnimation: React.FC = () => {
+    const dotVariants: Variants = {
+        hidden: { opacity: 0.2, y: 0 },
+        visible: (i: number) => ({
+            opacity: 1,
+            y: -10,
+            transition: {
+                delay: i * 0.2,
+                duration: 0.6,
+                repeat: Infinity,
+                repeatType: "mirror"
+            }
+        })
+    };
+
+    return (
+        <div style={{ display: "flex", gap: "5px" }}>
+            {[0, 1, 2].map((i) => (
+                <motion.div
+                    key={i}
+                    custom={i}
+                    variants={dotVariants}
+                    initial="hidden"
+                    animate="visible"
+                    style={{
+                        width: "8px",
+                        height: "8px",
+                        backgroundColor: "#555",
+                        borderRadius: "50%"
+                    }}
+                />
             ))}
         </div>
     );

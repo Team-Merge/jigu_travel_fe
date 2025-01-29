@@ -1,3 +1,5 @@
+// src/components/AiVoiceGuide.tsx
+
 import React, { useEffect, useState, useRef } from "react";
 import Header from "../components/Header";
 import { getChatHistory, sendTextQuestion, sendAudio } from "../utils/api";
@@ -8,14 +10,23 @@ import arrowUp from '../assets/images/arrow-up.png';
 import keyboard from '../assets/images/keyboard.png';
 import microphone from '../assets/images/microphone.png';
 
+interface Message {
+    id: number;
+    type: "user" | "bot";
+    text: string;
+    isNew?: boolean; // 새로운 메시지 여부
+}
+
 const AiVoiceGuide: React.FC = () => {
-    const [messages, setMessages] = useState<{ type: "user" | "bot"; text: string }[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [textQuestion, setTextQuestion] = useState<string>(""); // 질문 입력 상태
     const [isRecording, setIsRecording] = useState<boolean>(false);
     const [offset, setOffset] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [isRecordingMode, setIsRecordingMode] = useState<boolean>(false); // 녹음 모드 여부
     const [inputPlaceholder, setInputPlaceholder] = useState<string>("여행 친구에게 관광지에 대해 질문하세요!"); // 질문창 placeholder 텍스트
+
+    const messageIdRef = useRef<number>(0); // 메시지 고유 ID ref
 
     const messagesContainerRef = useRef<HTMLDivElement | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null); // MediaRecorder 객체를 참조
@@ -35,17 +46,22 @@ const AiVoiceGuide: React.FC = () => {
         loadChatHistory();
     }, []);
 
+    const generateMessageId = () => {
+        messageIdRef.current += 1;
+        return messageIdRef.current;
+    };
+
     const loadChatHistory = async () => {
         try {
             const currentOffset = offset;
             const data = await getChatHistory(currentOffset, limit);
 
             if (data && data.length > 0) {
-                const formattedMessages = data
+                const formattedMessages: Message[] = data
                     .reverse()
                     .map((item: any) => [
-                        { type: "user", text: `${item.conversationQuestion}` },
-                        { type: "bot", text: `${item.conversationAnswer}` },
+                        { id: generateMessageId(), type: "user", text: `${item.conversationQuestion}`, isNew: false },
+                        { id: generateMessageId(), type: "bot", text: `${item.conversationAnswer}`, isNew: false },
                     ])
                     .flat();
 
@@ -72,25 +88,47 @@ const AiVoiceGuide: React.FC = () => {
             return;
         }
 
-        setMessages((prev) => [...prev, { type: "user", text: `${textQuestion}` }]);
+        const userMessage: Message = { id: generateMessageId(), type: "user", text: textQuestion };
+        const loadingMessage: Message = { id: generateMessageId(), type: "bot", text: "loading", isNew: true };
+
+        console.log("Sending question:", userMessage);
+        console.log("Adding loading message:", loadingMessage);
+
+        setMessages((prev) => [...prev, userMessage, loadingMessage]);
+        setTextQuestion(""); // 질문 입력창 초기화
+        scrollToBottomOfContainer();
 
         try {
-            setTextQuestion(""); // 질문 입력창 초기화
+            const data = await sendTextQuestion(userMessage.text);
 
-            const data = await sendTextQuestion(textQuestion);
+            console.log("Received response:", data);
 
-            setMessages((prev) => [
-                ...prev,
-                { type: "bot", text: `${data.conversation_history.history[0]?.assistant_response || "No answer provided."}` },
-            ]);
-
-            scrollToBottomOfContainer();
+            // 실제 응답 메시지로 교체 (isNew 유지)
+            setMessages((prev) =>
+                prev.map((msg) =>
+                    msg.id === loadingMessage.id
+                        ? { ...msg, text: `${data.conversation_history.history[0]?.assistant_response || "No answer provided."}`, isNew: true }
+                        : msg
+                )
+            );
 
             if (data.file_url) {
                 playAudioFromUrl(data.file_url);
             }
+
+            scrollToBottomOfContainer();
+
         } catch (error) {
             console.error("Failed to send question:", error);
+            // 에러 발생 시 로딩 메시지 제거 및 에러 메시지 추가
+            setMessages((prev) =>
+                prev.filter((msg) => msg.id !== loadingMessage.id).concat({
+                    id: generateMessageId(),
+                    type: "bot",
+                    text: "답변을 가져오는 데 실패했습니다.",
+                    isNew: true
+                })
+            );
         }
     };
 
@@ -117,7 +155,7 @@ const AiVoiceGuide: React.FC = () => {
         console.log("녹음 시작");
         setIsRecording(true); // 녹음 상태로 설정
         setIsRecordingMode(true); // 녹음 모드 활성화
-        setInputPlaceholder("녹음 중..."); // 질문창 텍스트 변경
+        setInputPlaceholder("음성 인식 중..."); // 질문창 텍스트 변경
 
         try {
             // 사용자 미디어(마이크) 접근
@@ -141,8 +179,7 @@ const AiVoiceGuide: React.FC = () => {
             // MediaRecorder MIME 타입 확인
             console.log("MediaRecorder MIME type:", mediaRecorder.mimeType);
 
-            // 음성 인식 객체 제거 (디버깅을 위해)
-
+            // 음성 인식 객체 설정
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
             if (!SpeechRecognition) {
                 alert("Speech Recognition API를 지원하지 않는 브라우저입니다.");
@@ -171,7 +208,6 @@ const AiVoiceGuide: React.FC = () => {
 
             recognitionRef.current = recognition; // recognition 객체 참조
             recognition.start(); // 음성 인식 시작
-
 
             mediaRecorder.ondataavailable = (event) => {
                 console.log("데이터 수집됨:", event.data);
@@ -222,7 +258,6 @@ const AiVoiceGuide: React.FC = () => {
         handleStopRecording(); // 녹음 중지
 
         // 녹음이 완료되고 audioBlobRef.current이 설정될 때까지 대기
-        // setTimeout을 사용하여 onstop 이벤트가 처리되도록 약간의 지연
         setTimeout(async () => {
             if (!audioBlobRef.current || audioBlobRef.current.size === 0) {
                 alert("녹음된 오디오가 없습니다.");
@@ -232,24 +267,46 @@ const AiVoiceGuide: React.FC = () => {
 
             const audioBlob = audioBlobRef.current;
 
-            displayMessage({ type: "user", text: `${textQuestion}` }); // 사용자가 질문한 내용 표시
+            // 사용자 메시지 추가
+            const userMessage: Message = { id: generateMessageId(), type: "user", text: textQuestion };
+            const loadingMessage: Message = { id: generateMessageId(), type: "bot", text: "loading", isNew: true };
+
+            console.log("Sending audio question:", userMessage);
+            console.log("Adding loading message:", loadingMessage);
+
+            setMessages((prev) => [...prev, userMessage, loadingMessage]);
             setTextQuestion(""); // 텍스트 입력창 초기화
 
             try {
                 const response = await sendAudio(audioBlob); // 오디오 전송
 
-                setMessages((prev) => [
-                    ...prev,
-                    { type: "bot", text: `${response.conversation_history.history[0]?.assistant_response || "No answer provided."}` },
-                ]);
+                console.log("Received audio response:", response);
+
+                // 실제 응답 메시지로 교체 (isNew 유지)
+                setMessages((prev) =>
+                    prev.map((msg) =>
+                        msg.id === loadingMessage.id
+                            ? { ...msg, text: `${response.conversation_history.history[0]?.assistant_response || "No answer provided."}`, isNew: true }
+                            : msg
+                    )
+                );
 
                 if (response.file_url) {
                     playAudioFromUrl(response.file_url);
                 }
 
-                scrollToBottomOfContainer(); // 스크롤 맨 아래로
+                scrollToBottomOfContainer();
             } catch (error) {
                 console.error("Failed to upload audio:", error);
+                // 에러 발생 시 로딩 메시지 제거 및 에러 메시지 추가
+                setMessages((prev) =>
+                    prev.filter((msg) => msg.id !== loadingMessage.id).concat({
+                        id: generateMessageId(),
+                        type: "bot",
+                        text: "답변을 가져오는 데 실패했습니다.",
+                        isNew: true
+                    })
+                );
             }
         }, 500); // 500ms 지연
     };
@@ -276,10 +333,11 @@ const AiVoiceGuide: React.FC = () => {
         }
     };
 
-    const displayMessage = (message: { type: "user" | "bot"; text: string }) => {
-        setMessages((prevMessages) => [...prevMessages, message]);
-        scrollToBottomOfContainer(); // 메시지 추가 후 스크롤 이동
-    };
+    // const displayMessage = (message: { type: "user" | "bot"; text: string }) => {
+    //     const newMessage: Message = { id: generateMessageId(), ...message };
+    //     setMessages((prevMessages) => [...prevMessages, newMessage]);
+    //     scrollToBottomOfContainer(); // 메시지 추가 후 스크롤 이동
+    // };
 
     return (
         <div id="chatContainer">
@@ -295,33 +353,34 @@ const AiVoiceGuide: React.FC = () => {
                     onChange={(e) => setTextQuestion(e.target.value)}
                     placeholder={inputPlaceholder}
                     disabled={isRecordingMode}
+                    required
                 />
 
                 {/* 텍스트 질문 전송 버튼 */}
                 {!isRecording && (
                     <button id="sendButton" onClick={handleSendQuestion}>
-                        <img src={arrowUp} alt="Arrow Icon" width="24" height="24"/>
+                        <img src={arrowUp} alt="Arrow Icon" width="24" height="24" />
                     </button>
                 )}
 
                 {/* 텍스트 전송 모드로 변경 버튼 */}
                 {isRecordingMode && isRecording && (
                     <button id="stopButton" onClick={handleStopRecording}>
-                        <img src={keyboard} alt="keyboard Icon" width="24" height="24"/>
+                        <img src={keyboard} alt="Keyboard Icon" width="24" height="24" />
                     </button>
                 )}
 
                 {/* 녹음 시작 버튼 */}
                 {!isRecording && (
                     <button id="startRecordingButton" onClick={handleStartRecording}>
-                        <img src={microphone} alt="microphone Icon" width="24" height="24"/>
+                        <img src={microphone} alt="Microphone Icon" width="24" height="24" />
                     </button>
                 )}
 
                 {/* 녹음 종료 및 전송 버튼 */}
                 {isRecording && isRecordingMode && (
                     <button id="stopRecordingButton" onClick={handleSendAudio}>
-                        <img src={arrowUp} alt="Arrow Icon" width="24" height="24"/>
+                        <img src={arrowUp} alt="Arrow Icon" width="24" height="24" />
                     </button>
                 )}
             </div>
