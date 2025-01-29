@@ -47,24 +47,36 @@ body {
     border-radius: 40px;
 }
 
-#sendButton,
-#recordButton,
-#textQuestionButton {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
-}
+/*#sendButton,*/
+/*#recordButton,*/
+/*#textQuestionButton {*/
+/*    background-color: #4caf50;*/
+/*    color: white;*/
+/*    padding: 10px 20px;*/
+/*    border: none;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*    margin-left: 10px;*/
+/*}*/
 
-#sendButton {
+#sendButton,
+#stopButton{
     background-color: #4ca9e7;
     border-radius: 100%;
     padding: 3px;
     width: 24px;
     height: 24px;
+    margin:3px;
+}
+
+#startRecordingButton,
+#stopRecordingButton{
+    background-color: #6cc853;
+    border-radius: 100%;
+    padding: 3px;
+    width: 24px;
+    height: 24px;
+    margin:3px;
 }
 
 .message {
