@@ -166,3 +166,54 @@ export const getRecommendations = async (requestData: RecommendationRequest): Pr
 
   return responseData.data; // 중첩된 `data`만 반환
 };
+
+/** AI-GUIDE : 채팅 기록 가져오기**/
+export const getChatHistory = async (offset: number, limit: number) => {
+  const jwtToken = localStorage.getItem("jwt");
+  if (!jwtToken) throw new Error("JWT 토큰 없음");
+
+  const response = await fetch(`${API_BASE_URL}/api/ai-guide/get-chat-history?offset=${offset}&limit=${limit}`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${jwtToken}` },
+  });
+
+  if (!response.ok) throw new Error("대화 기록 불러오기 실패");
+  return response.json();
+};
+
+/** AI-GUIDE : 텍스트 질문 요청**/
+export const sendTextQuestion = async (textQuestion: string) => {
+  const jwtToken = localStorage.getItem("jwt");
+  if (!jwtToken) throw new Error("JWT 토큰 없음");
+
+  const response = await fetch(`${API_BASE_URL}/api/ai-guide/upload-text`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ user_question: textQuestion }),
+  });
+
+  if (!response.ok) throw new Error("질문 전송 실패");
+  return response.json();
+};
+
+/** AI-GUIDE : 음성 질문 요청**/
+export const sendAudio = async (audioBlob: Blob) => {
+  const jwtToken = localStorage.getItem("jwt");
+  if (!jwtToken) throw new Error("JWT 토큰 없음");
+
+  const formData = new FormData();
+  formData.append("audio", audioBlob, "audio.wav");
+
+  const response = await fetch(`${API_BASE_URL}/api/ai-guide/upload-audio`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${jwtToken}` },
+    body: formData,
+  });
+
+  if (!response.ok) throw new Error("오디오 전송 실패");
+  return response.json();
+};
+
