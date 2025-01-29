@@ -4,6 +4,11 @@ import { getChatHistory, sendTextQuestion, sendAudio } from "../utils/api";
 
 import "../styles/AiGuide.css";
 import AiGuideChat from "../components/AiGuideChat";
+import arrowUp from '../assets/images/arrow-up.png';
+import keyboard from '../assets/images/keyboard.png';
+import microphone from '../assets/images/microphone.png';
+
+
 
 const AiVoiceGuide: React.FC = () => {
     const [messages, setMessages] = useState<{ type: "user" | "bot"; text: string }[]>([]);
@@ -229,21 +234,21 @@ const AiVoiceGuide: React.FC = () => {
                 {!isRecordingMode ? (
                     <>
                         <button id="sendButton" onClick={handleSendQuestion}>
-                            <img src="src/assets/images/arrow-up.png" alt="Arrow Icon" width="24" height="24"/>
+                            <img src={arrowUp} alt="Arrow Icon" width="24" height="24"/>
                         </button>
                     </>
                 ) : (
                     <button id="stopButton" onClick={toggleButtonVisibility}>
-                        <img src="src/assets/images/keyboard.png" alt="Arrow Icon" width="24" height="24"/>
+                        <img src={keyboard} alt="keyboard Icon" width="24" height="24"/>
                     </button> // 텍스트 질문 버튼
                 )}
 
                 <button id="recordButton" onClick={handleStartRecording}>
                     {isRecording ?
                         /* 녹음 종료 버튼 */
-                        <img src="src/assets/images/arrow-up.png" alt="Arrow Icon" width="24" height="24"/> :
+                        <img src={arrowUp} alt="Arrow Icon" width="24" height="24"/> :
                         /* 녹음 시작 버튼 */
-                        <img src="src/assets/images/microphone.png" alt="Arrow Icon" width="24" height="24"/>}
+                        <img src={microphone} alt="microphone Icon" width="24" height="24"/>}
                 </button>
             </div>
             <div id="audioContainer">

@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion"; // framer-motion import
+import aiProfile from '../assets/images/ai-profile.png';
+
+
 
 
 interface AiGuideChatProps {
@@ -58,8 +61,8 @@ const AiGuideChat: React.FC<AiGuideChatProps> = ({ messages, hasMore, loadMore }
                     {/* 봇 메시지에만 아이콘 추가 */}
                     {message.type === "bot" && (
                         <img
-                            src="src/assets/images/ai-profile.png" // 아이콘 이미지 경로
-                            alt="icon"
+                            src={aiProfile} // 아이콘 이미지 경로
+                            alt="ai-profile"
                         />
                     )}
 
