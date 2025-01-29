@@ -9,18 +9,18 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    height: 100vh;
-    width: 100vw;
+    height: 100vh; /* 화면 전체 높이를 사용 */
+    width: 100%;
 }
 
 #messagesContainer {
-    flex: 1;
-    /*overflow-y: auto;*/
-    margin-bottom: 20px;
-    margin-top:60px;
-    height: 80vh;
+    flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
+    margin-top: 60px;
     padding: 10px;
+    overflow-y: auto; /* 스크롤이 가능하도록 */
+    height: calc(100vh - 80px); /* 전체 화면에서 입력창 높이를 빼고 나머지 부분에 채팅창 */
 }
+
 #messagesContainer-scroll{
     flex: 1;
     overflow-y: auto;
