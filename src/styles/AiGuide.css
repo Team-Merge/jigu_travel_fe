@@ -15,7 +15,6 @@ body {
 
 #messagesContainer {
     flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
-    margin-bottom: 20px;
     margin-top: 60px;
     padding: 10px;
     overflow-y: auto; /* 스크롤이 가능하도록 */
