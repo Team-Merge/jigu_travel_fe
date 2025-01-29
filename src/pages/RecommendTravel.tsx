@@ -17,11 +17,24 @@ const RecommendTravel: React.FC = () => {
     getUserInfo().then(setUser).catch(console.error);
   }, []);
 
-  /** ✅ 사용자가 선택한 장르 업데이트 */
+  /** 사용자가 선택한 장르 업데이트 */
   const handleGenreChange = (genre: string) => {
     setSelectedGenres((prev) =>
       prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
     );
+  };
+
+  const getAgeGroup = (birthDate: string): number => {
+    const age = new Date().getFullYear() - new Date(birthDate).getFullYear();
+    
+    if (age < 10) return 0;  // 10대 미만
+    if (age < 20) return 1;  // 10대
+    if (age < 30) return 2;  // 20대
+    if (age < 40) return 3;  // 30대
+    if (age < 50) return 4;  // 40대
+    if (age < 60) return 5;  // 50대
+    if (age < 70) return 6;  // 60대
+    return 7;  // 70대 이상
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +42,7 @@ const RecommendTravel: React.FC = () => {
     if (!user) return;
 
     const requestData = {
-      age: new Date().getFullYear() - new Date(user.birthDate).getFullYear(),
+      age: getAgeGroup(user.birthDate),
       gender: user.gender === "MALE" ? 1 : 0,
       annual_travel_frequency: travelFrequency,
       selected_genres: selectedGenres,
@@ -41,7 +54,7 @@ const RecommendTravel: React.FC = () => {
 
       const response = await getRecommendations(requestData);
 
-      // ✅ FastAPI 응답을 그대로 사용
+      // FastAPI 응답을 그대로 사용
       console.log("🔹 [DEBUG] FastAPI 응답 (정제됨):", response);
       setRecommendations(response);
       setError(null);

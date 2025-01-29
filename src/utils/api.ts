@@ -62,7 +62,7 @@ export const register = async (userData: {
 /** Access Token 갱신 (Refresh Token 사용) */
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    console.log("🔄 Access Token 갱신 요청...");
+    console.log("Access Token 갱신 요청...");
     const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
       method: "POST",
       credentials: "include",
@@ -150,19 +150,19 @@ export interface RecommendationResponse {
 
 /** FastAPI로 추천 요청 보내기 (`category_scores` 포함) */
 export const getRecommendations = async (requestData: RecommendationRequest): Promise<RecommendationResponse> => {
-  console.log("🔹 [DEBUG] 요청 데이터:", JSON.stringify(requestData));
+  console.log("[DEBUG] 요청 데이터:", JSON.stringify(requestData));
 
-  // ✅ `fetchWithAuth`에서 이미 JSON으로 변환되므로 `response.json()` 호출 불필요
+  // `fetchWithAuth`에서 이미 JSON으로 변환되므로 `response.json()` 호출 불필요
   const responseData = await fetchWithAuth(`${API_BASE_URL}/api/ai/ai_classification/fetch`, {
     method: "POST",
     body: JSON.stringify(requestData),
   });
 
-  console.log("🔹 [DEBUG] FastAPI 응답 (정제됨):", responseData);
+  console.log("[DEBUG] FastAPI 응답 (정제됨):", responseData);
 
   if (responseData.code !== 200) {
     throw new Error(`FastAPI 오류: ${responseData.message}`);
   }
 
-  return responseData.data; // ✅ 중첩된 `data`만 반환
+  return responseData.data; // 중첩된 `data`만 반환
 };
