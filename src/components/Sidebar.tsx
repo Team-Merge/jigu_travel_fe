@@ -35,22 +35,24 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
   };
 
   return (
-    <div className={`sidebar ${isOpen ? "open" : ""}`}> {/* 동적 클래스 적용 */}
-      <button className="close-btn" onClick={onClose}>✖</button>
+      <div className={`sidebar ${isOpen ? "open" : ""}`}> {/* 동적 클래스 적용 */}
+        <button className="close-btn" onClick={onClose}>✖</button>
 
-      {user ? (
-        <div className="user-info">
-          <p className="username">{user.nickname}님</p>
-          <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
-        </div>
-      ) : (
-        <button className="login-btn" onClick={() => navigate("/auth/login")}>
-          로그인 및 회원가입
+        {user ? (
+            <div className="user-info">
+              <p className="username">{user.nickname}님</p>
+              <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
+            </div>
+        ) : (
+            <button className="login-btn" onClick={() => navigate("/auth/login")}>
+              로그인 및 회원가입
+            </button>
+        )}
+        <button className="ai-guide-btn" onClick={() => navigate("/ai-guide")}>
+          AI 음성 가이드
         </button>
-      )}
-
-      <p className="menu-item">Q & A</p>
-    </div>
+        <p className="menu-item">Q & A</p>
+      </div>
   );
 };
 
