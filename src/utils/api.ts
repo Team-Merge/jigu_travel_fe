@@ -83,7 +83,31 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 };
 
 /** 공통 API 요청 함수 (모든 API 요청에서 사용) */
-export const fetchWithAuth = async <T = any>(url: string, options: RequestInit = {}): Promise<T> => {
+// export const fetchWithAuth = async <T = any>(url: string, options: RequestInit = {}): Promise<T> => {
+//   let jwtToken = localStorage.getItem("jwt");
+//   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
+
+//   const response = await fetch(url, {
+//     ...options,
+//     headers: {
+//       ...options.headers,
+//       "Authorization": `Bearer ${jwtToken}`,
+//       "Content-Type": "application/json",
+//     },
+//   });
+
+//   if (response.status === 401) {
+//     console.log("⏳ Access Token 만료됨, 갱신 시도...");
+//     const newAccessToken = await refreshAccessToken();
+//     if (!newAccessToken) throw new Error("토큰 갱신 실패. 다시 로그인 필요.");
+
+//     return fetchWithAuth<T>(url, options);
+//   }
+
+//   return response.json() as Promise<T>;
+// };
+
+export const fetchWithAuth = async <T = any>(url: string, options: RequestInit = {}, retry = true): Promise<T> => {
   let jwtToken = localStorage.getItem("jwt");
   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
 
@@ -96,12 +120,24 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
     },
   });
 
+  // ✅ 403 Forbidden: 권한이 없으므로 Access Token 갱신 X
+  if (response.status === 403) {
+    console.warn("🚨 [DEBUG] 403 Forbidden - 권한 없음");
+    throw new Error("권한이 없습니다.");
+  }
+
+  // ✅ 401 Unauthorized: Access Token 만료 확인 후 갱신 시도
   if (response.status === 401) {
-    console.log("⏳ Access Token 만료됨, 갱신 시도...");
+    console.warn("⏳ [DEBUG] 401 Unauthorized - Access Token 만료 확인 중...");
+
+    if (!retry) throw new Error("Access Token 갱신 실패. 다시 로그인 필요.");
+
     const newAccessToken = await refreshAccessToken();
     if (!newAccessToken) throw new Error("토큰 갱신 실패. 다시 로그인 필요.");
 
-    return fetchWithAuth<T>(url, options);
+    // 새 Access Token 저장 후, 재요청 (최대 1회만)
+    localStorage.setItem("jwt", newAccessToken);
+    return fetchWithAuth<T>(url, options, false);
   }
 
   return response.json() as Promise<T>;

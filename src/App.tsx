@@ -8,6 +8,13 @@ import AskAI from "./pages/AskAI";
 import RecommendTravel from "./pages/RecommendTravel";
 import AiGuide from "./pages/AiGuide";
 
+
+import BoardList from "./pages/BoardList";
+import BoardDetail from "./pages/BoardDetail";
+import BoardCreate from "./pages/BoardCreate";
+import BoardEdit from "./pages/BoardEdit";
+
+
 const App: React.FC = () => {
   return (
     <Router>
@@ -20,6 +27,11 @@ const App: React.FC = () => {
         <Route path="/ask-ai" element={<AskAI />} />
         <Route path="/recommend-travel" element={<RecommendTravel />} />
         <Route path="/ai-guide" element={<AiGuide />} />
+
+        <Route path="/board" element={<BoardList />} />
+        <Route path="/board/:boardId" element={<BoardDetail />} />
+        <Route path="/board/create" element={<BoardCreate />} />
+        <Route path="/board/edit/:boardId" element={<BoardEdit />} />
 
 
         <Route path="*" element={<h2>404 - 페이지를 찾을 수 없습니다</h2>} />
