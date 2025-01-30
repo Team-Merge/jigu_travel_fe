@@ -17,8 +17,9 @@ body {
     flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
     margin-top: 60px;
     padding: 10px;
-    overflow-y: auto; /* 스크롤이 가능하도록 */
-    height: calc(100vh - 80px); /* 전체 화면에서 입력창 높이를 빼고 나머지 부분에 채팅창 */
+    /*overflow-y: auto; !* 스크롤이 가능하도록 *!*/
+    height: calc(100vh - 80px - 60px); /* 입력창 높이를 뺀 채팅창 높이 */
+    padding-bottom: 80px; /* 입력창이 가리지 않도록 추가 */
 }
 
 #messagesContainer-scroll{
@@ -26,17 +27,23 @@ body {
     overflow-y: auto;
     margin-bottom: 20px;
     padding: 10px;
-    height: 80vh;
+    height: calc(100vh - 80px - 60px);
 }
 
 #userInputContainer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 95%;
     display: flex;
     align-items: center;
     background-color: #eaeaea;
-    padding: 5px;
+    padding: 10px;
     border-radius: 40px;
     border: 1px solid #ccc;
-    margin: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box; /* padding, border 포함하여 크기 조정 */
 }
 
 #textQuestion {
