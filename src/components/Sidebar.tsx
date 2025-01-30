@@ -36,22 +36,37 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
 
   return (
       <div className={`sidebar ${isOpen ? "open" : ""}`}> {/* 동적 클래스 적용 */}
-        <button className="close-btn" onClick={onClose}>✖</button>
+        {/* 사용자 정보 + 닫기 버튼을 한 줄에 배치 */}
+        <div className="user-header">
+          <div className="user-info">
+            {user ? <p className="username">{user.nickname}님</p> : null}
+          </div>
+          <button className="close-btn" onClick={onClose}>✖</button>
+        </div>
 
+        {/* 로그인 여부에 따른 버튼 */}
         {user ? (
-            <div className="user-info">
-              <p className="username">{user.nickname}님</p>
-              <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
-            </div>
+          <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
         ) : (
-            <button className="login-btn" onClick={() => navigate("/auth/login")}>
-              로그인 및 회원가입
-            </button>
+          <button className="login-btn" onClick={() => navigate("/auth/login")}>
+            로그인 및 회원가입
+          </button>
         )}
-        <button className="ai-guide-btn" onClick={() => navigate("/ai-guide")}>
+        <div className="guide-section">
+        <button className="menu-item" onClick={() => navigate("/ai-guide")}>
           AI 음성 가이드
+          <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
         </button>
-        <p className="menu-item">Q & A</p>
+        <button className="menu-item" onClick={() => navigate("/recommend-travel")}>
+          카테고리 추천
+          <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
+        </button>
+        <button className="menu-item" onClick={() => navigate("/board")}>
+          Q & A
+          <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
+        </button>
+      </div>
+
       </div>
   );
 };
