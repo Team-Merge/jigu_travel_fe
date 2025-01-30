@@ -1,18 +1,115 @@
+/* 전체 컨테이너를 감싸는 래퍼 */
+.register-wrapper {
+  display: flex;
+  justify-content: center; /* 좌우 중앙 정렬 */
+  align-items: center;
+  width: 100vw;
+  padding-top: 60px;
+}
+
 .register-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-  
-  .register-form {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    gap: 10px;
-  }
-  .error-message {
-    color: red;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 부모 `form.register-form` 내부에서만 적용되도록 지정 */
+form.register-form {
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* 입력 필드 스타일 */
+form.register-form input {
+  width: 100%;
+  padding: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* 닉네임 입력 필드 + 중복확인 버튼 */
+form.register-form .nickname-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+form.register-form .nickname-container input {
+  flex: 2;
+}
+
+form.register-form .check-btn {
+  flex: 1;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+form.register-form .check-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 성별 선택 스타일 */
+form.register-form .gender-container {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+form.register-form .gender-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+/* 버튼 스타일 */
+form.register-form .next-btn {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  margin-top: 20px;
+  padding: 10px 0;
+  text-align: center;
+}
+
+form.register-form .next-btn:hover {
+  background-color: #0056b3;
+}
+
+form.register-form .next-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* 에러 메시지 스타일 */
+form.register-form .error-message {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* 닉네임 중복 확인 메시지 */
+form.register-form .nickname-status {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* 닉네임 중복 체크 성공 (초록색) */
+form.register-form .nickname-success {
+  color: green;
+}
+
+/* 닉네임 중복 체크 실패 (빨간색) */
+form.register-form .nickname-error {
+  color: red;
+}
