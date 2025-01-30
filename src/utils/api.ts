@@ -257,3 +257,28 @@ export const checkLoginId = async (loginId: string) => {
     return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
   }
 };
+
+
+/** 관심사 존재 여부 체크 */
+// export const checkUserInterest = async () => {
+//   const response = await axios.get(`${API_BASE_URL}/api/ai/ai_classification/exists`, {
+//     withCredentials: true, // 로그인 상태 유지
+//   });
+//   return response.data.data; // true (관심사 있음) / false (관심사 없음)
+// };
+
+export const checkUserInterest = async () => {
+  try {
+    const jwtToken = localStorage.getItem("jwt");
+    const response = await axios.get(`${API_BASE_URL}/api/ai/ai_classification/exists`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // JWT 토큰 추가
+      },
+      withCredentials: true, // 로그인 세션 유지
+    });
+    return response.data.data; // true (관심사 있음) / false (관심사 없음)
+  } catch (error) {
+    console.error("관심사 확인 API 호출 실패:", error);
+    return false; // 기본값 반환 (에러 발생 시 false 처리)
+  }
+};
