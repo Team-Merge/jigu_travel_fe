@@ -44,5 +44,10 @@ header {
     border: none;
     cursor: pointer;
   }
+
+  .header-wrapper{
+      height: 60px;
+      flex-shrink: 0; /* Header의 크기가 줄어들지 않도록 고정 */
+  }
   
   
