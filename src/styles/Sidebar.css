@@ -38,10 +38,10 @@
 
 .logout-btn, .login-btn {
   display: block;
-  width: 100%;
-  padding: 10px;
+  text-align: center;
+  width: 95%;
   margin-top: 10px;
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 5px;
@@ -52,3 +52,4 @@
   margin-top: 20px;
   cursor: pointer;
 }
+
