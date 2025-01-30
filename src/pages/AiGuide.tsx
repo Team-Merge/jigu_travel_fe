@@ -1,6 +1,7 @@
 // src/components/AiVoiceGuide.tsx
 
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { getChatHistory, sendTextQuestion, sendAudio } from "../utils/api";
 
@@ -35,12 +36,16 @@ const AiVoiceGuide: React.FC = () => {
     const audioBlobRef = useRef<Blob | null>(null); // 녹음된 오디오 Blob 참조
     const recognitionRef = useRef<any>(null); // SpeechRecognition 참조
 
+    const navigate = useNavigate();
+    
     const limit = 5;
 
     useEffect(() => {
         const jwtToken = localStorage.getItem("jwt");
+        // console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
         if (!jwtToken || jwtToken === "undefined") {
             alert("로그인 후 사용해주세요.");
+            navigate("/auth/login"); // 로그인 페이지로 리다이렉트
             return;
         }
         loadChatHistory();
