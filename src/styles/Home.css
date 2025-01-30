@@ -1,21 +1,144 @@
-/* src/styles/Home.css */
-.home {
+.home-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    padding-top: 40px;
+  }
+
+/* 전체 홈 화면 스타일 */
+.home-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     min-height: 100vh;
+    align-items: center;
+    max-width: 1200px;
     width: 100%;
-    padding-top: 60px;
+    padding: 20px;
     box-sizing: border-box;
 }
 
+/* 맞춤형 여행 안내 제목 */
+h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/* 추천 섹션 (AI 여행, 사진 질문) */
 .recommend-section {
+    justify-content: center;
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
+    justify-content: space-between;
     width: 100%;
+    gap: 20px;
+    max-width: 800px;
+}
+
+/* 추천 카드 버튼 스타일 */
+.recommend-card {
+    flex: 1;
+    background-color: #f5f5f5;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 120px; /* 카드 높이 고정 */
+}
+
+/* 추천 카드 버튼 호버 효과 */
+.recommend-card:hover {
+    background-color: #eaeaea;
+    transform: translateY(-2px);
+}
+
+/* 추천 카드의 소제목 */
+.recommend-card p {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+/* 추천 카드의 제목 */
+.recommend-card h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+/* 필터 버튼 그룹 */
+.filter-buttons {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 8px;
+}
+
+/* 필터 버튼 스타일 */
+.filter-buttons button {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 선택된 필터 버튼 스타일 */
+.filter-buttons .selected {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/* 여행지 리스트 스타일 */
+.travel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 16px;
+}
+.title-name {
+    width: 100%;
+    text-align: left;
     margin-top: 20px;
+}
+/* 여행지 카드 스타일 */
+.travel-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+/* 여행지 카드 호버 효과 */
+.travel-card:hover {
+    transform: translateY(-2px);
+}
+
+/* 북마크 아이콘 스타일 */
+.travel-card .bookmark-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
