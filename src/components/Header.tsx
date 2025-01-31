@@ -12,21 +12,22 @@ const Header: React.FC = () => {
 
   return (
     <header className="header">
-      <div className="logo" onClick={() => navigate("/home")}>
-        <img src={logo} alt="지구여행" className="logo-img" />
-      </div>
+        <div className="logo" onClick={() => navigate("/home")}>
+          <img src={logo} alt="지구여행" className="logo-img" />
+        </div>
 
-      <div className="header-icons">
-        <button className="search-icon">
-            <img src="/icons/search_logo.svg" alt="검색" className="icon-img" />
-        </button>
-        
-        <button className="menu-icon" onClick={() => setSidebarOpen(true)}>
-            <img src="/icons/menu_logo.svg" alt="검색" className="icon-img" />
-        </button>
-      </div>
+        <div className="header-icons">
+          <button className="search-icon">
+              <img src="/icons/search_logo.svg" alt="검색" className="icon-img" />
+          </button>
+          
+          <button className="menu-icon" onClick={() => setSidebarOpen(true)}>
+              <img src="/icons/menu_logo.svg" alt="검색" className="icon-img" />
+          </button>
+        </div>
 
-      <Sidebar onClose={() => setSidebarOpen(false)} isOpen={isSidebarOpen} />
+        <Sidebar onClose={() => setSidebarOpen(false)} isOpen={isSidebarOpen} />
+
     </header>
   );
 };
