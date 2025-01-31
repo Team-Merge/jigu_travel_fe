@@ -34,14 +34,8 @@ const Home: React.FC = () => {
         </div>
 
         <div className="travel-list">
-          <div className="travel-card">
-            <TravelCard name="서울 타워" />
-            <img src="/icons/bookmark.svg" alt="북마크" className="bookmark-icon" />
-          </div>
-          <div className="travel-card">
-            <TravelCard name="경복궁" />
-            <img src="/icons/bookmark.svg" alt="북마크" className="bookmark-icon" />
-          </div>
+          <TravelCard name="서울 타워" />
+          <TravelCard name="경복궁" />
         </div>
       </div>
     </div>

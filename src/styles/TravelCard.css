@@ -1,6 +1,26 @@
 /* src/styles/TravelCard.css */
+/* 여행지 카드 스타일 */
 .travel-card {
-    border: 1px solid #ddd;
-    padding: 10px;
-  }
-  
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* 여행지 카드 호버 효과 */
+.travel-card:hover {
+  transform: translateY(-2px);
+}
+
+/* 북마크 아이콘 스타일 */
+.travel-card .bookmark-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
