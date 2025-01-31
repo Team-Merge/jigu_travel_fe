@@ -83,7 +83,7 @@ const AiGuideTest: React.FC = () => {
 
                 {/* AiGuide 및 resize handle 포함한 부모 div */}
                 <div className="resizeable-container" style={{ height: `${height}px` }}>
-                    <AiGuide />
+                    <AiGuide defaultMessage="" />
                     {/* resize-handle */}
                     <div
                         ref={dragRef}
