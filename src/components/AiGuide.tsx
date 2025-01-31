@@ -42,7 +42,7 @@ const AiVoiceGuide: React.FC = () => {
 
     useEffect(() => {
         const jwtToken = localStorage.getItem("jwt");
-        // console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
+        console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
         if (!jwtToken || jwtToken === "undefined") {
             alert("로그인 후 사용해주세요.");
             navigate("/auth/login"); // 로그인 페이지로 리다이렉트
@@ -112,7 +112,13 @@ const AiVoiceGuide: React.FC = () => {
             setMessages((prev) =>
                 prev.map((msg) =>
                     msg.id === loadingMessage.id
-                        ? { ...msg, text: `${data.conversation_history.history[0]?.assistant_response || "No answer provided."}`, isNew: true }
+                        ? {
+                            ...msg,
+                            text: data.conversation_history.history && data.conversation_history.history.length > 0
+                                ? `${data.conversation_history.history[0].assistant_response || "No answer provided."}`
+                                : "서버 연결이 실패하였습니다. 잠시 후 다시 시도해 주세요.",
+                            isNew: true
+                        }
                         : msg
                 )
             );
@@ -291,7 +297,13 @@ const AiVoiceGuide: React.FC = () => {
                 setMessages((prev) =>
                     prev.map((msg) =>
                         msg.id === loadingMessage.id
-                            ? { ...msg, text: `${response.conversation_history.history[0]?.assistant_response || "No answer provided."}`, isNew: true }
+                            ? {
+                                ...msg,
+                                text: response.conversation_history.history && response.conversation_history.history.length > 0
+                                    ? `${response.conversation_history.history[0]?.assistant_response || "No answer provided."}`
+                                    : "서버 연결이 실패하였습니다. 잠시 후 다시 시도해 주세요.",
+                                isNew: true
+                            }
                             : msg
                     )
                 );
