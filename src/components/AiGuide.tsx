@@ -18,9 +18,13 @@ interface Message {
     isNew?: boolean; // 새로운 메시지 여부
 }
 
-const AiVoiceGuide: React.FC = () => {
+interface AiGuideProps {
+    defaultMessage: string;
+}
+
+const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
     const [messages, setMessages] = useState<Message[]>([]);
-    const [textQuestion, setTextQuestion] = useState<string>(""); // 질문 입력 상태
+    const [textQuestion, setTextQuestion] = useState<string>(defaultMessage || "");
     const [isRecording, setIsRecording] = useState<boolean>(false);
     const [offset, setOffset] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
@@ -49,6 +53,11 @@ const AiVoiceGuide: React.FC = () => {
             return;
         }
         loadChatHistory();
+        if (defaultMessage.length > 0) {
+            setTextQuestion(defaultMessage);
+            handleSendQuestion();
+        }
+
     }, []);
 
     const generateMessageId = () => {
@@ -410,4 +419,4 @@ const AiVoiceGuide: React.FC = () => {
     );
 };
 
-export default AiVoiceGuide;
+export default AiGuide;

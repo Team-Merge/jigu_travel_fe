@@ -1,158 +1,132 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import Header from "../components/Header";
 import "../styles/AskAI.css";
+import AiGuide from "../components/AiGuide";
+import Chat_icon from "../assets/images/chat_icon.png"
+import Camera_icon from "../assets/images/camera-icon.png"
 
-interface Message {
-    sender: "user" | "ai";
-    text: string;
-}
+
+
 
 const AskAI: React.FC = () => {
-    const [image, setImage] = useState<string | null>(null);
-    const [isUploaded, setIsUploaded] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        { sender: "ai", text: "앱: 해당 이미지는 가락몰로 보입니다." },
-        { sender: "user", text: "가락몰에 대해 자세히 설명해주세요." },
-        { sender: "ai", text: "앱: 가락몰은 연면적 21만㎡ 규모의 가락도매시장이며..." },
-    ]);
+  const [image, setImage] = useState<string | null>(null);
+  const [isUploaded, setIsUploaded] = useState(false);
 
-    const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [chatVisible, setChatVisible] = useState(false); // 채팅창 상태 관리
+  const [imageHeight, setImageHeight] = useState("100%"); // 이미지 섹션의 높이
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) {
-            console.error("No file selected");
-            return;
-        }
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
 
-        setImage(URL.createObjectURL(file));
-        setIsUploaded(true);
-    };
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
 
-    const handleSendMessage = (text: string) => {
-        if (text.trim() === "") return;
-        setMessages((prev) => [...prev, { sender: "user", text }]);
+    setImage(URL.createObjectURL(file));
+    setIsUploaded(true);
+    toggleChat();
+  };
 
-        setTimeout(() => {
-            setMessages((prev) => [...prev, { sender: "ai", text: "AI의 응답이 여기에 표시됩니다." }]);
-        }, 1000);
-    };
 
-    const handleRetake = () => {
-        const fileInput = document.getElementById("image-upload") as HTMLInputElement;
-        if (fileInput) {
-            fileInput.click(); // 파일 업로드 창 트리거
-        }
-    };
 
-    return (
-        <div className="ask-ai">
-            <Header />
-            <div className="main-container">
-                {!isUploaded ? (
-                    <div className="initial-screen">
-                        <div className="upload-button">
-                            <label htmlFor="image-upload" className="camera-label">
-                                <div className="camera-icon-container">
-                                    <img
-                                        src="../src/assets/images/camera-icon.png"
-                                        alt="camera icon"
-                                        className="camera-icon"
-                                    />
-                                </div>
-                                <p>사진촬영</p>
-                            </label>
-                            <input
-                                id="image-upload"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                style={{ display: 'none' }}
-                            />
-                        </div>
-                    </div>
-                ) : (
-                    <div className="main-content">
-                        {/* 채팅 영역 */}
-                        <div className="chatbot-section">
-                            <div className="chatbot-messages">
-                                {messages.map((msg, index) => (
-                                    <div
-                                        key={index}
-                                        className={`message ${msg.sender}`}
-                                    >
-                                        {msg.sender === "ai" && (
-                                            <div className="profile-pic">
-                                                <img
-                                                    src="../src/assets/images/ai-profile.png"
-                                                    alt="AI Profile"
-                                                />
-                                            </div>
-                                        )}
-                                        <div className="message-bubble">
-                                            {msg.text}
-                                        </div>
-                                    </div>
-                                ))}
-                                <div ref={messagesEndRef} />
-                            </div>
-                            <div className="chat-input">
-                                <input
-                                    type="text"
-                                    placeholder="메시지를 입력하세요..."
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            handleSendMessage(e.currentTarget.value);
-                                            e.currentTarget.value = "";
-                                        }
-                                    }}
-                                />
-                                <button
-                                    onClick={() => {
-                                        const input = document.querySelector<HTMLInputElement>('.chat-input input');
-                                        if (input) {
-                                            handleSendMessage(input.value);
-                                            input.value = "";
-                                        }
-                                    }}
-                                >
-                                    보내기
-                                </button>
-                            </div>
-                        </div>
-                        {/* 이미지 영역 */}
-                        <div className="image-section">
-                            <div className="image-container">
-                                <img
-                                    className="uploaded-image"
-                                    src={image || ""}
-                                    alt="Uploaded Preview"
-                                />
-                                <button className="retake-button" onClick={handleRetake}>
-                                    사진 다시 촬영하기
-                                </button>
-                                <input
-                                    id="image-upload"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    style={{ display: "none" }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
+  const toggleChat = () => {
+    setChatVisible((prev) => !prev); // 채팅창 열고 닫기
+    if (chatVisible) {
+      setImageHeight("100%"); // 채팅창 닫으면 이미지 높이 원래대로
+    } else {
+      setImageHeight("calc(( 100% - 60px )/2)"); // 채팅창 열면 이미지 높이 50%로 설정
+    }
+  };
+
+  return (
+      <div className="ask-ai">
+        <div className="header-wrapper">
+          <Header/>
         </div>
-    );
+        <div className="main-container">
+          {!isUploaded ? (
+              <div className="initial-screen">
+                <div className="upload-button">
+                  <label htmlFor="image-upload" className="camera-label">
+                    <div className="camera-icon-container">
+                      <img
+                          src={Camera_icon}
+                          alt="camera icon"
+                          className="camera-icon"
+                      />
+                    </div>
+                    <p>사진촬영</p>
+                  </label>
+                  <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      style={{display: "none"}}
+                  />
+                </div>
+              </div>
+          ) : (
+              <div className="main-content">
+                <div className="image-section" style={{height: imageHeight}}>
+                  <div className="image-container">
+                    <img
+                        className="uploaded-image"
+                        src={image || ""}
+                        alt="Uploaded Preview"
+                    />
+                    <label htmlFor="image-upload" className="retake-button">
+                      사진 다시 촬영하기
+                    </label>
+                    <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        style={{display: "none"}}
+                    />
+                  </div>
+                  <div className="image-result-wrapper">
+                    {/**아직 수정중**/}
+                    {/**이 부분에 확률이랑 예측 결과 감지부분만 response 데이터로 대입되게 변경해주세요.**/}
+                    <p>해당 사진은 98.2 %의 확률로 가락몰로 감지됩니다.</p>
+                    <p>여행 친구에게 관광지에대해 질문해 보세요!</p>
+                  </div>
+                </div>
+                {isUploaded && (
+                    <button className="open-chat" onClick={toggleChat}>
+                      <img
+                          src={Chat_icon}
+                          alt="Chat Icon"
+                          className="chat-icon"
+                      />
+                    </button>
+                )}
+                <div
+                    className={`chatbot-section ${chatVisible ? "visible" : ""}`}
+                    style={{display: isUploaded ? "block" : "none"}}
+                >
+                  <button className="close-chat" onClick={toggleChat}>
+                    ✖
+                  </button>
+
+                  <AiGuide defaultMessage="가락몰이 무엇인가요?"/> {/**백에서 받아온 건물 이름으로 질문 예정**/}
+                </div>
+              </div>
+          )}
+        </div>
+      </div>
+  );
 };
 
 export default AskAI;
