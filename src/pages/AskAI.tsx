@@ -1,20 +1,42 @@
+// src/pages/AskAI.tsx
+
 import React, { useState, useRef, useEffect } from "react";
 import Header from "../components/Header";
 import "../styles/AskAI.css";
 import AiGuide from "../components/AiGuide";
-import Chat_icon from "../assets/images/chat_icon.png"
-import Camera_icon from "../assets/images/camera-icon.png"
+import Chat_icon from "../assets/images/chat_icon.png";
+import Camera_icon from "../assets/images/camera-icon.png";
+import AiProfile from "../assets/images/ai-profile.png";
 
+// api.ts에서 API 호출 함수와 Detection 인터페이스를 import 합니다.
+import { sendImageToAPI, Detection } from "../utils/api";
 
-
+const convertClassNameToCustom = (className: string): string => {
+  const customTranslationMap: { [key: string]: string } = {
+    DDP: "DDP",
+    coex: "코엑스",
+    garak: "가락몰",
+    world1: "롯데월드몰",
+    world2: "롯데월드몰",
+  };
+  return customTranslationMap[className] || className;
+};
 
 const AskAI: React.FC = () => {
   const [image, setImage] = useState<string | null>(null);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [chatVisible, setChatVisible] = useState(false);
+  const [imageHeight, setImageHeight] = useState("100%");
+  const [detectionResults, setDetectionResults] = useState<Detection[]>([]);
+  const [imageWidth, setImageWidth] = useState<number>(0);
+  const [imageHeightState, setImageHeightState] = useState<number>(0);
 
-  const [chatVisible, setChatVisible] = useState(false); // 채팅창 상태 관리
-  const [imageHeight, setImageHeight] = useState("100%"); // 이미지 섹션의 높이
+  const [renderedWidth, setRenderedWidth] = useState<number>(0); // 렌더링된 이미지 너비
+  const [renderedHeight, setRenderedHeight] = useState<number>(0); // 렌더링된 이미지 높이
+  const [wscaleRatio, setWScaleRatio] = useState<number>(1); // 실제 크기와 렌더링 크기의 비율
+  const [hscaleRatio, setHScaleRatio] = useState<number>(1); // 실제 크기와 렌더링 크기의 비율
 
+  const imageRef = useRef<HTMLImageElement | null>(null); // 이미지 요소 접근용 ref
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
@@ -25,6 +47,18 @@ const AskAI: React.FC = () => {
     scrollToBottom();
   }, []);
 
+  // 이미지 크기 비율 계산 (onLoad에서도 계산)
+  useEffect(() => {
+    if (imageRef.current) {
+      const currentRenderedWidth = imageRef.current.offsetWidth;
+      const currentRenderedHeight = imageRef.current.offsetHeight;
+      setRenderedWidth(currentRenderedWidth);
+      setRenderedHeight(currentRenderedHeight);
+      setWScaleRatio(currentRenderedWidth / imageWidth);
+      setHScaleRatio(currentRenderedHeight / imageHeightState);
+    }
+  }, [image, imageWidth, imageHeightState]);
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
@@ -32,26 +66,38 @@ const AskAI: React.FC = () => {
       return;
     }
 
+    // 이미지 실제 크기를 미리 계산
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      setImageWidth(img.width); // 실제 이미지 너비
+      setImageHeightState(img.height); // 실제 이미지 높이
+    };
+
     setImage(URL.createObjectURL(file));
     setIsUploaded(true);
+
+    // api.ts의 sendImageToAPI 함수를 사용합니다.
+    sendImageToAPI(file).then((detections) => {
+      setDetectionResults(detections);
+    });
+
     toggleChat();
   };
 
-
-
   const toggleChat = () => {
-    setChatVisible((prev) => !prev); // 채팅창 열고 닫기
+    setChatVisible((prev) => !prev);
     if (chatVisible) {
-      setImageHeight("100%"); // 채팅창 닫으면 이미지 높이 원래대로
+      setImageHeight("100%");
     } else {
-      setImageHeight("calc(( 100% - 60px )/2)"); // 채팅창 열면 이미지 높이 50%로 설정
+      setImageHeight("calc((100% - 60px) / 2)");
     }
   };
 
   return (
       <div className="ask-ai">
         <div className="header-wrapper">
-          <Header/>
+          <Header />
         </div>
         <div className="main-container">
           {!isUploaded ? (
@@ -59,11 +105,7 @@ const AskAI: React.FC = () => {
                 <div className="upload-button">
                   <label htmlFor="image-upload" className="camera-label">
                     <div className="camera-icon-container">
-                      <img
-                          src={Camera_icon}
-                          alt="camera icon"
-                          className="camera-icon"
-                      />
+                      <img src={Camera_icon} alt="camera icon" className="camera-icon" />
                     </div>
                     <p>사진촬영</p>
                   </label>
@@ -72,19 +114,60 @@ const AskAI: React.FC = () => {
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
-                      style={{display: "none"}}
+                      style={{ display: "none" }}
                   />
                 </div>
               </div>
           ) : (
               <div className="main-content">
-                <div className="image-section" style={{height: imageHeight}}>
+                <div className="image-section" style={{ height: imageHeight }}>
                   <div className="image-container">
                     <img
+                        ref={imageRef}
                         className="uploaded-image"
                         src={image || ""}
                         alt="Uploaded Preview"
+                        onLoad={() => {
+                          if (imageRef.current) {
+                            const currentRenderedWidth = imageRef.current.offsetWidth;
+                            const currentRenderedHeight = imageRef.current.offsetHeight;
+                            setRenderedWidth(currentRenderedWidth);
+                            setRenderedHeight(currentRenderedHeight);
+                            setWScaleRatio(currentRenderedWidth / imageWidth);
+                            setHScaleRatio(currentRenderedHeight / imageHeightState);
+                            console.log("onLoad - 렌더링된 이미지 크기:", currentRenderedWidth, currentRenderedHeight);
+                          }
+                        }}
                     />
+
+                    {detectionResults.map((detection, index) => {
+                      const width = detection.x2 - detection.x1; // 실제 이미지 내에서의 너비
+                      const height = detection.y2 - detection.y1; // 실제 이미지 내에서의 높이
+
+                      // 렌더링된 이미지 크기에 맞춰 바운딩 박스 크기 계산
+                      const renderedBoxWidth = width * wscaleRatio;
+                      const renderedBoxHeight = height * hscaleRatio;
+
+                      return (
+                          <div
+                              key={index}
+                              className="bounding-box"
+                              style={{
+                                left: `${(detection.x1 / imageWidth) * 100}%`,
+                                top: `${(detection.y1 / imageHeightState) * 100}%`,
+                                width: `${renderedBoxWidth}px`,
+                                height: `${renderedBoxHeight}px`,
+                              }}
+                          >
+                      <span className="bounding-label">
+                        {convertClassNameToCustom(detection.className)} (
+                        {(detection.confidence * 100).toFixed(1)}%)
+                      </span>
+                          </div>
+                      );
+                    })}
+                  </div>
+                  <div className="image-upload-wrapper">
                     <label htmlFor="image-upload" className="retake-button">
                       사진 다시 촬영하기
                     </label>
@@ -93,35 +176,50 @@ const AskAI: React.FC = () => {
                         type="file"
                         accept="image/*"
                         onChange={handleImageUpload}
-                        style={{display: "none"}}
+                        style={{ display: "none" }}
                     />
                   </div>
-                  <div className="image-result-wrapper">
-                    {/**아직 수정중**/}
-                    {/**이 부분에 확률이랑 예측 결과 감지부분만 response 데이터로 대입되게 변경해주세요.**/}
-                    <p>해당 사진은 98.2 %의 확률로 가락몰로 감지됩니다.</p>
-                    <p>여행 친구에게 관광지에대해 질문해 보세요!</p>
-                  </div>
+                  {/* 분석 결과가 있을 때만 image-result-section 표시 */}
+                  {detectionResults.length > 0 && (
+                      <div className="image-result-section">
+                        <img src={AiProfile} alt="ai-profile" width="40" height="40" />
+                        <div className="image-result-message">
+                          {/* 확률과 인식된 이름만 blue-text 클래스 적용 */}
+                          사진 분석 결과,{" "}
+                          <span className="blue-text">
+                      {(detectionResults[0].confidence * 100).toFixed(1)}%
+                    </span>{" "}
+                          의 확률로<br />{" "}
+                          <span className="blue-text">
+                      {convertClassNameToCustom(detectionResults[0].className)}
+                    </span>
+                          로 감지되었습니다.
+                        </div>
+                      </div>
+                  )}
+                  <p className="ask-ai-p">여행 친구에게 관광지에 대해 질문해 보세요!</p>
                 </div>
-                {isUploaded && (
-                    <button className="open-chat" onClick={toggleChat}>
-                      <img
-                          src={Chat_icon}
-                          alt="Chat Icon"
-                          className="chat-icon"
-                      />
-                    </button>
+                {/* 분석 결과가 있을 때만 채팅봇 버튼 및 AiGuide 표시 */}
+                {detectionResults.length > 0 && (
+                    <>
+                      <button className="open-chat" onClick={toggleChat}>
+                        <img src={Chat_icon} alt="Chat Icon" className="chat-icon" />
+                      </button>
+                      <div
+                          className={`chatbot-section ${chatVisible ? "visible" : ""}`}
+                          style={{ display: "block" }}
+                      >
+                        <button className="close-chat" onClick={toggleChat}>
+                          ✖
+                        </button>
+                        <AiGuide
+                            defaultMessage={`${convertClassNameToCustom(
+                                detectionResults[0].className
+                            )}이 무엇인가요?`}
+                        />
+                      </div>
+                    </>
                 )}
-                <div
-                    className={`chatbot-section ${chatVisible ? "visible" : ""}`}
-                    style={{display: isUploaded ? "block" : "none"}}
-                >
-                  <button className="close-chat" onClick={toggleChat}>
-                    ✖
-                  </button>
-
-                  <AiGuide defaultMessage="가락몰이 무엇인가요?"/> {/**백에서 받아온 건물 이름으로 질문 예정**/}
-                </div>
               </div>
           )}
         </div>
