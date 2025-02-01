@@ -42,7 +42,7 @@ export const register = async (userData: {
 }) => {
   try {
     console.log("회원가입 요청 데이터:", userData);
-    
+
     const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -133,7 +133,7 @@ export interface UserInfo {
 /** 사용자 정보 가져오기 */
 export const getUserInfo = async () => {
   const responseData = await fetchWithAuth(`${API_BASE_URL}/api/user/me`);
-  
+
   console.log("[getUserInfo] 응답 데이터:", responseData);
   return responseData.data;
 };
@@ -228,6 +228,78 @@ export const sendAudio = async (audioBlob: Blob) => {
   return response.json();
 };
 
+/** MAP : 네이버맵 API KEY 반환 **/
+export const loadApiKey = async (): Promise<string | null> => {
+  try {
+    const response = await fetch("/service_account_key.json");
+    if (!response.ok) {
+      throw new Error(`JSON 파일을 불러올 수 없습니다. 상태 코드: ${response.status}`);
+    }
+    const data = await response.json();
+
+    if (!data.NAVER_MAP_API_KEY) {
+      throw new Error("네이버 API 키가 JSON 파일에 없습니다.");
+    }
+    return data.NAVER_MAP_API_KEY;
+  } catch (error) {
+    console.error("API 키 로드 중 오류 발생:", error);
+    return null;
+  }
+};
+
+/** MAP : 사용자 위치 저장 **/
+export const saveUserLocation = async (latitude: number, longitude: number): Promise<void> => {
+  try {
+//     const jwtToken = localStorage.getItem("jwt");
+//     if (!jwtToken) throw new Error("JWT 토큰 없음");
+
+    const response = await fetch("/location/user-location", {
+      method: "POST",
+      headers: {
+//         Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ latitude, longitude }),
+    });
+
+    if (!response.ok) throw new Error("위치 저장 실패");
+
+    const data = await response.json();
+    console.log("위치 저장 성공:", data);
+  } catch (error) {
+    console.error("saveUserLocation 에러 발생:", error);
+  }
+};
+
+/** MAP : 위치 기반 주변 명소 검색**/
+export const fetchNearbyPlaces = async (lat: number, lng: number): Promise<Place[]> => {
+  try {
+//     const jwtToken = localStorage.getItem("jwt");
+//     if (!jwtToken) throw new Error("JWT 토큰 없음");
+
+    const response = await fetch(`/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`, {
+      method: "GET",
+      headers: {
+//         Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",  // 캐시 무시하도록 설정
+        Pragma: "no-cache",
+        Expires: "0"
+      },
+    });
+
+    if (!response.ok) throw new Error("명소 정보를 가져올 수 없음");
+
+    const data = await response.json();
+    console.log("서버 응답 데이터:", data);
+
+    return data.data || [];
+  } catch (error) {
+    console.error("fetchNearbyPlaces 에러 발생:", error);
+    return [];
+  }
+};
+
 /** 닉네임 중복 확인 */
 export const checkNickname = async (nickname: string) => {
   try {
@@ -283,34 +355,3 @@ export const checkUserInterest = async () => {
   }
 };
 
-/**객체탐지: response**/
-
-export interface Detection {
-  className: string;
-  confidence: number;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-}
-/**객체탐지: request**/
-export const sendImageToAPI = async (file: File): Promise<Detection[]> => {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  try {
-    const response = await fetch("http://localhost:8080/api/image/image_search", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await response.json();
-    console.log("객체 탐지 결과:", data);
-
-    if (data.data && data.data.detections && data.data.detections.length > 0) {
-      return data.data.detections;
-    }
-  } catch (error) {
-    console.error("객체 탐지 API 호출 실패:", error);
-  }
-  return [];
-};
