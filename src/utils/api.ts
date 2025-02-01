@@ -371,7 +371,7 @@ export const sendImageToAPI = async (file: File): Promise<Detection[]> => {
   formData.append("file", file);
 
   try {
-    const response = await fetch("http://localhost:8080/api/image/image_search", {
+    const response = await fetch(`${API_BASE_URL}/api/image/image_search`, {
       method: "POST",
       body: formData,
     });
