@@ -1,6 +1,7 @@
 // src/pages/AskAI.tsx
 
 import React, { useState, useRef, useEffect } from "react";
+
 import Header from "../components/Header";
 import "../styles/AskAI.css";
 import AiGuide from "../components/AiGuide";
@@ -10,6 +11,7 @@ import AiProfile from "../assets/images/ai-profile.png";
 
 // api.ts에서 API 호출 함수와 Detection 인터페이스를 import 합니다.
 import { sendImageToAPI, Detection } from "../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const convertClassNameToCustom = (className: string): string => {
   const customTranslationMap: { [key: string]: string } = {
@@ -39,11 +41,20 @@ const AskAI: React.FC = () => {
   const imageRef = useRef<HTMLImageElement | null>(null); // 이미지 요소 접근용 ref
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  const navigate = useNavigate();
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
+    const jwtToken = localStorage.getItem("jwt");
+    // console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
+    if (!jwtToken || jwtToken === "undefined") {
+      alert("로그인 후 사용해주세요.");
+      navigate("/auth/login"); // 로그인 페이지로 리다이렉트
+      return;
+    }
     scrollToBottom();
   }, []);
 
