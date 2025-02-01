@@ -2,10 +2,10 @@ import axios, { AxiosError } from "axios";
 
 // src/utils/api.ts
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.MODE === "development"
-    ? "http://localhost:8080"
-    : "http://jigu-travel.kro.kr:8080");
+    import.meta.env.VITE_API_BASE_URL ||
+    (import.meta.env.MODE === "development"
+        ? "http://localhost:8080"
+        : "http://jigu-travel.kro.kr:8080");
 
 /** 로그인 */
 export const login = async (loginId: string, password: string) => {
@@ -310,7 +310,7 @@ export const checkNickname = async (nickname: string) => {
   } catch (error) {
     // error를 AxiosError 타입으로 캐스팅
     const axiosError = error as AxiosError;
-    
+
     return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
   }
 };
@@ -325,7 +325,7 @@ export const checkLoginId = async (loginId: string) => {
   } catch (error) {
     // error를 AxiosError 타입으로 캐스팅
     const axiosError = error as AxiosError;
-    
+
     return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
   }
 };
@@ -355,3 +355,34 @@ export const checkUserInterest = async () => {
   }
 };
 
+/**객체탐지: response**/
+
+export interface Detection {
+  className: string;
+  confidence: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+/**객체탐지: request**/
+export const sendImageToAPI = async (file: File): Promise<Detection[]> => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const response = await fetch("http://localhost:8080/api/image/image_search", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+    console.log("객체 탐지 결과:", data);
+
+    if (data.data && data.data.detections && data.data.detections.length > 0) {
+      return data.data.detections;
+    }
+  } catch (error) {
+    console.error("객체 탐지 API 호출 실패:", error);
+  }
+  return [];
+};

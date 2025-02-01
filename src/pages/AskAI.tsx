@@ -31,8 +31,8 @@ const AskAI: React.FC = () => {
   const [imageWidth, setImageWidth] = useState<number>(0);
   const [imageHeightState, setImageHeightState] = useState<number>(0);
 
-  const [renderedWidth, setRenderedWidth] = useState<number>(0); // 렌더링된 이미지 너비
-  const [renderedHeight, setRenderedHeight] = useState<number>(0); // 렌더링된 이미지 높이
+  // const [renderedWidth, setRenderedWidth] = useState<number>(0); // 렌더링된 이미지 너비
+  // const [renderedHeight, setRenderedHeight] = useState<number>(0); // 렌더링된 이미지 높이
   const [wscaleRatio, setWScaleRatio] = useState<number>(1); // 실제 크기와 렌더링 크기의 비율
   const [hscaleRatio, setHScaleRatio] = useState<number>(1); // 실제 크기와 렌더링 크기의 비율
 
@@ -52,8 +52,8 @@ const AskAI: React.FC = () => {
     if (imageRef.current) {
       const currentRenderedWidth = imageRef.current.offsetWidth;
       const currentRenderedHeight = imageRef.current.offsetHeight;
-      setRenderedWidth(currentRenderedWidth);
-      setRenderedHeight(currentRenderedHeight);
+      // setRenderedWidth(currentRenderedWidth);
+      // setRenderedHeight(currentRenderedHeight);
       setWScaleRatio(currentRenderedWidth / imageWidth);
       setHScaleRatio(currentRenderedHeight / imageHeightState);
     }
@@ -131,8 +131,8 @@ const AskAI: React.FC = () => {
                           if (imageRef.current) {
                             const currentRenderedWidth = imageRef.current.offsetWidth;
                             const currentRenderedHeight = imageRef.current.offsetHeight;
-                            setRenderedWidth(currentRenderedWidth);
-                            setRenderedHeight(currentRenderedHeight);
+                            // setRenderedWidth(currentRenderedWidth);
+                            // setRenderedHeight(currentRenderedHeight);
                             setWScaleRatio(currentRenderedWidth / imageWidth);
                             setHScaleRatio(currentRenderedHeight / imageHeightState);
                             console.log("onLoad - 렌더링된 이미지 크기:", currentRenderedWidth, currentRenderedHeight);
