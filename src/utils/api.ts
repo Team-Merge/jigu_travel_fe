@@ -354,3 +354,4 @@ export const checkUserInterest = async () => {
     return false; // 기본값 반환 (에러 발생 시 false 처리)
   }
 };
+

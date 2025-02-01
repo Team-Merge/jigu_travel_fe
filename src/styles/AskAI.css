@@ -1,9 +1,9 @@
 .ask-ai {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
-    background-color: var(--background-color);
+    background-color: whitesmoke;
 }
 
 .main-container {
@@ -47,10 +47,29 @@
     padding: 20px; /* 채팅 메시지 패딩 */
 }
 
-.message {
-    display: flex;
+.image-result-message {
+    /*display: flex;*/
     align-items: flex-start;
-    margin-bottom: 10px;
+    margin: 5px;
+    background-color: #e6e6e6;
+    color: #333;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    flex:1;
+    position: relative;
+    margin-left: 10px;
+}
+/* 말풍선 꼬리 만들기 */
+.image-result-message::after {
+    content: "";
+    position: absolute;
+    top: 13px; /* 꼬리가 시작되는 위치 (필요시 조정) */
+    left: -20px; /* 이미지와 말풍선 사이에 꼬리가 나타나도록 위치 조정 */
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent;
+    border-right-color: #e6e6e6; /* 말풍선 배경과 동일하게 */
 }
 
 .message.user {
@@ -140,30 +159,30 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: scroll;
     background-color: var(--background-color);
 }
 
-.image-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: auto; /* 자동 크기 조정 */
-    max-width: 80%; /* 최대 너비 설정 */
-    max-height: 80%; /* 최대 높이 설정 */
-}
+/*.image-container {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    width: auto; !* 자동 크기 조정 *!*/
+/*    max-width: 80%; !* 최대 너비 설정 *!*/
+/*    max-height: 80%; !* 최대 높이 설정 *!*/
+/*}*/
 
 .uploaded-image {
-    max-width: 100%; /* 컨테이너 내 이미지 최대 너비 */
-    max-height: 70vh; /* 컨테이너 내 이미지 최대 높이 */
+    width: 100%; /* 이미지를 컨테이너에 맞게 크기 조정 */
+    height: auto; /* 이미지 비율 유지 */
     object-fit: contain; /* 이미지 비율 유지 */
-    margin-bottom: 20px; /* 버튼과의 간격 */
 }
 
 .retake-button {
     width: 150px;
-    padding: 10px;
-    background-color: var(--primary-color);
+    padding: 5px;
+    background-color: #4ca9e7;
     color: white;
     border: none;
     border-radius: 4px;
@@ -173,7 +192,7 @@
 }
 
 .retake-button:hover {
-    background-color: var(--secondary-color);
+    background-color: #4ca9e7;
 }
 
 .initial-screen {
@@ -230,32 +249,32 @@
 }
 
 .open-chat {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background-color: #ffffff; /* 버튼 배경 */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  border: 2px solid #cccccc;
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #ffffff; /* 버튼 배경 */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border: 2px solid #cccccc;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
 }
 
 .open-chat:hover {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 /* 아이콘 이미지 스타일 */
 .chat-icon {
-  width: 50%; /* 아이콘 크기 조절 */
-  height: 50%;
-  filter: invert(1); /* 아이콘 색 반전 */
+    width: 50%; /* 아이콘 크기 조절 */
+    height: 50%;
+    filter: invert(1); /* 아이콘 색 반전 */
 }
 
 .close-chat {
@@ -276,4 +295,55 @@
 .image-result-wrapper{
     margin-top: 15px;
 
+}
+
+.image-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* 부모 컨테이너에 상대 위치를 설정 */
+    width: 70%;
+    height: auto;
+
+}
+
+.bounding-box {
+    position: absolute; /* 부모 컨테이너에 절대 위치 지정 */
+    border: 2px solid red;
+    z-index: 10; /* 이미지 위에 바운딩 박스 표시 */
+}
+
+.bounding-label {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 3px;
+    font-size: 12px;
+}
+.image-upload-wrapper{
+    margin: 10px auto;
+    font-size: 12px;
+}
+
+.image-result-section{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    align-items: center;
+    text-align: center;
+}
+
+.blue-text {
+    color: #4ca9e7;
+    font-weight: bold;
+}
+
+.ask-ai-p{
+    font-size: 10px;
+    margin: 0 auto;
+    padding: 0;
+    color: gray;
 }
