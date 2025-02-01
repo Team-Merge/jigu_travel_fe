@@ -6,7 +6,6 @@ import AuthLogin from "./pages/AuthLogin";
 import Register from "./pages/Register";
 import AskAI from "./pages/AskAI";
 import RecommendTravel from "./pages/RecommendTravel";
-import AiGuide from "./pages/AiGuide";
 import TravelWithAI from "./pages/TravelWithAI";
 import AiGuideTest from "./pages/AiGuideTest";
 
@@ -28,7 +27,6 @@ const App: React.FC = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/ask-ai" element={<AskAI />} />
         <Route path="/recommend-travel" element={<RecommendTravel />} />
-        <Route path="/ai-guide" element={<AiGuide />} />
         <Route path="/travel-with-ai" element={<TravelWithAI />} />
         <Route path="/ai-guide" element={<AiGuideTest />} />
 
