@@ -2,10 +2,10 @@ import axios, { AxiosError } from "axios";
 
 // src/utils/api.ts
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.MODE === "development"
-    ? "http://localhost:8080"
-    : "http://jigu-travel.kro.kr:8080");
+    import.meta.env.VITE_API_BASE_URL ||
+    (import.meta.env.MODE === "development"
+        ? "http://localhost:8080"
+        : "http://jigu-travel.kro.kr:8080");
 
 /** 로그인 */
 export const login = async (loginId: string, password: string) => {
@@ -310,7 +310,7 @@ export const checkNickname = async (nickname: string) => {
   } catch (error) {
     // error를 AxiosError 타입으로 캐스팅
     const axiosError = error as AxiosError;
-    
+
     return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
   }
 };
@@ -325,7 +325,7 @@ export const checkLoginId = async (loginId: string) => {
   } catch (error) {
     // error를 AxiosError 타입으로 캐스팅
     const axiosError = error as AxiosError;
-    
+
     return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
   }
 };
@@ -386,4 +386,3 @@ export const sendImageToAPI = async (file: File): Promise<Detection[]> => {
   }
   return [];
 };
-
