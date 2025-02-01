@@ -22,7 +22,7 @@ const BoardEdit: React.FC = () => {
 
   const handleSubmit = async (title: string, content: string) => {
     try {
-      const token = localStorage.getItem("token") || "";
+    //   const token = localStorage.getItem("token") || "";
       await updatePost(Number(boardId), title, content);
       navigate(`/board/${boardId}`);
     } catch (error) {

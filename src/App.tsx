@@ -8,6 +8,7 @@ import AskAI from "./pages/AskAI";
 import RecommendTravel from "./pages/RecommendTravel";
 import AiGuide from "./pages/AiGuide";
 import TravelWithAI from "./pages/TravelWithAI";
+import AiGuideTest from "./pages/AiGuideTest";
 
 
 import BoardList from "./pages/BoardList";
@@ -29,6 +30,7 @@ const App: React.FC = () => {
         <Route path="/recommend-travel" element={<RecommendTravel />} />
         <Route path="/ai-guide" element={<AiGuide />} />
         <Route path="/travel-with-ai" element={<TravelWithAI />} />
+        <Route path="/ai-guide" element={<AiGuideTest />} />
 
         <Route path="/board" element={<BoardList />} />
         <Route path="/board/:boardId" element={<BoardDetail />} />

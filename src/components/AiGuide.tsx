@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+// import Header from "../components/Header";
 import { getChatHistory, sendTextQuestion, sendAudio } from "../utils/api";
 
 import "../styles/AiGuide.css";
-import AiGuideChat from "../components/AiGuideChat";
+import AiGuideChat from "./AiGuideChat";
 import arrowUp from '../assets/images/arrow-up.png';
 import keyboard from '../assets/images/keyboard.png';
 import microphone from '../assets/images/microphone.png';
@@ -18,9 +18,13 @@ interface Message {
     isNew?: boolean; // 새로운 메시지 여부
 }
 
-const AiVoiceGuide: React.FC = () => {
+interface AiGuideProps {
+    defaultMessage: string;
+}
+
+const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
     const [messages, setMessages] = useState<Message[]>([]);
-    const [textQuestion, setTextQuestion] = useState<string>(""); // 질문 입력 상태
+    const [textQuestion, setTextQuestion] = useState<string>(defaultMessage || "");
     const [isRecording, setIsRecording] = useState<boolean>(false);
     const [offset, setOffset] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
@@ -42,13 +46,18 @@ const AiVoiceGuide: React.FC = () => {
 
     useEffect(() => {
         const jwtToken = localStorage.getItem("jwt");
-        // console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
+        console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
         if (!jwtToken || jwtToken === "undefined") {
             alert("로그인 후 사용해주세요.");
             navigate("/auth/login"); // 로그인 페이지로 리다이렉트
             return;
         }
         loadChatHistory();
+        if (defaultMessage.length > 0) {
+            setTextQuestion(defaultMessage);
+            handleSendQuestion();
+        }
+
     }, []);
 
     const generateMessageId = () => {
@@ -112,7 +121,13 @@ const AiVoiceGuide: React.FC = () => {
             setMessages((prev) =>
                 prev.map((msg) =>
                     msg.id === loadingMessage.id
-                        ? { ...msg, text: `${data.conversation_history.history[0]?.assistant_response || "No answer provided."}`, isNew: true }
+                        ? {
+                            ...msg,
+                            text: data.conversation_history.history && data.conversation_history.history.length > 0
+                                ? `${data.conversation_history.history[0].assistant_response || "No answer provided."}`
+                                : "서버 연결이 실패하였습니다. 잠시 후 다시 시도해 주세요.",
+                            isNew: true
+                        }
                         : msg
                 )
             );
@@ -291,7 +306,13 @@ const AiVoiceGuide: React.FC = () => {
                 setMessages((prev) =>
                     prev.map((msg) =>
                         msg.id === loadingMessage.id
-                            ? { ...msg, text: `${response.conversation_history.history[0]?.assistant_response || "No answer provided."}`, isNew: true }
+                            ? {
+                                ...msg,
+                                text: response.conversation_history.history && response.conversation_history.history.length > 0
+                                    ? `${response.conversation_history.history[0]?.assistant_response || "No answer provided."}`
+                                    : "서버 연결이 실패하였습니다. 잠시 후 다시 시도해 주세요.",
+                                isNew: true
+                            }
                             : msg
                     )
                 );
@@ -308,7 +329,7 @@ const AiVoiceGuide: React.FC = () => {
                     prev.filter((msg) => msg.id !== loadingMessage.id).concat({
                         id: generateMessageId(),
                         type: "bot",
-                        text: "답변을 가져오는 데 실패했습니다.",
+                        text: "답변을 가져오는 데 실패했습니다. \n 다시 시도해 주세요.",
                         isNew: true
                     })
                 );
@@ -346,48 +367,50 @@ const AiVoiceGuide: React.FC = () => {
 
     return (
         <div id="chatContainer">
-            <Header />
+            {/*<Header />*/}
             <div id="messagesContainer" ref={messagesContainerRef}>
                 <AiGuideChat messages={messages} hasMore={hasMore} loadMore={loadChatHistory} />
             </div>
-            <div id="userInputContainer">
-                <input
-                    type="text"
-                    id="textQuestion"
-                    value={textQuestion}
-                    onChange={(e) => setTextQuestion(e.target.value)}
-                    placeholder={inputPlaceholder}
-                    disabled={isRecordingMode}
-                    required
-                />
+            <div id="inputWrapper">
+                <div id="userInputContainer">
+                    <input
+                        type="text"
+                        id="textQuestion"
+                        value={textQuestion}
+                        onChange={(e) => setTextQuestion(e.target.value)}
+                        placeholder={inputPlaceholder}
+                        disabled={isRecordingMode}
+                        required
+                    />
 
-                {/* 텍스트 질문 전송 버튼 */}
-                {!isRecording && (
-                    <button id="sendButton" onClick={handleSendQuestion}>
-                        <img src={arrowUp} alt="Arrow Icon" width="24" height="24" />
-                    </button>
-                )}
+                    {/* 텍스트 질문 전송 버튼 */}
+                    {!isRecording && (
+                        <button id="sendButton" onClick={handleSendQuestion}>
+                            <img src={arrowUp} alt="Arrow Icon" width="24" height="24" />
+                        </button>
+                    )}
 
-                {/* 텍스트 전송 모드로 변경 버튼 */}
-                {isRecordingMode && isRecording && (
-                    <button id="stopButton" onClick={handleStopRecording}>
-                        <img src={keyboard} alt="Keyboard Icon" width="24" height="24" />
-                    </button>
-                )}
+                    {/* 텍스트 전송 모드로 변경 버튼 */}
+                    {isRecordingMode && isRecording && (
+                        <button id="stopButton" onClick={handleStopRecording}>
+                            <img src={keyboard} alt="Keyboard Icon" width="24" height="24" />
+                        </button>
+                    )}
 
-                {/* 녹음 시작 버튼 */}
-                {!isRecording && (
-                    <button id="startRecordingButton" onClick={handleStartRecording}>
-                        <img src={microphone} alt="Microphone Icon" width="24" height="24" />
-                    </button>
-                )}
+                    {/* 녹음 시작 버튼 */}
+                    {!isRecording && (
+                        <button id="startRecordingButton" onClick={handleStartRecording}>
+                            <img src={microphone} alt="Microphone Icon" width="24" height="24" />
+                        </button>
+                    )}
 
-                {/* 녹음 종료 및 전송 버튼 */}
-                {isRecording && isRecordingMode && (
-                    <button id="stopRecordingButton" onClick={handleSendAudio}>
-                        <img src={arrowUp} alt="Arrow Icon" width="24" height="24" />
-                    </button>
-                )}
+                    {/* 녹음 종료 및 전송 버튼 */}
+                    {isRecording && isRecordingMode && (
+                        <button id="stopRecordingButton" onClick={handleSendAudio}>
+                            <img src={arrowUp} alt="Arrow Icon" width="24" height="24" />
+                        </button>
+                    )}
+                </div>
             </div>
             <div id="audioContainer">
                 <audio id="audioPlayback" ref={audioPlaybackRef} controls style={{ display: "none" }} />
@@ -396,4 +419,4 @@ const AiVoiceGuide: React.FC = () => {
     );
 };
 
-export default AiVoiceGuide;
+export default AiGuide;

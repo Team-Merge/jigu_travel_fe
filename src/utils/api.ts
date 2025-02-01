@@ -1,3 +1,5 @@
+import axios, { AxiosError } from "axios";
+
 // src/utils/api.ts
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
@@ -29,7 +31,6 @@ export const login = async (loginId: string, password: string) => {
     throw error;
   }
 };
-
 
 /** 회원가입 */
 export const register = async (userData: {
@@ -81,32 +82,6 @@ export const refreshAccessToken = async (): Promise<string | null> => {
     return null;
   }
 };
-
-/** 공통 API 요청 함수 (모든 API 요청에서 사용) */
-// export const fetchWithAuth = async <T = any>(url: string, options: RequestInit = {}): Promise<T> => {
-//   let jwtToken = localStorage.getItem("jwt");
-//   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
-
-//   const response = await fetch(url, {
-//     ...options,
-//     headers: {
-//       ...options.headers,
-//       "Authorization": `Bearer ${jwtToken}`,
-//       "Content-Type": "application/json",
-//     },
-//   });
-
-//   if (response.status === 401) {
-//     console.log("⏳ Access Token 만료됨, 갱신 시도...");
-//     const newAccessToken = await refreshAccessToken();
-//     if (!newAccessToken) throw new Error("토큰 갱신 실패. 다시 로그인 필요.");
-
-//     return fetchWithAuth<T>(url, options);
-//   }
-
-//   return response.json() as Promise<T>;
-// };
-
 export const fetchWithAuth = async <T = any>(url: string, options: RequestInit = {}, retry = true): Promise<T> => {
   let jwtToken = localStorage.getItem("jwt");
   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
@@ -322,5 +297,60 @@ export const fetchNearbyPlaces = async (lat: number, lng: number): Promise<Place
   } catch (error) {
     console.error("fetchNearbyPlaces 에러 발생:", error);
     return [];
+  }
+};
+
+/** 닉네임 중복 확인 */
+export const checkNickname = async (nickname: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/user/check-nickname`, {
+      params: { nickname },
+    });
+    return response.data;
+  } catch (error) {
+    // error를 AxiosError 타입으로 캐스팅
+    const axiosError = error as AxiosError;
+    
+    return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
+  }
+};
+
+/** 아이디 중복 확인 API */
+export const checkLoginId = async (loginId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/user/check-loginId`, {
+      params: { loginId },
+    });
+    return response.data;
+  } catch (error) {
+    // error를 AxiosError 타입으로 캐스팅
+    const axiosError = error as AxiosError;
+    
+    return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
+  }
+};
+
+
+/** 관심사 존재 여부 체크 */
+// export const checkUserInterest = async () => {
+//   const response = await axios.get(`${API_BASE_URL}/api/ai/ai_classification/exists`, {
+//     withCredentials: true, // 로그인 상태 유지
+//   });
+//   return response.data.data; // true (관심사 있음) / false (관심사 없음)
+// };
+
+export const checkUserInterest = async () => {
+  try {
+    const jwtToken = localStorage.getItem("jwt");
+    const response = await axios.get(`${API_BASE_URL}/api/ai/ai_classification/exists`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // JWT 토큰 추가
+      },
+      withCredentials: true, // 로그인 세션 유지
+    });
+    return response.data.data; // true (관심사 있음) / false (관심사 없음)
+  } catch (error) {
+    console.error("관심사 확인 API 호출 실패:", error);
+    return false; // 기본값 반환 (에러 발생 시 false 처리)
   }
 };
