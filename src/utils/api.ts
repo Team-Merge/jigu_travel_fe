@@ -130,6 +130,16 @@ export interface UserInfo {
   isAdmin: boolean;
 }
 
+export interface Place {
+  placeId: number;
+  name: string;
+  address: string;
+  tel?: string;
+  latitude: number;
+  longitude: number;
+  types: string[]; // 카테고리 정보
+}
+
 /** 사용자 정보 가져오기 */
 export const getUserInfo = async () => {
   const responseData = await fetchWithAuth(`${API_BASE_URL}/api/user/me`);
@@ -386,4 +396,44 @@ export const sendImageToAPI = async (file: File): Promise<Detection[]> => {
     console.error("객체 탐지 API 호출 실패:", error);
   }
   return [];
+};
+
+/** 사용자 관심사 (카테고리) 불러오기 */
+export const getUserInterest = async (): Promise<string[]> => {
+  try {
+    const responseData = await fetchWithAuth(`${API_BASE_URL}/api/ai/ai_classification/get-user-interest`);
+    
+    if (!responseData.data) {
+      console.warn("사용자 관심사 없음");
+      return [];
+    }
+
+    const { interest, interest2 } = responseData.data;
+    return [interest, interest2];
+  } catch (error) {
+    console.error("사용자 관심사 불러오기 실패:", error);
+    return [];
+  }
+};
+
+/** 모든 장소 불러오기 (페이징 적용) */
+export const fetchPlaces = async (latitude: number, longitude: number, page: number, size: number, category: string): Promise<Place[]> => {
+  try {
+    const responseData = await fetchWithAuth(
+      `${API_BASE_URL}/place/all?latitude=${latitude}&longitude=${longitude}&page=${page}&size=${size}`
+    );
+
+    if (!responseData.data) {
+      console.warn("장소 데이터 없음");
+      return [];
+    }
+
+    // 카테고리가 '전체'가 아닐 경우 필터링
+    return category === "전체"
+      ? responseData.data
+      : responseData.data.filter((place: any) => place.types.includes(category));
+  } catch (error) {
+    console.error("장소 데이터 불러오기 실패:", error);
+    return [];
+  }
 };
