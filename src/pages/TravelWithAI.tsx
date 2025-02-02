@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { loadApiKey } from "../utils/api";
 import { saveUserLocation } from "../utils/api";
-// import { fetchNearbyPlaces } from "../utils/api";
+import { fetchNearbyPlaces } from "../utils/api";
 
 import { Place } from "../types/Place";
 
@@ -21,6 +21,7 @@ const TravelWithAI: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const [activeTab, setActiveTab] = useState<string>("custom");
+  const [placeMarkers, setPlaceMarkers] = useState<any[]>([]);
 
 
   useEffect(() => {
@@ -64,7 +65,7 @@ const TravelWithAI: React.FC = () => {
                     /** 네이버 지도 객체 생성 */
                     const newMap = new window.naver.maps.Map(mapElement, {
                       center: new window.naver.maps.LatLng(lat, lng), // 현재 위치를 지도 중심으로 설정
-                      zoom: 15,
+                      zoom: 16,
                     });
 
         setMap(newMap);
@@ -87,7 +88,7 @@ const TravelWithAI: React.FC = () => {
         position: new window.naver.maps.LatLng(lat, lng),
         map: map,
         icon: {
-          content: '<div style="width: 14px; height: 14px; background-color: red; border-radius: 50%;"></div>',
+          content: '<div style="width: 12px; height: 12px; background-color: red; border-radius: 50%;"></div>',
           anchor: new window.naver.maps.Point(7, 7),
         },
       });
@@ -95,15 +96,58 @@ const TravelWithAI: React.FC = () => {
       setCurrentMarker(marker);
     };
 
+  const handleFetchPlaces = async() => {
+        if (!userLocation) return;
+        try{
+        const fetchedPlaces = await fetchNearbyPlaces(userLocation.lat, userLocation.lng);
+                setPlaces(fetchedPlaces);
+                setActiveTab("all"); // "모든 명소" 탭 활성화
+        } catch (error) {
+            console.error("명소 불러오기 실패:", error);
+            }
+      };
+
+
+  useEffect(() => {
+    if (!map || places.length === 0) return;
+
+    // ✅ 기존 마커 제거 (중복 방지)
+    placeMarkers.forEach(marker => marker.setMap(null));
+  // 명소 마커 추가
+    const newMarkers = places.map(place => {
+      return new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(place.latitude, place.longitude),
+        map: map,
+        title: place.name,
+      });
+    });
+    setPlaceMarkers(newMarkers);
+    }, [places, map]);
+
   return (
       <div className="map-container">
-        <div className="sidebar">
-        <div className="sidebar-header">
-            <button className="category active">맞춤 명소</button>
-            <button className="category">모든 명소</button>
-            <button className="category">즐겨찾기</button>
-          </div>
-          </div>
+        <div className="map-sidebar">
+              <div className="map-sidebar-header">
+                <button className="category"><img src="/icons/travelwithai_custom.svg" className="category-icon" alt="맞춤 명소" />맞춤 명소</button>
+                <button className={`category ${activeTab === "all" ? "active" : ""}`} onClick={handleFetchPlaces}>
+                      <img src="/icons/travelwithai_all.svg" className="category-icon" alt="모든 명소" />모든 명소</button>
+                    <button className="category"><img src="/icons/travelwithai_favorites.svg" className="category-icon" alt="모든 명소" />즐겨찾기</button>
+              </div>
+          {/* ✅ 명소 리스트 추가 */}
+                <div className="place-list">
+                  {places.length > 0 ? (
+                    places.map((place, index) => (
+                      <div key={index} className="place-item">
+                        <h3>{place.name} <span className="place-category">{place.types}</span></h3>
+                        <p>{place.address}</p>
+                        <p>{place.tel}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-places">주변 명소를 찾을 수 없습니다.</p>
+                  )}
+                </div>
+              </div>
             <div className="map-wrapper">
           <div id="map"></div>
         </div>
