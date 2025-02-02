@@ -250,16 +250,17 @@ export const loadApiKey = async (): Promise<string | null> => {
 /** MAP : 사용자 위치 저장 **/
 export const saveUserLocation = async (latitude: number, longitude: number): Promise<void> => {
   try {
-//     const jwtToken = localStorage.getItem("jwt");
-//     if (!jwtToken) throw new Error("JWT 토큰 없음");
+      const jwtToken = localStorage.getItem("jwt");
+      if (!jwtToken) throw new Error("JWT 토큰 없음");
 
-    const response = await fetch("/location/user-location", {
+    const response = await fetch(`${API_BASE_URL}/location/user-location`, {
       method: "POST",
       headers: {
-//         Authorization: `Bearer ${jwtToken}`,
+          Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ latitude, longitude }),
+      credentials: "include"
     });
 
     if (!response.ok) throw new Error("위치 저장 실패");
@@ -274,13 +275,13 @@ export const saveUserLocation = async (latitude: number, longitude: number): Pro
 /** MAP : 위치 기반 주변 명소 검색**/
 export const fetchNearbyPlaces = async (lat: number, lng: number): Promise<Place[]> => {
   try {
-//     const jwtToken = localStorage.getItem("jwt");
-//     if (!jwtToken) throw new Error("JWT 토큰 없음");
+    const jwtToken = localStorage.getItem("jwt");
+    if (!jwtToken) throw new Error("JWT 토큰 없음");
 
-    const response = await fetch(`/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`, {
+    const response = await fetch(`${API_BASE_URL}/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`, {
       method: "GET",
       headers: {
-//         Authorization: `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
         "Cache-Control": "no-cache",  // 캐시 무시하도록 설정
         Pragma: "no-cache",

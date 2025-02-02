@@ -5,23 +5,12 @@
   overflow: hidden;
 }
 
-.sidebar {
-  width: 300px;
-  height: 100vh;
-  background: #f8f9fa;
-  border-right: 1px solid #ddd;
-  padding: 20px;
-  position: relative;
-  z-index: 1000;
-
-  transform: translateX(0);
-  transition: transform 0.3s ease-in-out;
-}
-
-.sidebar-header {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+/* 네이버 지도 스타일 */
+#map {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0; /* 지도 로드 전 배경 */
 }
 
 .map-wrapper {
@@ -30,9 +19,154 @@
   height: 100%;
 }
 
-/* 네이버 지도 스타일 */
-#map {
+/* 사이드바 (전체) */
+.map-sidebar {
+  display: flex;
+  flex-basis: 25%;
+  max-width: 400px;
+  height: 100vh;
+  background: #f8f9fa;
+  padding: 0;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+}
+
+/* 왼쪽 카테고리 */
+.sidebar-categories {
+  display: flex;
+  flex-direction: column;
+  width: 90px;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+/* 명소 리스트 */
+.map-sidebar-places {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  margin: 0;
+  gap: 10px;
+  overflow-y: auto;
+
+/* 스크롤바 숨김 */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.map-sidebar-places::-webkit-scrollbar {
+  display: none;
+}
+
+/* 카테고리 버튼 */
+.map-category {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  background: none;
+  border: none;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
   width: 100%;
-  height: 100%;
-  background-color: #f0f0f0; /* 지도 로드 전 배경 */
+}
+
+.map-category.active {
+  color: #007bff;
+  font-weight: bold;
+  border-left: 4px solid #007bff;
+}
+
+/* 명소 리스트 */
+.place-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - 90px);
+}
+
+/* 명소 개별 항목 */
+.place-item {
+  background: white;
+  padding: 8px 15px 10px;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  word-wrap: break-word;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.place-item h3 {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+}
+
+.place-item p {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}
+
+/* 명소 정보 */
+.place-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.place-category {
+  font-size: 12px;
+  color: grey;
+  font-weight: 500;
+}
+
+/* 주소 & 전화번호 */
+.place-address,
+.place-tel {
+  font-size: 13px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.place-tel::before {
+  content: "📞";
+}
+
+.place-address::before {
+  content: none;
+}
+
+/* 명소 없을 때 */
+.no-places {
+  color: gray;
+  text-align: center;
+}
+
+/* 카테고리 아이콘 크기 */
+.category-icon {
+  width: 20px;
+  height: 20px;
 }
