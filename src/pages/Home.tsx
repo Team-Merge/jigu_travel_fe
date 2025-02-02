@@ -1,10 +1,56 @@
-// src/pages/Home.tsx
-import React from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Header from "../components/Header";
 import TravelCard from "../components/TravelCard";
 import "../styles/Home.css";
+import { getUserInterest, fetchPlaces, Place } from "../utils/api";
 
 const Home: React.FC = () => {
+  const [categories, setCategories] = useState<string[]>(["전체"]);
+  const [places, setPlaces] = useState<Place[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    getUserInterest().then((interests) => {
+      if (interests.length > 0) {
+        setCategories(["전체", ...interests]);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    setPage(0);
+    setPlaces([]); // 새로운 카테고리를 선택하면 리스트 초기화
+    loadPlaces(0, selectedCategory);
+  }, [selectedCategory]);
+
+  const loadPlaces = async (page: number, category: string) => {
+    const newPlaces = await fetchPlaces(page, 10, category);
+    setPlaces((prev) => [...prev, ...newPlaces]);
+    setHasMore(newPlaces.length > 0);
+  };
+
+  const lastPlaceRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node || !hasMore) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((prev) => {
+            const newPage = prev + 1;
+            loadPlaces(newPage, selectedCategory);
+            return newPage;
+          });
+        }
+      });
+
+      observer.current.observe(node);
+    },
+    [hasMore, selectedCategory]
+  );
 
   return (
     <div className="home-wrapper">
@@ -28,14 +74,27 @@ const Home: React.FC = () => {
           <h3>사용자 맞춤형 인근 여행지</h3>
         </div>
         <div className="filter-buttons">
-          <button className="selected">전체</button>
-          <button>호텔</button>
-          <button>유적지</button>
+          {categories.map((category, index) => (
+            <button
+              key={index}
+              className={category === selectedCategory ? "selected" : ""}
+              onClick={() => setSelectedCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
         </div>
 
         <div className="travel-list">
-          <TravelCard name="서울 타워" />
-          <TravelCard name="경복궁" />
+          {places.map((place, index) => (
+            <TravelCard
+              key={place.placeId}
+              name={place.name}
+              address={place.address}
+              tel={place.tel ?? "연락처 정보 없음"}
+              ref={index === places.length - 1 ? lastPlaceRef : null} // forwardRef 적용된 TravelCard에 ref 전달
+            />
+          ))}
         </div>
       </div>
     </div>
