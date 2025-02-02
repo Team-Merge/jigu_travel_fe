@@ -1,3 +1,61 @@
+// // src/pages/Home.tsx
+// import React, { useEffect, useState, useRef, useCallback } from "react";
+// import Header from "../components/Header";
+// import TravelCard from "../components/TravelCard";
+// import "../styles/Home.css";
+// import { getUserInterest, fetchPlaces } from "../utils/api";
+
+// const Home: React.FC = () => {
+//   const [categories, setCategories] = useState<string[]>(["전체"]);
+
+//   useEffect(() => {
+//     getUserInterest().then((interests) => {
+//       if (interests.length > 0) {
+//         setCategories(["전체", ...interests]);  // "전체" 버튼 추가 후 관심사 적용
+//       }
+//     });
+//   }, []);
+
+
+//   return (
+//     <div className="home-wrapper">
+//       <Header />
+//       <div className="home-container">
+//         <div className="title-name">
+//           <h3>맞춤형 여행 안내</h3>
+//         </div>
+//         <div className="recommend-section">
+//           <button className="recommend-card" onClick={() => window.location.href = "/travel-with-ai"}>
+//             <p>AI와 함께 여행 시작!</p>
+//             <h3>여행친구와 함께 여행하기</h3>
+//           </button>
+//           <button className="recommend-card" onClick={() => window.location.href = "/ask-ai"}>
+//             <p>저건 뭘까?</p>
+//             <h3>사진 찍어서 AI에게 물어보기</h3>
+//           </button>
+//         </div>
+
+//         <div className="title-name">
+//           <h3>사용자 맞춤형 인근 여행지</h3>
+//         </div>
+//         <div className="filter-buttons">
+//           {categories.map((category, index) => (
+//             <button key={index}>{category}</button>
+//           ))}
+//         </div>
+
+//         <div className="travel-list">
+//           <TravelCard name="서울 타워" />
+//           <TravelCard name="경복궁" />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Home;
+
+
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Header from "../components/Header";
 import TravelCard from "../components/TravelCard";
@@ -12,6 +70,10 @@ const Home: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
 
+  // 기본 위도/경도 설정 (서울 강남 송파구)
+  const DEFAULT_LATITUDE = 37.508373;
+  const DEFAULT_LONGITUDE = 127.103565;
+  
   useEffect(() => {
     getUserInterest().then((interests) => {
       if (interests.length > 0) {
@@ -27,7 +89,7 @@ const Home: React.FC = () => {
   }, [selectedCategory]);
 
   const loadPlaces = async (page: number, category: string) => {
-    const newPlaces = await fetchPlaces(page, 10, category);
+    const newPlaces = await fetchPlaces(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, page, 10, category);
     setPlaces((prev) => [...prev, ...newPlaces]);
     setHasMore(newPlaces.length > 0);
   };
