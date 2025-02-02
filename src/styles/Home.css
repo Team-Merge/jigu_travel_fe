@@ -4,7 +4,7 @@
     align-items: center;
     height: 100vh;
     width: 100vw;
-    padding-top: 40px;
+    padding-top: 60px;
   }
 
 /* 전체 홈 화면 스타일 */
@@ -99,7 +99,7 @@ h3 {
 
 /* 선택된 필터 버튼 스타일 */
 .filter-buttons .selected {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     font-weight: bold;
 }

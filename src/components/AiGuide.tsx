@@ -18,9 +18,13 @@ interface Message {
     isNew?: boolean; // 새로운 메시지 여부
 }
 
-const AiVoiceGuide: React.FC = () => {
+interface AiGuideProps {
+    defaultMessage: string;
+}
+
+const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
     const [messages, setMessages] = useState<Message[]>([]);
-    const [textQuestion, setTextQuestion] = useState<string>(""); // 질문 입력 상태
+    const [textQuestion, setTextQuestion] = useState<string>(defaultMessage || "");
     const [isRecording, setIsRecording] = useState<boolean>(false);
     const [offset, setOffset] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
@@ -42,13 +46,18 @@ const AiVoiceGuide: React.FC = () => {
 
     useEffect(() => {
         const jwtToken = localStorage.getItem("jwt");
-        // console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
+        console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
         if (!jwtToken || jwtToken === "undefined") {
             alert("로그인 후 사용해주세요.");
             navigate("/auth/login"); // 로그인 페이지로 리다이렉트
             return;
         }
         loadChatHistory();
+        if (defaultMessage.length > 0) {
+            setTextQuestion(defaultMessage);
+            handleSendQuestion();
+        }
+
     }, []);
 
     const generateMessageId = () => {
@@ -112,7 +121,13 @@ const AiVoiceGuide: React.FC = () => {
             setMessages((prev) =>
                 prev.map((msg) =>
                     msg.id === loadingMessage.id
-                        ? { ...msg, text: `${data.conversation_history.history[0]?.assistant_response || "No answer provided."}`, isNew: true }
+                        ? {
+                            ...msg,
+                            text: data.conversation_history.history && data.conversation_history.history.length > 0
+                                ? `${data.conversation_history.history[0].assistant_response || "No answer provided."}`
+                                : "서버 연결이 실패하였습니다. 잠시 후 다시 시도해 주세요.",
+                            isNew: true
+                        }
                         : msg
                 )
             );
@@ -291,7 +306,13 @@ const AiVoiceGuide: React.FC = () => {
                 setMessages((prev) =>
                     prev.map((msg) =>
                         msg.id === loadingMessage.id
-                            ? { ...msg, text: `${response.conversation_history.history[0]?.assistant_response || "No answer provided."}`, isNew: true }
+                            ? {
+                                ...msg,
+                                text: response.conversation_history.history && response.conversation_history.history.length > 0
+                                    ? `${response.conversation_history.history[0]?.assistant_response || "No answer provided."}`
+                                    : "서버 연결이 실패하였습니다. 잠시 후 다시 시도해 주세요.",
+                                isNew: true
+                            }
                             : msg
                     )
                 );
@@ -398,4 +419,4 @@ const AiVoiceGuide: React.FC = () => {
     );
 };
 
-export default AiVoiceGuide;
+export default AiGuide;
