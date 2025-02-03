@@ -9,8 +9,13 @@ interface SidebarProps {
   isOpen: boolean;
 }
 
+interface User {
+  nickname: string;
+  role: string; // ✅ 역할 추가 (ROLE_USER, ROLE_ADMIN 등)
+}
+
 const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
-  const [user, setUser] = useState<{ nickname: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,24 +40,25 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
   };
 
   return (
-      <div className={`sidebar ${isOpen ? "open" : ""}`}> {/* 동적 클래스 적용 */}
-        {/* 사용자 정보 + 닫기 버튼을 한 줄에 배치 */}
-        <div className="user-header">
-          <div className="user-info">
-            {user ? <p className="username">{user.nickname}님</p> : null}
-          </div>
-          <button className="close-btn" onClick={onClose}>✖</button>
+    <div className={`sidebar ${isOpen ? "open" : ""}`}> {/* 동적 클래스 적용 */}
+      {/* 사용자 정보 + 닫기 버튼을 한 줄에 배치 */}
+      <div className="user-header">
+        <div className="user-info">
+          {user ? <p className="username">{user.nickname}님</p> : null}
         </div>
+        <button className="close-btn" onClick={onClose}>✖</button>
+      </div>
 
-        {/* 로그인 여부에 따른 버튼 */}
-        {user ? (
-          <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
-        ) : (
-          <button className="login-btn" onClick={() => navigate("/auth/login")}>
-            로그인 및 회원가입
-          </button>
-        )}
-        <div className="guide-section">
+      {/* 로그인 여부에 따른 버튼 */}
+      {user ? (
+        <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
+      ) : (
+        <button className="login-btn" onClick={() => navigate("/auth/login")}>
+          로그인 및 회원가입
+        </button>
+      )}
+
+      <div className="guide-section">
         <button className="menu-item" onClick={() => navigate("/ai-guide")}>
           AI 음성 가이드
           <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
@@ -65,9 +71,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
           Q & A
           <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
         </button>
-      </div>
 
+        {/* ROLE_ADMIN 사용자만 "관리 페이지" 버튼 보이도록 조건 추가 */}
+        {user?.role === "ROLE_ADMIN" && (
+          <button className="menu-item" onClick={() => navigate("/admin")}>
+            관리페이지
+            <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
+          </button>
+        )}
       </div>
+    </div>
   );
 };
 
