@@ -7,7 +7,7 @@ import Register from "./pages/Register";
 import AskAI from "./pages/AskAI";
 import RecommendTravel from "./pages/RecommendTravel";
 import TravelWithAI from "./pages/TravelWithAI";
-import AiGuideTest from "./pages/AiGuideTest";
+import AiGuideTest from "./pages/AiGuidePage";
 import PasswordReset from "./pages/PasswordReset";
 import PasswordResetNew from "./pages/ResetPasswordNew";
 
