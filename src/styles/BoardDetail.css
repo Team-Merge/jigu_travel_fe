@@ -1,0 +1,133 @@
+/* ✅ 전체 게시글 상세 컨테이너 */
+.board-detail-container {
+    width: 100%;
+    max-width: 800px; 
+    margin: 0 auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+/* ✅ 제목 스타일 */
+.board-detail-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* ✅ 작성자 스타일 */
+.board-detail-author {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* ✅ 내용 스타일 */
+.board-detail-content {
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 15px;
+    background: #f8f8f8;
+    border-radius: 6px;
+    min-height: 150px;
+    margin-bottom: 20px;
+}
+
+/* ✅ 첨부파일 스타일 */
+.board-detail-attachments {
+    background: #f1f1f1;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.board-detail-attachments h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.attachment-item {
+    font-size: 16px;
+    padding: 5px 0;
+}
+
+/* ✅ 버튼 컨테이너 */
+.board-detail-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* ✅ 뒤로가기 버튼 */
+.back-button {
+    background: #cccccc;
+    color: black;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.back-button:hover {
+    background: #b3b3b3;
+}
+
+/* ✅ 수정 버튼 */
+.edit-button {
+    background: #4CA9E7;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.edit-button:hover {
+    background: #0056b3;
+}
+
+/* ✅ 삭제 버튼 */
+.delete-button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.delete-button:hover {
+    background: #a71d2a;
+}
+
+/* ✅ 로딩 텍스트 스타일 */
+.loading-text {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+}
+
+/* ✅ 반응형 스타일 (모바일 최적화) */
+@media (max-width: 768px) {
+    .board-detail-container {
+        padding: 20px;
+    }
+
+    .board-detail-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .back-button, .edit-button, .delete-button {
+        width: 100%;
+    }
+}

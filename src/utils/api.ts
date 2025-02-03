@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import axios, { AxiosError } from "axios";
+=======
+import Header from "../components/Header";
+>>>>>>> Stashed changes
 
 // src/utils/api.ts
 const API_BASE_URL =
@@ -86,12 +90,14 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   let jwtToken = localStorage.getItem("jwt");
   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
 
+  const isFormData = options.body instanceof FormData; // FormData 여부 확인
+
   const response = await fetch(url, {
     ...options,
     headers: {
-      ...options.headers,
+      ...(!isFormData && { "Content-Type": "application/json" }), // FormData일 경우 Content-Type 자동 설정
       "Authorization": `Bearer ${jwtToken}`,
-      "Content-Type": "application/json",
+      ...options.headers,
     },
   });
 

@@ -14,6 +14,7 @@ import BoardList from "./pages/BoardList";
 import BoardDetail from "./pages/BoardDetail";
 import BoardCreate from "./pages/BoardCreate";
 import BoardEdit from "./pages/BoardEdit";
+import BoardTabs from "./components/BoardTab";
 
 
 const App: React.FC = () => {
@@ -30,9 +31,10 @@ const App: React.FC = () => {
         <Route path="/travel-with-ai" element={<TravelWithAI />} />
         <Route path="/ai-guide" element={<AiGuideTest />} />
 
-        <Route path="/board" element={<BoardList />} />
+        <Route path="/board" element={<BoardTabs />} />
+        {/* <Route path="/board" element={<BoardList />} /> */}
         <Route path="/board/:boardId" element={<BoardDetail />} />
-        <Route path="/board/create" element={<BoardCreate />} />
+        {/* <Route path="/board/create" element={<BoardCreate />} /> */}
         <Route path="/board/edit/:boardId" element={<BoardEdit />} />
 
 
