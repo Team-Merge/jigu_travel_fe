@@ -24,6 +24,7 @@ const TravelWithAI: React.FC = () => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [activeTab, setActiveTab] = useState<string>("");
   const [placeMarkers, setPlaceMarkers] = useState<any[]>([]);
+  const [placesCount, setPlacesCount] = useState<number>(0);
 
   let lastLat: number | null = null;
   let lastLng: number | null = null;
@@ -116,6 +117,7 @@ const TravelWithAI: React.FC = () => {
         try{
         const fetchedPlaces = await fetchNearbyPlaces(userLocation.lat, userLocation.lng);
                 setPlaces(fetchedPlaces);
+                setPlacesCount(fetchedPlaces.length);
                 setActiveTab("all"); // "모든 명소" 탭 활성화
         } catch (error) {
             console.error("명소 불러오기 실패:", error);
@@ -131,12 +133,14 @@ const TravelWithAI: React.FC = () => {
       if (interests.length === 0) {
             console.warn("사용자 관심사 없음.");
             setPlaces(fetchedPlaces);
+            setPlacesCount(0);
             return;
           }
 
       const fetchedPlaces = await fetchNearbyPlaces(userLocation.lat, userLocation.lng, interests);
 
       setPlaces(fetchedPlaces);
+      setPlacesCount(fetchedPlaces.length);
       setActiveTab("interest");
     } catch (error) {
       console.error("맞춤 명소 불러오기 실패:", error);
@@ -201,6 +205,9 @@ const TravelWithAI: React.FC = () => {
         <div className="map-wrapper">
           <div id="map" style={{ width: "100%", height: "100%" }}></div>
         </div>
+        <div className="places-count">
+                지금 내 주변 관광명소는 {placesCount}개
+              </div>
       </div>
     );
 };
