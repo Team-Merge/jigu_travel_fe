@@ -54,7 +54,7 @@
 /* 📌 로그인 및 로그아웃 버튼 */
 .logout-btn, .login-btn {
   display: block;
-  width: 100%;  /* 너비 통일 */
+  width: 100%;  /* ✅ 너비 통일 */
   padding: 10px 0;
   margin-top: 15px;
   background-color: var(--primary-color);

@@ -18,6 +18,7 @@ import BoardEdit from "./pages/BoardEdit";
 import BoardTabs from "./components/BoardTab";
 
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminVisitorPage from "./pages/AdminVisitorPage";
 
 
 
@@ -35,6 +36,7 @@ const App: React.FC = () => {
         <Route path="/travel-with-ai" element={<TravelWithAI />} />
         <Route path="/ai-guide" element={<AiGuideTest />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/visitor" element={<AdminVisitorPage />} />
 
         <Route path="/board" element={<BoardTabs />} />
         {/* <Route path="/board" element={<BoardList />} /> */}

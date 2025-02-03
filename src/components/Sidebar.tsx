@@ -76,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
         </button>
       )}
 
-      {/* ✅ 현재 페이지에 따라 다른 메뉴 표시 */}
+      {/* 현재 페이지에 따라 다른 메뉴 표시 */}
       <div className="guide-section">
         {menuItems.map((item) => (
           <button key={item.path} className="menu-item" onClick={() => navigate(item.path)}>
@@ -84,15 +84,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
             <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
           </button>
         ))}
+
+        {/* 관리자일 때만 "관리 페이지" 버튼 추가 (일반 모드에서만) */}
+        {!isAdminPage && user?.role === "ROLE_ADMIN" && (
+          <button className="menu-item" onClick={() => navigate("/admin")}>
+            관리페이지
+            <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
+          </button>
+        )}
       </div>
 
-      {/* ✅ 관리자일 때만 "관리 페이지" 버튼 추가 (일반 모드에서만) */}
-      {!isAdminPage && user?.role === "ROLE_ADMIN" && (
-        <button className="menu-item" onClick={() => navigate("/admin")}>
-          관리페이지
-          <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
-        </button>
-      )}
     </div>
   );
 };
