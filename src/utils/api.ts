@@ -1,5 +1,4 @@
 import axios, { AxiosError } from "axios";
-import Header from "../components/Header";
 
 // src/utils/api.ts
 const API_BASE_URL =
@@ -87,14 +86,12 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   let jwtToken = localStorage.getItem("jwt");
   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
 
-  const isFormData = options.body instanceof FormData; // FormData 여부 확인
-
   const response = await fetch(url, {
     ...options,
     headers: {
-      ...(!isFormData && { "Content-Type": "application/json" }), // FormData일 경우 Content-Type 자동 설정
-      "Authorization": `Bearer ${jwtToken}`,
       ...options.headers,
+      "Authorization": `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
     },
   });
 
@@ -287,12 +284,18 @@ export const saveUserLocation = async (latitude: number, longitude: number): Pro
 };
 
 /** MAP : 위치 기반 주변 명소 검색**/
-export const fetchNearbyPlaces = async (lat: number, lng: number): Promise<Place[]> => {
+export const fetchNearbyPlaces = async (lat: number, lng: number, types?: string[]): Promise<Place[]> => {
   try {
     const jwtToken = localStorage.getItem("jwt");
     if (!jwtToken) throw new Error("JWT 토큰 없음");
 
-    const response = await fetch(`${API_BASE_URL}/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`, {
+    let url = `${API_BASE_URL}/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`;
+
+    if (types && types.length > 0) {
+          url += `&types=${types.join(",")}`; // 쉼표(,)로 구분하여 추가
+        }
+
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -303,12 +306,12 @@ export const fetchNearbyPlaces = async (lat: number, lng: number): Promise<Place
       },
     });
 
-    if (!response.ok) throw new Error("명소 정보를 가져올 수 없음");
+    if (!response.ok) throw new Error(`명소 정보를 가져올 수 없음 (HTTP 상태 코드: ${response.status})`);
 
-    const data = await response.json();
-    console.log("서버 응답 데이터:", data);
+    const responseData = await response.json();
+    console.log("서버 응답 데이터:", responseData);
 
-    return data.data || [];
+    return responseData.data || [];
   } catch (error) {
     console.error("fetchNearbyPlaces 에러 발생:", error);
     return [];
