@@ -25,19 +25,21 @@ const TravelWithAI: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("");
   const [placeMarkers, setPlaceMarkers] = useState<any[]>([]);
 
+  let lastLat: number | null = null;
+  let lastLng: number | null = null;
 
   useEffect(() => {
-      const fetchApiKey = async () => {
-        const key = await loadApiKey();
-        if (key) {
-          setApiKey(key);
-        } else {
-          console.error("API Key 불러오기 실패!");
-        }
-      };
+    const fetchApiKey = async () => {
+      const key = await loadApiKey();
+      if (key) {
+        setApiKey(key);
+      } else {
+        console.error("API Key 불러오기 실패!");
+      }
+    };
 
-      fetchApiKey();
-    }, []);
+    fetchApiKey();
+  }, []);
 
   useEffect(() => {
     if (!apiKey) return;
@@ -51,28 +53,39 @@ const TravelWithAI: React.FC = () => {
 
       const mapElement = document.getElementById("map");
       if (!mapElement) {
-          console.error("#map 요소가 존재하지 않습니다!");
-          return;
-        }
+        console.error("#map 요소가 존재하지 않습니다!");
+        return;
+      }
 
-       // 현위치 가져오기
-       navigator.geolocation.watchPosition(
-                  (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    setUserLocation({ lat, lng });
-                    console.log("현위치:", lat, lng);
-                    { enableHighAccuracy: true}
+      // 현위치 가져오기
+      navigator.geolocation.watchPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
 
-                    /** 네이버 지도 객체 생성 */
-                    const newMap = new window.naver.maps.Map(mapElement, {
-                      center: new window.naver.maps.LatLng(lat, lng), // 현재 위치를 지도 중심으로 설정
-                      zoom: 17,
-                    });
+          // 위치 변화가 있을 때만 업데이트
+          if (lat !== lastLat || lng !== lastLng) {
+            setUserLocation({ lat, lng });
+            console.log("현위치:", lat, lng);
 
-        setMap(newMap);
-        addCurrentMarker(newMap, lat, lng);
-        saveUserLocation(lat, lng);
+            // 네이버 지도 객체 생성 (처음 생성이거나 위치 변화시 갱신)
+            const newMap = new window.naver.maps.Map(mapElement, {
+              center: new window.naver.maps.LatLng(lat, lng), // 현재 위치를 지도 중심으로 설정
+              zoom: 17,
+            });
+
+            setMap(newMap);
+
+            // 마커 추가
+            addCurrentMarker(newMap, lat, lng);
+
+            // 위치 저장
+            saveUserLocation(lat, lng);
+          }
+
+          // 마지막 위치 갱신
+          lastLat = lat;
+          lastLng = lng;
         },
         () => alert("위치 정보를 가져올 수 없습니다."),
         { enableHighAccuracy: true }
@@ -186,7 +199,7 @@ const TravelWithAI: React.FC = () => {
 
         {/* 지도 영역 */}
         <div className="map-wrapper">
-          <div id="map"></div>
+          <div id="map" style={{ width: "100%", height: "100%" }}></div>
         </div>
       </div>
     );
