@@ -8,6 +8,7 @@ import {
 } from "../utils/api";
 import VisitorChart from "../components/VisitorChart";
 import "../styles/AdminDashboard.css";
+import Header from "../components/Header";
 
 interface VisitorRecord {
   id: number;
@@ -54,7 +55,7 @@ const AdminDashboard: React.FC = () => {
   const fetchUsers = async () => {
     try {
       const response = await getAllUsers(page, size);
-      setUsers(response.content || []); // ✅ undefined 방지
+      setUsers(response.content || []); // undefined 방지
       setTotalPages(response.totalPages || 1);
     } catch (error) {
       console.error("사용자 불러오기 실패:", error);
@@ -69,14 +70,14 @@ const AdminDashboard: React.FC = () => {
     setDateCount(count);
   };
 
-  // ✅ 관리자 권한 부여/해제
+  // 관리자 권한 부여/해제
   const toggleAdmin = async (userId: string, role: string) => {
     const newRole = role === "ROLE_ADMIN" ? "ROLE_USER" : "ROLE_ADMIN";
     await setAdminStatus(userId, newRole);
     fetchUsers();
   };
 
-  // ✅ 페이지 이동
+  // 페이지 이동
   const goToPreviousPage = () => {
     if (page > 0) setPage(page - 1);
   };
@@ -87,6 +88,8 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="admin-dashboard">
+      <Header />
+
       <h2>방문자 대시보드</h2>
       <div className="stats-container">
         <div className="stat-box">
