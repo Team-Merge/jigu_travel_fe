@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { loadApiKey } from "../utils/api";
 import { saveUserLocation } from "../utils/api";
 import { fetchNearbyPlaces } from "../utils/api";
+import { getUserInterest } from "../utils/api";
 
 import { Place } from "../types/Place";
 
@@ -20,7 +21,7 @@ const TravelWithAI: React.FC = () => {
   const [currentMarker, setCurrentMarker] = useState<any>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
-  const [activeTab, setActiveTab] = useState<string>("custom");
+  const [activeTab, setActiveTab] = useState<string>("all");
   const [placeMarkers, setPlaceMarkers] = useState<any[]>([]);
 
 
@@ -107,13 +108,39 @@ const TravelWithAI: React.FC = () => {
             }
       };
 
+  const handleFetchPlacesByInterests = async () => {
+    if (!userLocation) return;
+
+    try {
+      const interests = await getUserInterest();
+
+      if (interests.length === 0) {
+            console.warn("사용자 관심사 없음.");
+            setPlaces(fetchedPlaces);
+            return;
+          }
+
+      const fetchedPlaces = await fetchNearbyPlaces(userLocation.lat, userLocation.lng, interests);
+
+      setPlaces(fetchedPlaces);
+      setActiveTab("interest");
+    } catch (error) {
+      console.error("맞춤 명소 불러오기 실패:", error);
+    }
+  };
 
   useEffect(() => {
-    if (!map || places.length === 0) return;
+    if (!map) return;
 
-    // ✅ 기존 마커 제거 (중복 방지)
+    // 기존 마커 제거 (중복 방지)
     placeMarkers.forEach(marker => marker.setMap(null));
-  // 명소 마커 추가
+
+    if (places.length === 0) {
+        setPlaceMarkers([]);
+        return;
+    }
+
+    // 명소 마커 추가
     const newMarkers = places.map(place => {
       return new window.naver.maps.Marker({
         position: new window.naver.maps.LatLng(place.latitude, place.longitude),
@@ -121,25 +148,22 @@ const TravelWithAI: React.FC = () => {
         title: place.name,
       });
     });
+
     setPlaceMarkers(newMarkers);
-    }, [places, map]);
+  }, [places, map]);
 
   return (
       <div className="map-container">
         <div className="map-sidebar">
           {/* 카테고리 버튼 영역 */}
           <div className="map-sidebar-categories">
-            <button className="map-category">
+            <button className={`map-category ${activeTab === "interest" ? "active" : ""}`} onClick={handleFetchPlacesByInterests}>
               <img src="/icons/travelwithai_custom.svg" className="category-icon" alt="맞춤 명소" />
               맞춤 명소
             </button>
             <button className={`map-category ${activeTab === "all" ? "active" : ""}`} onClick={handleFetchPlaces}>
               <img src="/icons/travelwithai_all.svg" className="category-icon" alt="모든 명소" />
               모든 명소
-            </button>
-            <button className="map-category">
-              <img src="/icons/travelwithai_favorites.svg" className="category-icon" alt="즐겨찾기" />
-              즐겨찾기
             </button>
           </div>
 
