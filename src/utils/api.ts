@@ -143,6 +143,7 @@ export interface Place {
 /** 사용자 정보 가져오기 */
 export const getUserInfo = async () => {
   const responseData = await fetchWithAuth(`${API_BASE_URL}/api/user/me`);
+  console.log("현재 로그인한 사용자:", responseData.data); // 🔥 디버깅 로그 추가
 
   console.log("[getUserInfo] 응답 데이터:", responseData);
   return responseData.data;
@@ -436,4 +437,51 @@ export const fetchPlaces = async (latitude: number, longitude: number, page: num
     console.error("장소 데이터 불러오기 실패:", error);
     return [];
   }
+};
+
+/** 방문자 수 증가 (페이지 로드 시 1회 호출) */
+export const countVisitor = async (): Promise<string> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/visitor/count`, { method: "POST" });
+
+    console.log("방문자 수 처리:", response.data);
+    return response.data; // "new" 또는 "existing" 반환
+  } catch (error) {
+    console.error("방문자 수 증가 실패:", error);
+    return "error";
+  }
+};
+
+export const getTodayVisitorCount = async (): Promise<number> => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/visitor/today-count`);
+  return response.data;
+};
+
+export const getVisitorCountByDate = async (date: string): Promise<number> => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/visitor/count-by-date?date=${date}`);
+  return response.data;
+};
+
+export const getVisitorRecords = async (): Promise<any[]> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/visitor/records`);
+    console.log("방문자 기록 응답:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("방문자 기록 조회 실패:", error);
+    return [];
+  }
+};
+
+/** 전체 사용자 조회 */
+export const getAllUsers = async (): Promise<any[]> => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/user/all`);
+  return response.data;
+};
+
+/** 관리자 권한 변경 */
+export const setAdminStatus = async (userId: string, role: string) => {
+  await fetchWithAuth(`${API_BASE_URL}/api/user/set-admin?userId=${userId}&role=${role}`, {
+    method: "POST",
+  });
 };
