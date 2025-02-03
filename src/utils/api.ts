@@ -284,18 +284,12 @@ export const saveUserLocation = async (latitude: number, longitude: number): Pro
 };
 
 /** MAP : 위치 기반 주변 명소 검색**/
-export const fetchNearbyPlaces = async (lat: number, lng: number, types?: string[]): Promise<Place[]> => {
+export const fetchNearbyPlaces = async (lat: number, lng: number): Promise<Place[]> => {
   try {
     const jwtToken = localStorage.getItem("jwt");
     if (!jwtToken) throw new Error("JWT 토큰 없음");
 
-    let url = `${API_BASE_URL}/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`;
-
-    if (types && types.length > 0) {
-          url += `&types=${types.join(",")}`; // 쉼표(,)로 구분하여 추가
-        }
-
-    const response = await fetch(url, {
+    const response = await fetch(`${API_BASE_URL}/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -306,12 +300,12 @@ export const fetchNearbyPlaces = async (lat: number, lng: number, types?: string
       },
     });
 
-    if (!response.ok) throw new Error(`명소 정보를 가져올 수 없음 (HTTP 상태 코드: ${response.status})`);
+    if (!response.ok) throw new Error("명소 정보를 가져올 수 없음");
 
-    const responseData = await response.json();
-    console.log("서버 응답 데이터:", responseData);
+    const data = await response.json();
+    console.log("서버 응답 데이터:", data);
 
-    return responseData.data || [];
+    return data.data || [];
   } catch (error) {
     console.error("fetchNearbyPlaces 에러 발생:", error);
     return [];
