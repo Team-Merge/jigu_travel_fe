@@ -1,4 +1,4 @@
-/* src/styles/Sidebar.css */
+/* 📌 Sidebar 전체 스타일 */
 .sidebar {
   position: fixed;
   top: 0;
@@ -17,13 +17,27 @@
   transform: translateX(0);
   box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.2);
 }
+
+/* 📌 사용자 정보 + 닫기 버튼 정렬 */
 .user-header {
   display: flex;
-  justify-content: space-between; /* 좌우 정렬 */
-  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: space-between; 
+  align-items: center; 
   width: 100%;
-  padding: 0; /* 패딩 조정 */
+  padding: 0;
 }
+
+.user-info {
+  text-align: left;
+  margin-left: 5px;
+}
+
+.username {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
 .close-btn {
   background: none;
   border: none;
@@ -37,34 +51,37 @@
   padding: 0;
 }
 
-.user-info {
-  text-align: left;
-  margin-left: 5px;
-}
-
-.username {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0; 
-}
-
+/* 📌 로그인 및 로그아웃 버튼 */
 .logout-btn, .login-btn {
   display: block;
-  text-align: center;
-  width: 95%;
-  margin-top: 20px;
+  width: 100%;  /* 너비 통일 */
+  padding: 10px 0;
+  margin-top: 15px;
   background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
+/* 📌 메뉴 리스트 컨테이너 */
+.guide-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;  /* 모든 버튼 간격 통일 */
+}
+
+/* 📌 메뉴 버튼 */
 .menu-item {
   display: flex;
-  justify-content: space-between; /* 텍스트 왼쪽, 화살표 오른쪽 */
-  align-items: center; /* 수직 중앙 정렬 */
-  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;  /* 모든 버튼 너비 통일 */
+  padding: 10px 0px;  /* 내부 여백 조정 */
   border: none;
   background: none;
   font-size: 16px;
@@ -72,20 +89,8 @@
   text-align: left;
 }
 
+/* 📌 화살표 아이콘 */
 .arrow-icon {
   width: 16px;
   height: 16px;
-  margin-left: auto; /* 우측 정렬 */
-}
-
-.guide-section {
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  width: 100%;
-}
-
-.guide-section button {
-  width: 95%;
-  margin-top: 10px;
 }
