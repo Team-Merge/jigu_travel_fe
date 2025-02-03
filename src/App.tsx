@@ -17,6 +17,11 @@ import BoardDetail from "./pages/BoardDetail";
 import BoardCreate from "./pages/BoardCreate";
 import BoardEdit from "./pages/BoardEdit";
 
+import BoardTabs from "./components/BoardTab";
+
+import AdminDashboard from "./pages/AdminDashboard";
+
+
 
 const App: React.FC = () => {
   return (
@@ -33,11 +38,13 @@ const App: React.FC = () => {
         <Route path="/ai-guide" element={<AiGuideTest />} />
         <Route path="/auth/passwordReset-vaild" element={<PasswordReset />} />
         <Route path="/auth/reset-password" element={<PasswordResetNew />} />
+        <Route path="/admin" element={<AdminDashboard />} />
 
-        <Route path="/board" element={<BoardList />} />
-        <Route path="/board/:boardId" element={<BoardDetail />} />
-        <Route path="/board/create" element={<BoardCreate />} />
-        <Route path="/board/edit/:boardId" element={<BoardEdit />} />
+        <Route path="/board" element={<BoardTabs />} />
+        {/* <Route path="/board" element={<BoardList />} /> */}
+        {/* <Route path="/board/:boardId" element={<BoardDetail />} /> */}
+        {/* <Route path="/board/create" element={<BoardCreate />} /> */}
+        {/* <Route path="/board/edit/:boardId" element={<BoardEdit />} /> */}
 
 
 

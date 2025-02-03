@@ -32,13 +32,12 @@
 }
 
 /* 왼쪽 카테고리 */
-.sidebar-categories {
+.map-sidebar-categories {
   display: flex;
   flex-direction: column;
-  width: 90px;
+  width: 80px;
   gap: 10px;
   align-items: center;
-  padding: 10px 0;
   border-right: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 }
@@ -53,7 +52,7 @@
   gap: 10px;
   overflow-y: auto;
 
-/* 스크롤바 숨김 */
+/* 스크롤바 숨김 처리 */
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -74,13 +73,14 @@
   padding: 10px;
   text-align: center;
   cursor: pointer;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
 }
 
 .map-category.active {
   color: #007bff;
+  background: rgba(0, 123, 255, 0.15);
   font-weight: bold;
-  border-left: 4px solid #007bff;
 }
 
 /* 명소 리스트 */

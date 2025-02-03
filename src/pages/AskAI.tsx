@@ -132,7 +132,7 @@ const AskAI: React.FC = () => {
           ) : (
               <div className="main-content">
                 <div className="image-section" style={{ height: imageHeight }}>
-                  <div className="image-container">
+                  <div className="image-container" style={{ position: "relative" }}>
                     <img
                         ref={imageRef}
                         className="uploaded-image"
@@ -190,25 +190,34 @@ const AskAI: React.FC = () => {
                         style={{ display: "none" }}
                     />
                   </div>
-                  {/* 분석 결과가 있을 때만 image-result-section 표시 */}
-                  {detectionResults.length > 0 && (
+                    {/* 분석 결과가 있을 때만 image-result-section 표시 */}
+                    {detectionResults.length > 0 ? (
                       <div className="image-result-section">
                         <img src={AiProfile} alt="ai-profile" width="40" height="40" />
                         <div className="image-result-message">
                           {/* 확률과 인식된 이름만 blue-text 클래스 적용 */}
                           사진 분석 결과,{" "}
                           <span className="blue-text">
-                      {(detectionResults[0].confidence * 100).toFixed(1)}%
-                    </span>{" "}
+                            {(detectionResults[0].confidence * 100).toFixed(1)}%
+                          </span>{" "}
                           의 확률로<br />{" "}
                           <span className="blue-text">
-                      {convertClassNameToCustom(detectionResults[0].className)}
-                    </span>
+                            {convertClassNameToCustom(detectionResults[0].className)}
+                          </span>
                           로 감지되었습니다.
                         </div>
                       </div>
-                  )}
-                  <p className="ask-ai-p">여행 친구에게 관광지에 대해 질문해 보세요!</p>
+                    ) : (
+                      <div className="image-result-section">
+                        <img src={AiProfile} alt="ai-profile" width="40" height="40" />
+                        <div className="image-result-message">건물이 감지되지 않았습니다.<br/> 다시 찍어주세요.</div>
+                      </div>
+                    )}
+                  <p className="ask-ai-p">
+                    {detectionResults.length > 0
+                      ? "여행 친구에게 관광지에 대해 질문해 보세요!"
+                      : "다른 사진을 찍어 여행 친구에게 질문해 보세요!"}
+                  </p>
                 </div>
                 {/* 분석 결과가 있을 때만 채팅봇 버튼 및 AiGuide 표시 */}
                 {detectionResults.length > 0 && (
@@ -226,7 +235,7 @@ const AskAI: React.FC = () => {
                         <AiGuide
                             defaultMessage={`${convertClassNameToCustom(
                                 detectionResults[0].className
-                            )}이 무엇인가요?`}
+                            )}는(은) 어떤 건물 인가요?`}
                         />
                       </div>
                     </>
