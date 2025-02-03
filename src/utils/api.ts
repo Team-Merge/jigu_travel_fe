@@ -146,6 +146,7 @@ export interface Place {
 /** 사용자 정보 가져오기 */
 export const getUserInfo = async () => {
   const responseData = await fetchWithAuth(`${API_BASE_URL}/api/user/me`);
+  console.log("현재 로그인한 사용자:", responseData.data); // 🔥 디버깅 로그 추가
 
   console.log("[getUserInfo] 응답 데이터:", responseData);
   return responseData.data;
@@ -379,6 +380,7 @@ export interface Detection {
   x2: number;
   y2: number;
 }
+
 /**객체탐지: request**/
 export const sendImageToAPI = async (file: File): Promise<Detection[]> => {
   const formData = new FormData();
@@ -420,23 +422,103 @@ export const getUserInterest = async (): Promise<string[]> => {
 };
 
 /** 모든 장소 불러오기 (페이징 적용) */
-export const fetchPlaces = async (latitude: number, longitude: number, page: number, size: number, category: string): Promise<Place[]> => {
+export const fetchPlaces = async (
+  latitude: number,
+  longitude: number,
+  page: number,
+  size: number,
+  category: string
+): Promise<Place[]> => {
   try {
-    const responseData = await fetchWithAuth(
-      `${API_BASE_URL}/place/all?latitude=${latitude}&longitude=${longitude}&page=${page}&size=${size}`
-    );
+    const jwtToken = localStorage.getItem("jwt");
+    const url = `${API_BASE_URL}/place/all?latitude=${latitude}&longitude=${longitude}&page=${page}&size=${size}`;
 
-    if (!responseData.data) {
+    let response;
+    if (jwtToken) {
+      // 로그인한 사용자: fetchWithAuth() 사용 (JWT 포함)
+      response = await fetchWithAuth(url);
+    } else {
+      // 비로그인 사용자: 일반 fetch() 사용 (JWT 없이 요청)
+      response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`장소 데이터 불러오기 실패 (HTTP ${response.status})`);
+      }
+      response = await response.json();
+    }
+
+    if (!response.data) {
       console.warn("장소 데이터 없음");
       return [];
     }
 
     // 카테고리가 '전체'가 아닐 경우 필터링
     return category === "전체"
-      ? responseData.data
-      : responseData.data.filter((place: any) => place.types.includes(category));
+      ? response.data
+      : response.data.filter((place: any) => place.types.includes(category));
   } catch (error) {
     console.error("장소 데이터 불러오기 실패:", error);
     return [];
   }
+};
+
+
+/** 방문자 수 증가 (페이지 로드 시 1회 호출) */
+export const countVisitor = async (): Promise<string> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/visitor/count`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) throw new Error("방문자 수 증가 요청 실패");
+
+    const data = await response.json();
+    console.log("방문자 수 처리:", data);
+    return data?.data || "error";
+  } catch (error) {
+    console.error("방문자 수 증가 실패:", error);
+    return "error";
+  }
+};
+
+export const getTodayVisitorCount = async (): Promise<number> => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/visitor/today-count`);
+  return response.data;
+};
+
+export const getVisitorCountByDate = async (date: string): Promise<number> => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/visitor/count-by-date?date=${date}`);
+  return response.data;
+};
+
+export const getVisitorRecords = async (): Promise<any[]> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/visitor/records`);
+    console.log("방문자 기록 응답:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("방문자 기록 조회 실패:", error);
+    return [];
+  }
+};
+
+/** 전체 사용자 조회 (페이지네이션 추가) */
+export const getAllUsers = async (page: number = 0, size: number = 10) => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/user/all?page=${page}&size=${size}`);
+  
+  // Page 객체에서 content 추출 (사용자 데이터 배열)
+  return response.data?.content ? response.data : { content: [], totalPages: 1 };
+};
+
+/** 관리자 권한 변경 */
+export const setAdminStatus = async (userId: string, role: string) => {
+  await fetchWithAuth(`${API_BASE_URL}/api/user/set-admin?userId=${userId}&role=${role}`, {
+    method: "POST",
+  });
 };
