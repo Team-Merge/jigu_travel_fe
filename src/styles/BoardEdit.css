@@ -1,0 +1,110 @@
+/* ✅ 게시글 수정 컨테이너 */
+.board-edit-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    padding-top: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    
+    /* min-height: 100vh;
+    position: relative; 
+    position: sticky;
+    top: 0;
+    z-index: 10; */
+}
+
+/* ✅ 제목 스타일 */
+.board-edit-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+/* ✅ 기존 첨부파일 목록 스타일 */
+.existing-files {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f8f8;
+    border-radius: 6px;
+}
+
+.existing-files h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.existing-files ul {
+    list-style: none;
+    padding: 0;
+}
+
+.existing-files li {
+    padding: 5px 0;
+}
+
+.existing-files a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.existing-files a:hover {
+    text-decoration: underline;
+}
+
+/* ✅ 버튼 컨테이너 */
+.board-buttons {
+    display: flex;
+    justify-content: space-between; /* 📌 취소 버튼 왼쪽, 저장 버튼 오른쪽 */
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* ✅ 취소 버튼 */
+.back-button {
+    background: #cccccc;
+    color: black;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.back-button:hover {
+    background: #b3b3b3;
+}
+
+/* ✅ 저장 버튼 */
+.submit-button {
+    background: #4CA9E7;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-button:hover {
+    background: #0056b3;
+}
+
+/* ✅ 반응형 조정 */
+@media (max-width: 768px) {
+    .board-buttons {
+        flex-direction: row;  /* 📌 모바일에서도 한 줄 유지 */
+        justify-content: space-between;
+    }
+
+    .back-button,
+    .submit-button {
+        width: auto;  /* 📌 버튼 크기를 자동 조정 */
+    }
+}
