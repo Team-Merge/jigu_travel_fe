@@ -1,66 +1,8 @@
-// // src/pages/Home.tsx
-// import React, { useEffect, useState, useRef, useCallback } from "react";
-// import Header from "../components/Header";
-// import TravelCard from "../components/TravelCard";
-// import "../styles/Home.css";
-// import { getUserInterest, fetchPlaces } from "../utils/api";
-
-// const Home: React.FC = () => {
-//   const [categories, setCategories] = useState<string[]>(["전체"]);
-
-//   useEffect(() => {
-//     getUserInterest().then((interests) => {
-//       if (interests.length > 0) {
-//         setCategories(["전체", ...interests]);  // "전체" 버튼 추가 후 관심사 적용
-//       }
-//     });
-//   }, []);
-
-
-//   return (
-//     <div className="home-wrapper">
-//       <Header />
-//       <div className="home-container">
-//         <div className="title-name">
-//           <h3>맞춤형 여행 안내</h3>
-//         </div>
-//         <div className="recommend-section">
-//           <button className="recommend-card" onClick={() => window.location.href = "/travel-with-ai"}>
-//             <p>AI와 함께 여행 시작!</p>
-//             <h3>여행친구와 함께 여행하기</h3>
-//           </button>
-//           <button className="recommend-card" onClick={() => window.location.href = "/ask-ai"}>
-//             <p>저건 뭘까?</p>
-//             <h3>사진 찍어서 AI에게 물어보기</h3>
-//           </button>
-//         </div>
-
-//         <div className="title-name">
-//           <h3>사용자 맞춤형 인근 여행지</h3>
-//         </div>
-//         <div className="filter-buttons">
-//           {categories.map((category, index) => (
-//             <button key={index}>{category}</button>
-//           ))}
-//         </div>
-
-//         <div className="travel-list">
-//           <TravelCard name="서울 타워" />
-//           <TravelCard name="경복궁" />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Header from "../components/Header";
 import TravelCard from "../components/TravelCard";
 import "../styles/Home.css";
-import { getUserInterest, fetchPlaces, Place } from "../utils/api";
+import { getUserInterest, fetchPlaces, countVisitor, Place } from "../utils/api";
 
 const Home: React.FC = () => {
   const [categories, setCategories] = useState<string[]>(["전체"]);
@@ -88,6 +30,16 @@ const Home: React.FC = () => {
     loadPlaces(0, selectedCategory);
   }, [selectedCategory]);
 
+  useEffect(() => {
+    countVisitor().then(status => {
+      if (status === "existing") {
+        console.log("⚠️ 이미 방문한 사용자입니다. 환영합니다! 🎉");
+      } else if (status === "new") {
+        console.log("✅ 새로운 방문을 환영합니다! 😊");
+      }
+    });
+  }, []);
+  
   const loadPlaces = async (page: number, category: string) => {
     const newPlaces = await fetchPlaces(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, page, 10, category);
     setPlaces((prev) => [...prev, ...newPlaces]);
