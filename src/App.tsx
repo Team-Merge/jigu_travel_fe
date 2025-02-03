@@ -8,6 +8,8 @@ import AskAI from "./pages/AskAI";
 import RecommendTravel from "./pages/RecommendTravel";
 import TravelWithAI from "./pages/TravelWithAI";
 import AiGuideTest from "./pages/AiGuideTest";
+import PasswordReset from "./pages/PasswordReset";
+import PasswordResetNew from "./pages/ResetPasswordNew";
 
 
 import BoardList from "./pages/BoardList";
@@ -29,11 +31,14 @@ const App: React.FC = () => {
         <Route path="/recommend-travel" element={<RecommendTravel />} />
         <Route path="/travel-with-ai" element={<TravelWithAI />} />
         <Route path="/ai-guide" element={<AiGuideTest />} />
+        <Route path="/auth/passwordReset-vaild" element={<PasswordReset />} />
+        <Route path="/auth/reset-password" element={<PasswordResetNew />} />
 
         <Route path="/board" element={<BoardList />} />
         <Route path="/board/:boardId" element={<BoardDetail />} />
         <Route path="/board/create" element={<BoardCreate />} />
         <Route path="/board/edit/:boardId" element={<BoardEdit />} />
+
 
 
         <Route path="*" element={<h2>404 - 페이지를 찾을 수 없습니다</h2>} />

@@ -39,6 +39,7 @@ export const register = async (userData: {
   nickname: string;
   birthDate: string;
   gender: string;
+  email: string;
 }) => {
   try {
     console.log("회원가입 요청 데이터:", userData);
@@ -152,6 +153,35 @@ export const getUserInfo = async () => {
 export const logout = async () => {
   await fetchWithAuth(`${API_BASE_URL}/api/auth/logout`, { method: "POST" });
   localStorage.removeItem("jwt");
+};
+
+/** 비밀번호 재설정 : 아이디 존재 여부 확인 */
+export const checkUserExists = async (loginId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/auth/check-user?loginId=${loginId}`);
+    return response.data.email; // 서버에서 반환된 이메일 반환
+  } catch (error) {
+    throw new Error("해당 아이디가 존재하지 않습니다.");
+  }
+};
+
+/** 비밀번호 재설정: 비밀번호 재설정 이메일 전송 요청 */
+export const requestPasswordReset = async (email: string) => {
+  try {
+    await axios.post(`${API_BASE_URL}/api/auth/password-reset-request`, { email });
+  } catch (error) {
+    throw new Error("이메일을 찾을 수 없습니다. 다시 확인해주세요.");
+  }
+};
+
+/** 비밀번호 재설정 요청 */
+export const resetPassword = async (token: string, newPassword: string) => {
+  try {
+    await axios.post(`${API_BASE_URL}/api/auth/reset-password`, { token, newPassword });
+    return "비밀번호가 성공적으로 변경되었습니다.";
+  } catch (error) {
+    throw new Error("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+  }
 };
 
 /** FastAPI 추천 요청 타입 */
@@ -325,6 +355,7 @@ export const checkNickname = async (nickname: string) => {
     return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
   }
 };
+
 
 /** 아이디 중복 확인 API */
 export const checkLoginId = async (loginId: string) => {
