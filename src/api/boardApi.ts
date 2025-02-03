@@ -18,6 +18,7 @@ export const createPost = async (title: string, content: string, files?: File[])
   const formData = new FormData();
   formData.append("title", title);
   formData.append("content", content);
+  
 
   // if (files) {
   //   Array.from(files).forEach((file) => formData.append("files", file));

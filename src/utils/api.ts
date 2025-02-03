@@ -1,8 +1,5 @@
-<<<<<<< Updated upstream
 import axios, { AxiosError } from "axios";
-=======
 import Header from "../components/Header";
->>>>>>> Stashed changes
 
 // src/utils/api.ts
 const API_BASE_URL =

@@ -65,6 +65,28 @@
     background-color: #f4f4f4;
     font-weight: bold;
   }
+
+  .qa-table th:nth-child(1), /* 번호 */
+.qa-table td:nth-child(1) {
+    width: 10%;
+}
+
+.qa-table th:nth-child(2), /* 제목 */
+.qa-table td:nth-child(2) {
+    width: 50%; /* ✅ 가장 넓게 설정 */
+    text-align: left; /* ✅ 제목 정렬 왼쪽 */
+}
+
+.qa-table th:nth-child(3), /* 작성자 */
+.qa-table td:nth-child(3) {
+    width: 15%;
+}
+
+.qa-table th:nth-child(4), /* 날짜 */
+.qa-table td:nth-child(4) {
+    width: 15%;
+}
+
   
   /* 📌 제목 스타일 */
   .qa-title {
@@ -129,6 +151,7 @@
     max-width: 800px;  /* 최대 너비 설정 */
     margin: 0 auto;    /* 중앙 정렬 */
     padding: 40px;
+    padding-top: 20px;
     background: #ffffff;
     border-radius: 8px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);

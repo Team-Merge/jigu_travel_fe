@@ -9,8 +9,14 @@ interface Attachment {
   fileSize: number;
 }
 
-const BoardDetail: React.FC = () => {
-  const { boardId } = useParams<{ boardId: string }>();
+interface BoardDetailProps {
+  postId: number;  
+  goToList: () => void; // ✅ 목록으로 돌아가기 기능 추가
+  goToEdit: () => void;
+}
+
+const BoardDetail: React.FC<BoardDetailProps> = ({postId, goToList, goToEdit}) => {
+  // const { boardId } = useParams<{ boardId: string }>();
   // const [post, setPost] = useState<any>(null);
   const [post, setPost] = useState<{ 
     boardId: number;
@@ -26,22 +32,23 @@ const BoardDetail: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const data = await getPostDetail(Number(boardId));
+        const data = await getPostDetail(postId);
         setPost(data);
       } catch (error) {
         console.error("게시글 불러오기 실패:", error);
       }
     };
     fetchPost();
-  }, [boardId]);
+  }, [postId]);
 
   const handleDelete = async () => {
     console.error("현재 토큰" + token);
     if (!token) return alert("로그인이 필요합니다.");
     try {
-      await deletePost(Number(boardId));
+      await deletePost(Number(postId));
       alert("삭제 완료");
-      navigate("/board");
+      // navigate("/board");
+      goToList();
     } catch (error) {
       console.error("삭제 실패:", error);
     }
@@ -72,8 +79,9 @@ const BoardDetail: React.FC = () => {
           {/* <button onClick={() => navigate(`/board/edit/${boardId}`)}>수정</button>
           <button onClick={handleDelete}>삭제</button> */}
           <div className="board-detail-buttons">
-            <button className="back-button" onClick={() => navigate("/board")}>뒤로가기</button>
-            <button className="edit-button" onClick={() => navigate(`/board/edit/${boardId}`)}>수정</button>
+            <button className="back-button" onClick={goToList}>뒤로가기</button>
+            {/* <button className="edit-button" onClick={() => navigate(`/board/edit/${boardId}`)}>수정</button> */}
+            <button className="edit-button" onClick={goToEdit}>수정</button>
             <button className="delete-button" onClick={handleDelete}>삭제</button>
           </div>
         </>

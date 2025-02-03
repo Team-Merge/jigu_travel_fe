@@ -10,12 +10,17 @@
     min-height: 600px;
     margin-top: 20px;
     justify-content: flex-start;
+    /* padding-top: 20px; */
   }
   
   .tabs {
     display: flex;
-    width: 100%;
+    /* width: 100%; */
     justify-content: space-around;
+    margin-bottom: 20px;
+    width: 50%;
+    min-width: 300px;
+    left: 0;
   }
   
   .tab {
