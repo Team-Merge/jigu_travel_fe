@@ -11,9 +11,11 @@ const Register: React.FC = () => {
   const [nickname, setNickname] = useState<string>("");
   const [birthDate, setBirthDate] = useState<string>("");
   const [gender, setGender] = useState<string>("MALE");
+  const [email,setEmail]=useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(null);
   const [loginIdAvailable, setLoginIdAvailable] = useState<boolean | null>(null);
+
   const navigate = useNavigate();
 
   /** 아이디 중복 확인 */
@@ -45,6 +47,7 @@ const Register: React.FC = () => {
       setNicknameAvailable(null);
     }
   };
+  
 
   /** 🔹 회원가입 요청 */
   const handleSubmit = async (event: React.FormEvent) => {
@@ -72,7 +75,7 @@ const Register: React.FC = () => {
     }
 
     try {
-      await register({ loginId, password, nickname, birthDate, gender });
+      await register({ loginId, password, nickname, birthDate, gender,email });
       alert("회원가입 성공!");
       navigate("/auth/login/email");
     } catch (error) {
@@ -146,6 +149,20 @@ const Register: React.FC = () => {
               {nicknameAvailable ? "✔ 사용 가능한 닉네임입니다." : "❌ 이미 사용 중인 닉네임입니다."}
             </p>
           )}
+
+          {/* 이메일 입력*/}
+          <label>이메일<span className="required">*</span></label>
+          <div className="email-container">
+            <input
+                type="email"
+                placeholder="이메일 입력"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                required
+            />
+          </div>
 
           {/* 성별 선택 */}
           <label>성별<span className="required">*</span></label>
