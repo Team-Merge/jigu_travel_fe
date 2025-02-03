@@ -7,6 +7,7 @@ import { getUserInterest } from "../utils/api";
 
 import { Place } from "../types/Place";
 
+import "../styles/Sidebar.css";
 import "../styles/TravelWithAI.css";
 
 declare global {
@@ -21,7 +22,7 @@ const TravelWithAI: React.FC = () => {
   const [currentMarker, setCurrentMarker] = useState<any>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
-  const [activeTab, setActiveTab] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<string>("");
   const [placeMarkers, setPlaceMarkers] = useState<any[]>([]);
 
 
@@ -66,7 +67,7 @@ const TravelWithAI: React.FC = () => {
                     /** 네이버 지도 객체 생성 */
                     const newMap = new window.naver.maps.Map(mapElement, {
                       center: new window.naver.maps.LatLng(lat, lng), // 현재 위치를 지도 중심으로 설정
-                      zoom: 16,
+                      zoom: 17,
                     });
 
         setMap(newMap);
@@ -158,11 +159,11 @@ const TravelWithAI: React.FC = () => {
           {/* 카테고리 버튼 영역 */}
           <div className="map-sidebar-categories">
             <button className={`map-category ${activeTab === "interest" ? "active" : ""}`} onClick={handleFetchPlacesByInterests}>
-              <img src="/icons/travelwithai_custom.svg" className="category-icon" alt="맞춤 명소" />
+              <img src="/icons/travelwithai_custom.svg" className="place-category-icon" alt="맞춤 명소" />
               맞춤 명소
             </button>
             <button className={`map-category ${activeTab === "all" ? "active" : ""}`} onClick={handleFetchPlaces}>
-              <img src="/icons/travelwithai_all.svg" className="category-icon" alt="모든 명소" />
+              <img src="/icons/travelwithai_all.svg" className="place-category-icon" alt="모든 명소" />
               모든 명소
             </button>
           </div>
