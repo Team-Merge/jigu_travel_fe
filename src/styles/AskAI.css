@@ -22,23 +22,25 @@
 .chatbot-section {
     display: flex;
     flex-direction: column;
-    /*justify-content: flex-start; !* 메시지 목록은 상단부터 시작 *!*/
     background-color: #fff;
     border-right: 1px solid #ddd;
     border-top: 2px solid #ccc;
-    position: absolute;
-    bottom: 0; /* 화면 하단에 배치 */
+    position: fixed;  /* absolute → fixed로 변경 */
+    bottom: 0;
     left: 0;
     right: 0;
     z-index: 1000;
     transform: translateY(100%);
     transition: transform 0.3s ease-in-out;
-    height: calc(( 100% - 60px )/2);
+    height: calc((100% - 60px) / 2);
+    overflow: hidden;
     padding-top: 20px;
+    pointer-events: none;  /* 클릭 방지 */
 }
 
 .chatbot-section.visible {
-    transform: translateX(0);
+    transform: translateY(0);
+    pointer-events: auto;  /* 활성화 시 클릭 가능 */
 }
 
 .chatbot-messages {
