@@ -1,29 +1,52 @@
-.admin-dashboard {
-    max-width: 900px;
-    margin: 40px auto;
+.admin-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw;
+    overflow-y: auto;
+    height: 100vh;
+    min-height: 100vh;
+}
+
+
+  .admin-dashboard {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: 1200px;
+    width: 100%;
     padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
+    box-sizing: border-box;
+}
+
   
   .stats-container {
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+    flex-wrap: wrap;
     margin-bottom: 20px;
-  }
-  
+}
+
   .stat-box {
+    display: grid;
+    place-items: center; 
     flex: 1;
-    padding: 20px;
-    background: #f9f9f9;
+    padding: 5px 20px;
+    background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
-    margin: 0 10px;
   }
   
+  .stat-box table {
+    width: 100%; /* ✅ 테이블이 부모 요소를 가득 채우도록 */
+    border-collapse: collapse; /* ✅ 테이블 테두리 정렬 */
+}
+
   .stat-box h2 {
     font-size: 18px;
     color: #333;
@@ -51,3 +74,25 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
+  /* 🔥 방문자 통계 헤더 (제목 + 전체 보고서 버튼) */
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+/* 전체 보고서 버튼 스타일 */
+.report-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.report-btn:hover {
+    color: #0056b3; /* 호버 시 색상 변경 */
+}

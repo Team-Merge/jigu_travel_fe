@@ -20,6 +20,7 @@ import BoardEdit from "./pages/BoardEdit";
 import BoardTabs from "./components/BoardTab";
 
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminVisitorPage from "./pages/AdminVisitorPage";
 
 
 
@@ -39,6 +40,7 @@ const App: React.FC = () => {
         <Route path="/auth/passwordReset-vaild" element={<PasswordReset />} />
         <Route path="/auth/reset-password" element={<PasswordResetNew />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/visitor" element={<AdminVisitorPage />} />
 
         <Route path="/board" element={<BoardTabs />} />
         {/* <Route path="/board" element={<BoardList />} /> */}

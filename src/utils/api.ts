@@ -526,20 +526,11 @@ export const getTodayVisitorCount = async (): Promise<number> => {
   return response.data;
 };
 
-export const getVisitorCountByDate = async (date: string): Promise<number> => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/visitor/count-by-date?date=${date}`);
+/** 특정 날짜 방문자 수 조회 API (IP 필터링 추가) */
+export const getVisitorCountByDate = async (date: string, ip: string = ""): Promise<number> => {
+  const url = `${API_BASE_URL}/visitor/count-by-date?date=${date}&ip=${ip}`;
+  const response = await fetchWithAuth(url);
   return response.data;
-};
-
-export const getVisitorRecords = async (): Promise<any[]> => {
-  try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/visitor/records`);
-    console.log("방문자 기록 응답:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("방문자 기록 조회 실패:", error);
-    return [];
-  }
 };
 
 /** 전체 사용자 조회 (페이지네이션 추가) */
@@ -555,4 +546,30 @@ export const setAdminStatus = async (userId: string, role: string) => {
   await fetchWithAuth(`${API_BASE_URL}/api/user/set-admin?userId=${userId}&role=${role}`, {
     method: "POST",
   });
+};
+
+/** 특정 날짜의 "누적 방문 횟수" 조회 API (IP 필터링 추가) */
+export const getTotalVisitCountByDate = async (date: string, ip: string = ""): Promise<number> => {
+  const url = `${API_BASE_URL}/visitor/total-visit-count?date=${date}&ip=${ip}`;
+  const response = await fetchWithAuth(url);
+  return response.data;
+};
+
+/** 방문자 통계 테이블 조회 API (페이지네이션 + 검색) */
+export const getVisitorRecordsWithPagination = async (
+  page: number = 0,
+  size: number = 10,
+  startDate: string,
+  endDate: string,
+  ip: string = ""
+) => {
+  const url = `${API_BASE_URL}/visitor/records?page=${page}&size=${size}&startDate=${startDate}&endDate=${endDate}&ip=${ip}`;
+  const response = await fetchWithAuth(url);
+  return response.data;
+};
+
+export const getVisitCountByHour = async (startDate: string, endDate: string, ip: string = "") => {
+  const url = `${API_BASE_URL}/visitor/visit-count-by-hour?startDate=${startDate}&endDate=${endDate}&ip=${ip}`;
+  const response = await fetchWithAuth(url);
+  return response.data;
 };
