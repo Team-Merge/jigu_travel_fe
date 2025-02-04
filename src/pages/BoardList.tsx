@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { getBoardList } from "../api/boardApi";
 import { useNavigate } from "react-router-dom";
-import "../styles/BoardList.css";
+import "../styles/BoardList4.css";
+import Header from "../components/Header";
 
-interface BoardListProps {
-  goToCreate: () => void;
-  goToDetail: (boardId: number) => void; // ✅ 상세 페이지로 이동하는 함수 추가
-}
+// interface BoardListProps {
+//   goToCreate: () => void;
+//   goToDetail: (boardId: number) => void; // ✅ 상세 페이지로 이동하는 함수 추가
+// }
 
-const BoardList: React.FC<BoardListProps> = ({ goToCreate, goToDetail }) => {
+const BoardList: React.FC = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -28,21 +29,33 @@ const BoardList: React.FC<BoardListProps> = ({ goToCreate, goToDetail }) => {
     fetchPosts();
   }, []);
 
+   // ✅ 게시글 상세 페이지 이동 함수
+  const goToDetail = (boardId: number) => {
+    navigate(`/board/${boardId}`);
+  };
+
+    // ✅ 글쓰기 페이지 이동 함수
+  const goToCreate = () => {
+    navigate("/board/create");
+  };
+
   return (
+    <div className="board-wrapper">
+      <Header/>
     <div className="board-list-container">
+      <div className="qna-container">
       {/* 📌 상단: 게시판 타이틀 & 글쓰기 버튼 */}
       <div className="board-header">
-        <h2 className="qna-header">QnA</h2>
+        <h2 className="qna-header">QnA 게시판</h2>
         <button className="write-button" onClick={goToCreate}>
           질문하기
         </button>
       </div>
-
       {/* 📌 게시판 목록 */}
       {loading ? (
         <p className="loading-text">⏳ 로딩 중...</p>
       ) : (
-        <table className="qa-table">
+        <table className="qna-table">
           <thead>
             <tr>
               <th>번호</th>
@@ -55,7 +68,7 @@ const BoardList: React.FC<BoardListProps> = ({ goToCreate, goToDetail }) => {
           <tbody>
             {posts.length > 0 ? (
               posts.map((post, index) => (
-                <tr key={post.boardId} onClick={() => goToDetail(post.boardId)}>
+                <tr key={post.boardId} onClick={() => navigate(`/board/${post.boardId}`)}>
                   <td>{index + 1}</td>
                   <td className="qa-title">{post.title}</td>
                   <td>{post.nickname}</td>
@@ -73,6 +86,9 @@ const BoardList: React.FC<BoardListProps> = ({ goToCreate, goToDetail }) => {
           </tbody>
         </table>
       )}
+      </div>
+      
+    </div>
     </div>
   );
 };

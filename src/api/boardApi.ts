@@ -9,7 +9,7 @@ const API_BASE_URL =
 
 /** 📌 게시글 목록 조회 (GET) */
 export const getBoardList = async (page = 0, size = 5) => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/board/list?page=${page}&size=${size}`);
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/board/list?page=${page}&size=${size}`);
   return response.data.content;
 };
 
@@ -19,11 +19,6 @@ export const createPost = async (title: string, content: string, files?: File[])
   formData.append("title", title);
   formData.append("content", content);
   
-
-  // if (files) {
-  //   Array.from(files).forEach((file) => formData.append("files", file));
-  //   console.log("📁 [DEBUG] 업로드할 파일 개수::", files.length); // ✅ 업로드할 파일명 출력
-  // }
   if(files) {
     files.forEach((file) => formData.append("files", file)); // ✅ 여러 개의 파일 추가
     console.log("📁 [DEBUG] 업로드할 파일 개수::", files.length);
@@ -34,7 +29,7 @@ export const createPost = async (title: string, content: string, files?: File[])
   }
   
   try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/board/posts`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/board/posts`, {
       method: "POST",
       body: formData, // ✅ FormData 사용
     });
@@ -49,7 +44,7 @@ export const createPost = async (title: string, content: string, files?: File[])
 
 /** 📌 게시글 상세 조회 (GET) */
 export const getPostDetail = async (boardId: number) => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/board/detail/${boardId}`);
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/board/detail/${boardId}`);
   return response.data;
 };
 
@@ -70,7 +65,7 @@ export const updatePost = async (boardId: number, title: string, content: string
     removedFiles.forEach((fileName) => formData.append("removedFiles", fileName));
     console.log("🗑 [DEBUG] 삭제할 파일 개수:", removedFiles.length);
   }
-  return fetchWithAuth(`${API_BASE_URL}/board/update`, {
+  return fetchWithAuth(`${API_BASE_URL}/api/board/update`, {
     method: "PATCH",
     body: formData,
   });
@@ -78,7 +73,7 @@ export const updatePost = async (boardId: number, title: string, content: string
 
 /** 📌 게시글 삭제 (DELETE) */
 export const deletePost = async (boardId: number) => {
-  return fetchWithAuth(`${API_BASE_URL}/board/deletion?boardId=${boardId}`, {
+  return fetchWithAuth(`${API_BASE_URL}/api/board/deletion?boardId=${boardId}`, {
     method: "DELETE",
   });
 };

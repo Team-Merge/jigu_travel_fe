@@ -1,0 +1,103 @@
+/* ✅ 입력 폼 */
+
+.board-form-container {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+}
+.board-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 10px;
+  }
+  
+  /* ✅ 라벨 스타일 */
+  .form-group label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .form-group .required::after {
+    content: " *";
+    color: red;
+  }
+  
+  /* ✅ 입력 필드 스타일 */
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    max-width: 800px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #f8f8f8;
+  }
+  
+  /* ✅ 파일 업로드 영역 */
+  .file-upload-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .file-upload-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    background: #f8f8f8;
+    width: 100%;
+    max-width: 800px;
+  }
+  
+
+ /* ✅ 버튼 컨테이너 */
+ .board-buttons {
+    display: flex;
+    justify-content: space-between; /* 📌 양쪽 끝으로 정렬 */
+    align-items: center;
+    margin-top: 20px;
+    max-width: 100%; /* 📌 전체 너비 사용 */
+    width: 100%;
+  }
+  
+  /* ✅ 뒤로가기 버튼 */
+  .back-button {
+    background: #cccccc;
+    color: black;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .back-button:hover {
+    background: #b3b3b3;
+  }
+  
+  /* ✅ 저장 버튼 */
+  .submit-button {
+    background: #4CA9E7;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: auto;
+  }
+  
+  .submit-button:hover {
+    background: #0056b3;
+  }

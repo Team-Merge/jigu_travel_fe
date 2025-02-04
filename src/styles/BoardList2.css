@@ -1,0 +1,118 @@
+/* BoardList.css */
+
+/* .board-wrapper {
+    position: fixed;
+    /* width: 100%; */
+    /* height: 100%; */
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+  /* }  */
+
+/* 전체 컨테이너 스타일 */
+.board-list-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    /* background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px;
+    position: relative;
+    text-align: left; */
+
+  }
+  
+  /* 게시판 헤더 스타일 */
+  .board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 20px;
+    white-space: nowrap;
+  }
+  
+  .qna-header {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .write-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  .write-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* 테이블 스타일 */
+  .qa-table {
+    width: 100%;
+    max-width: 800px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  
+  .qa-table thead {
+    background-color: #f8f9fa;
+  }
+  
+  .qa-table th, .qa-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .qa-table th {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .qa-table tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  
+  .qa-title {
+    color: #007bff;
+    font-weight: bold;
+  }
+  
+  /* 로딩 메시지 스타일 */
+  .loading-text {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+    padding: 20px;
+  }
+  
+  /* 질문 없음 메시지 스타일 */
+  .no-questions {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+  }
+  
+  /* 테이블 크기 조정 */
+  .board-list-container, .qa-table {
+    width: 100%;
+  }
+  

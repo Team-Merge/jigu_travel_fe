@@ -1,21 +1,52 @@
 /* ✅ 전체 게시글 상세 컨테이너 */
-.board-detail-container {
-    width: 100%;
-    max-width: 800px; 
-    margin: 0 auto;
-    padding: 40px;
+.board-detail-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    width: 100vw;
     padding-top: 20px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: left;
+    overflow: auto;
+    
+  }
+
+.board-detail-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: auto;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-top: 30px;
+    /* background: #ffffff;  */
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
 }
 
+.divider-line {
+    width: 80%;
+    border: none;
+    border-top: 2px solid #4CA9E7; /* 연한 회색 줄 */
+    margin: 10px 0; /* 위아래 여백 조정 */
+    opacity: 0.8; 
+}
+
+.detail-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
+    gap: 10px;
+}
 /* ✅ 제목 스타일 */
 .board-detail-title {
     font-size: 24px;
     font-weight: bold;
-    /* margin-bottom: 10px; */
+    margin-top: 50px;
+    margin-bottom: 30px;
 }
 
 /* ✅ 작성자 스타일 */
@@ -29,19 +60,24 @@
 .board-detail-content {
     font-size: 16px;
     line-height: 1.6;
-    padding: 15px;
-    background: #f8f8f8;
+    padding: 10px;
+    /* background: #f8f8f8; */
+    background: #f4f4f4;
     border-radius: 6px;
     min-height: 150px;
     margin-bottom: 20px;
+    width: 70%;
+    /* border: 1px solid #ddd; */
 }
 
 /* ✅ 첨부파일 스타일 */
 .board-detail-attachments {
-    background: #f1f1f1;
-    padding: 15px;
+    background: #f4f4f4;
+    padding-left: 10px;
+    padding-right: 10px;
     border-radius: 6px;
     margin-bottom: 20px;
+    width: 70%;
 }
 
 .board-detail-attachments h3 {
@@ -58,8 +94,17 @@
 .board-detail-buttons {
     display: flex;
     justify-content: space-between;
+    flex-wrap: nowrap;
     align-items: center;
     margin-top: 20px;
+    max-width: 800px; 
+    width: 70%;
+}
+
+.board-detail-buttons button {
+    flex-grow: 1; /* ✅ 버튼 크기를 유동적으로 조정 */
+    min-width: 35px; /* ✅ 최소 크기 지정 */
+    max-width: 35px; /* ✅ 버튼이 너무 커지지 않도록 */
 }
 
 /* ✅ 뒤로가기 버튼 */
@@ -117,18 +162,3 @@
     color: #666;
 }
 
-/* ✅ 반응형 스타일 (모바일 최적화) */
-@media (max-width: 768px) {
-    .board-detail-container {
-        padding: 20px;
-    }
-
-    .board-detail-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .back-button, .edit-button, .delete-button {
-        width: 100%;
-    }
-}

@@ -1,14 +1,19 @@
 import React, { useState } from "react";
+import "../styles/BoardForm.css"
+import { useNavigate } from "react-router-dom";
 
 interface BoardFormProps {
   onSubmit: (title: string, content: string, newFiles: File[], removedFiles: string[]) => void;
   initialTitle?: string;
   initialContent?: string;
   initialFiles?: { fileName: string; filePath: string }[]; 
-  goToList: () => void;
+  mode: "create" | "edit";
+  boardId?: number;
+  // goToList: () => void;
 }
 
-const BoardForm: React.FC<BoardFormProps> = ({ onSubmit, goToList, initialTitle = "", initialContent = "", initialFiles = []  }) => {
+const BoardForm: React.FC<BoardFormProps> = ({ onSubmit, initialTitle = "", initialContent = "", initialFiles = [], mode, boardId  }) => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [existingFiles, setExistingFiles] = useState(initialFiles);
@@ -42,7 +47,16 @@ const BoardForm: React.FC<BoardFormProps> = ({ onSubmit, goToList, initialTitle 
     onSubmit(title, content, files, removedFiles);
   };
 
+  const handleCancel = () => {
+    if (mode === "edit" && boardId) {
+      navigate(`/board/${boardId}`); // 🔹 수정 모드일 때 게시글 상세 페이지로 이동
+    } else {
+      navigate("/board"); // 🔹 작성 모드일 때 게시글 목록으로 이동
+    }
+  };
+
   return (
+    <div className="board-form-container">
     <form onSubmit={handleSubmit} className="board-form">
       {/* 제목 필드 */}
       <div className="form-group">
@@ -92,10 +106,11 @@ const BoardForm: React.FC<BoardFormProps> = ({ onSubmit, goToList, initialTitle 
         </div>
       )}
       <div className="board-buttons">
-        <button type="button" className="back-button" onClick={goToList}>취소</button>
+        <button type="button" className="back-button" onClick={handleCancel}>취소</button>
         <button type="submit" className="submit-button">저장</button>
       </div>
     </form>
+    </div>
   );
 };
 
