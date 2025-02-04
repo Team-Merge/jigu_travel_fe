@@ -193,7 +193,7 @@ body {
     overflow: visible;
     position: relative; /* resize-handle을 이 영역에 위치시킬 수 있도록 설정 */
     transition: height 0.2s;
-    /*overflow: hidden; !* 영역이 벗어나지 않도록 설정 *!*/
+    /*overflow: hidden; !* 영역   이 벗어나지 않도록 설정 *!*/
 }
 
 .resize-handle {
@@ -208,6 +208,7 @@ body {
 
     z-index: 10; /* 이 값을 통해 핸들이 다른 콘텐츠 위로 올라오게 설정 */
 }
+
 /**=========================화면 분할 END=========================**/
 
 #expandFoldBtn{
