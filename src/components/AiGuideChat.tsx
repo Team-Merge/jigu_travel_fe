@@ -33,6 +33,20 @@ const AiGuideChat: React.FC<AiGuideChatProps> = ({ messages, hasMore, loadMore }
         setIsLoadMore(false);
     };
 
+    // 텍스트에서 <br>을 렌더링
+    const renderTextWithBrTags = (text: string) => {
+        // **볼드체** -> <b>볼드체</b>로 변환하고, 줄바꿈은 <br>로 변환
+        const boldText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); // **bold** -> <b>bold</b>
+        return { __html: boldText.replace(/\n/g, "<br>") }; // 줄바꿈을 <br>로 변환
+    };
+
+    // 타이핑 완료 후 스크롤 자동 하단으로 이동
+    const handleTypingFinished = () => {
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+    };
+
     return (
         <div id="messagesContainer-scroll" ref={messagesContainerRef}>
             <div className="div-loadMoreButton">
@@ -68,9 +82,10 @@ const AiGuideChat: React.FC<AiGuideChatProps> = ({ messages, hasMore, loadMore }
                             {message.text === "loading" ? (
                                 <LoadingAnimation />
                             ) : message.type === "bot" && message.isNew ? (
-                                <TypingEffect text={message.text} />
+                                <TypingEffect text={message.text} onTypingFinished={handleTypingFinished} />
                             ) : (
-                                <div>{message.text}</div>
+                                // dangerouslySetInnerHTML을 사용하여 <br> 처리된 텍스트를 렌더링
+                                <div dangerouslySetInnerHTML={renderTextWithBrTags(message.text)}/>
                             )}
                         </div>
                     </motion.div>
