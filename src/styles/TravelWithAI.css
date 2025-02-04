@@ -32,6 +32,19 @@
   height: 100%;
 }
 
+#recenter-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 6px 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
 @media (max-width: 1024px) {
   .map-wrapper {
     height: 55vh;
