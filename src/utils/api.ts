@@ -291,59 +291,30 @@ export const loadApiKey = async (): Promise<string | null> => {
 /** MAP : 사용자 위치 저장 **/
 export const saveUserLocation = async (latitude: number, longitude: number): Promise<void> => {
   try {
-      const jwtToken = localStorage.getItem("jwt");
-      if (!jwtToken) throw new Error("JWT 토큰 없음");
-
-    const response = await fetch(`${API_BASE_URL}/location/user-location`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/location/user-location`, {
       method: "POST",
-      headers: {
-          Authorization: `Bearer ${jwtToken}`,
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ latitude, longitude }),
-      credentials: "include"
+      credentials: "include",
     });
 
-    if (!response.ok) throw new Error("위치 저장 실패");
-
-    const data = await response.json();
-    console.log("위치 저장 성공:", data);
+    console.log("위치 저장 성공:", response);
   } catch (error) {
-    console.error("saveUserLocation 에러 발생:", error);
+    console.error("사용자 위치 저장 에러 발생:", error);
   }
 };
 
 /** MAP : 위치 기반 주변 명소 검색**/
 export const fetchNearbyPlaces = async (lat: number, lng: number, types?: string[]): Promise<Place[]> => {
   try {
-    const jwtToken = localStorage.getItem("jwt");
-    if (!jwtToken) throw new Error("JWT 토큰 없음");
-
     let url = `${API_BASE_URL}/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`;
+    if (types && types.length > 0) url += `&types=${types.join(",")}`;
 
-    if (types && types.length > 0) {
-          url += `&types=${types.join(",")}`; // 쉼표(,)로 구분하여 추가
-        }
+    const response = await fetchWithAuth(url);
+    console.log("서버 응답 데이터:", response);
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",  // 캐시 무시하도록 설정
-        Pragma: "no-cache",
-        Expires: "0"
-      },
-    });
-
-    if (!response.ok) throw new Error(`명소 정보를 가져올 수 없음 (HTTP 상태 코드: ${response.status})`);
-
-    const responseData = await response.json();
-    console.log("서버 응답 데이터:", responseData);
-
-    return responseData.data || [];
+    return response.data || [];
   } catch (error) {
-    console.error("fetchNearbyPlaces 에러 발생:", error);
+    console.error("주변 명소 검색 API 호출 실패:", error);
     return [];
   }
 };
