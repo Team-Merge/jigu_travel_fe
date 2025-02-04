@@ -349,3 +349,34 @@
     padding: 0;
     color: gray;
 }
+
+/* 드래그 핸들러 */
+.drag-handle {
+    width: 40px;
+    height: 24px;
+    cursor: ns-resize;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    user-select: none;
+    flex-direction: column;
+    gap: 4px;
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+}
+
+/* 햄버거 메뉴 스타일 */
+.drag-handle div {
+    width: 30px;
+    height: 3px;
+    background-color: #333;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+
+
