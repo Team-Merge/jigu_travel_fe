@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
   // 관리자 페이지 메뉴 (`/admin`에서만 표시)
   const adminMenu = [
     { label: "대시보드", path: "/admin" },
-    { label: "방문자 통계", path: "/admin/users" },
+    { label: "방문자 통계", path: "/admin/visitor" },
     { label: "사용자 관리", path: "/admin/visitors" },
     { label: "장소 관리", path: "/admin/location" },
   ];

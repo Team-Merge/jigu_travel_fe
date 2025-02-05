@@ -149,7 +149,6 @@ stat-box th:nth-child(3),
     text-align: center;
 }
 
-/* 📂 CSV 업로드 버튼 스타일 */
 .upload-wrapper input {
     margin-bottom: 10px;
 }
@@ -159,16 +158,39 @@ stat-box th:nth-child(3),
     background-color: #0056b3;
 } */
 
-/* ✅ 반응형: 768px 이하에서는 `upload-wrapper`가 `chart-wrapper` 아래로 이동 */
+/* 반응형: 768px 이하에서는 `upload-wrapper`가 `chart-wrapper` 아래로 이동 */
 @media (max-width: 768px) {
     .category-upload-wrapper {
-        flex-direction: column; /* ✅ 가로 → 세로 배치 변경 */
+        flex-direction: column; /* 가로 → 세로 배치 변경 */
         align-items: center;
     }
 
     .chart-wrapper, .upload-wrapper {
-        flex: none; /* ✅ 각각 개별 크기로 설정 */
-        width: 100%; /* ✅ 전체 너비 사용 */
-        max-width: 768px; /* ✅ 최대 크기 지정 */
+        flex: none; /* 각각 개별 크기로 설정 */
+        width: 100%; /* 전체 너비 사용 */
+        max-width: 768px; /* 최대 크기 지정 */
     }
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+.custom-file-label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 아이콘과 텍스트 사이 간격 */
+    color: var(--primary-color);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 30px;
+}
+
+.upload-icon {
+    font-size: 40px;
 }
