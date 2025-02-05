@@ -92,12 +92,12 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   const headers: { [key: string]: string } = {
     "Authorization": `Bearer ${jwtToken}`,
   };
-  
+
   // ✅ FormData가 아닐 때만 Content-Type을 설정 (JSON 요청 시)
   if (!isFormData) {
     headers["Content-Type"] = "application/json";
   }
-  
+
   const response = await fetch(url, {
     ...options,
     headers,
@@ -299,6 +299,29 @@ export const loadApiKey = async (): Promise<string | null> => {
     console.error("API 키 로드 중 오류 발생:", error);
     return null;
   }
+};
+
+/** 사용자 현재 위치 가져오기 (Geolocation API) */
+export const getUserLocation = (onSuccess: (location: { lat: number; lng: number }) => void, onError?: (error: GeolocationPositionError) => void) => {
+  if (!navigator.geolocation) {
+    console.error("Geolocation이 지원되지 않습니다.");
+    if (onError) onError(new GeolocationPositionError());
+    return;
+  }
+
+  return navigator.geolocation.watchPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      console.log("실시간 위치 업데이트:", lat, lng);
+      onSuccess({ lat, lng });
+    },
+    (error) => {
+      console.error("위치 정보를 가져올 수 없습니다:", error);
+      if (onError) onError(error);
+    },
+    { enableHighAccuracy: true }
+  );
 };
 
 /** MAP : 사용자 위치 저장 **/
@@ -672,4 +695,22 @@ export const updatePlace = async (placeId: number, updatedData: Partial<Place>) 
 export const getPlacesCountByCategory = async () => {
   const response = await axios.get(`${API_BASE_URL}/place/count-by-category`);
   return response.data;
+};
+
+/** WebSocket 서비스 UUID 생성 */
+export const fetchUUID = async (): Promise<string | null> => {
+  try {
+    const url = `${API_BASE_URL}/guide/init`; // API 엔드포인트
+    const response = await fetchWithAuth(url); // fetchWithAuth 사용
+
+    if (!response || !response.data) {
+      throw new Error("UUID 가져오기 실패");
+    }
+
+    console.log("받은 serviceUUID:", response.data.serviceUUID);
+    return response.data.serviceUUID; // UUID 반환
+  } catch (error) {
+    console.error("UUID 가져오기 오류:", error);
+    return null; // 실패 시 null 반환
+  }
 };
