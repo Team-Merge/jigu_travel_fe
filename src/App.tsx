@@ -44,11 +44,11 @@ const App: React.FC = () => {
         <Route path="/admin/visitor" element={<AdminVisitorPage />} />
         <Route path="/admin/location" element={<AdminLocationPage />} />
 
-        <Route path="/board" element={<BoardTabs />} />
-        {/* <Route path="/board" element={<BoardList />} /> */}
-        {/* <Route path="/board/:boardId" element={<BoardDetail />} /> */}
-        {/* <Route path="/board/create" element={<BoardCreate />} /> */}
-        {/* <Route path="/board/edit/:boardId" element={<BoardEdit />} /> */}
+        {/* <Route path="/board" element={<BoardTabs />} /> */}
+        <Route path="/board" element={<BoardList />} />
+        <Route path="/board/:postId" element={<BoardDetail />} />
+        <Route path="/board/create" element={<BoardCreate />} />
+        <Route path="/board/edit/:postId" element={<BoardEdit />} />
 
 
 

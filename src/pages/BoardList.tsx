@@ -2,47 +2,77 @@ import React, { useEffect, useState } from "react";
 import { getBoardList } from "../api/boardApi";
 import { useNavigate } from "react-router-dom";
 import "../styles/BoardList.css";
+import Header from "../components/Header";
 
-interface BoardListProps {
-  goToCreate: () => void;
-  goToDetail: (boardId: number) => void; // ✅ 상세 페이지로 이동하는 함수 추가
-}
-
-const BoardList: React.FC<BoardListProps> = ({ goToCreate, goToDetail }) => {
+const BoardList: React.FC = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  // const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPosts = async () => {
+
+    fetchPosts(currentPage);
+  }, [currentPage]);
+
+    const fetchPosts = async (page: number) => {
       try {
-        const data = await getBoardList();
-        setPosts(data);
-        console.log("📢 [DEBUG] API 응답 데이터:", data); // 백엔드 응답 출력
+        // const data = await getBoardList();
+        // setPosts(data);
+        // console.log("📢 [DEBUG] API 응답 데이터:", data); // 백엔드 응답 출력
+        const response = await getBoardList(page, 10); // ✅ API 호출
+
+        console.log("📢 [DEBUG] API 응답 데이터:", response);
+
+        setPosts(response.data.posts); // ✅ `posts` 대신 `content` 사용???
+        setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error("게시글 목록 가져오기 실패:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchPosts();
-  }, []);
+  //   fetchPosts();
+  // }, []);
+
+  // ✅ 페이지 이동 함수
+  const goToNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+   // ✅ 게시글 상세 페이지 이동 함수
+  const goToDetail = (boardId: number) => {
+    navigate(`/board/${boardId}`);
+  };
+
+    // ✅ 글쓰기 페이지 이동 함수
+  const goToCreate = () => {
+    navigate("/board/create");
+  };
 
   return (
+    <div className="board-wrapper">
+      <Header/>
     <div className="board-list-container">
-      {/* 📌 상단: 게시판 타이틀 & 글쓰기 버튼 */}
+      <div className="qna-container">
       <div className="board-header">
-        <h2 className="qna-header">QnA</h2>
-        <button className="write-button" onClick={goToCreate}>
-          질문하기
-        </button>
+        <h2 className="qna-header">QnA 게시판</h2>
       </div>
-
-      {/* 📌 게시판 목록 */}
+      <div className="qna-table-wrapper">
       {loading ? (
         <p className="loading-text">⏳ 로딩 중...</p>
       ) : (
-        <table className="qa-table">
+        <>
+        <table className="qna-table">
           <thead>
             <tr>
               <th>번호</th>
@@ -53,9 +83,9 @@ const BoardList: React.FC<BoardListProps> = ({ goToCreate, goToDetail }) => {
             </tr>
           </thead>
           <tbody>
-            {posts.length > 0 ? (
+            {Array.isArray(posts) && posts.length >= 0 ? (
               posts.map((post, index) => (
-                <tr key={post.boardId} onClick={() => goToDetail(post.boardId)}>
+                <tr key={post.boardId} onClick={() => navigate(`/board/${post.boardId}`)}>
                   <td>{index + 1}</td>
                   <td className="qa-title">{post.title}</td>
                   <td>{post.nickname}</td>
@@ -72,7 +102,26 @@ const BoardList: React.FC<BoardListProps> = ({ goToCreate, goToDetail }) => {
             )}
           </tbody>
         </table>
+        </>
       )}
+      </div>
+      {/* 페이지네이션 버튼 */}
+      <div className="pagination-buttons">
+          <button onClick={goToPrevPage} disabled={currentPage === 0}>
+            ◀ 이전
+          </button>
+          <span>{currentPage + 1} / {totalPages}</span>
+          <button onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>
+            다음 ▶
+          </button>
+        </div>
+      </div>
+      
+    </div>
+    {/* ✅ Floating Button 추가 */}
+    <button className="floating-button" onClick={goToCreate}>
+      +
+    </button>
     </div>
   );
 };
