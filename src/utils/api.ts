@@ -87,14 +87,25 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   let jwtToken = localStorage.getItem("jwt");
   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
 
+  const isFormData = options.body instanceof FormData; // FormData 여부 확인
+
+  const headers: { [key: string]: string } = {
+    "Authorization": `Bearer ${jwtToken}`,
+  };
+  
+  // ✅ FormData가 아닐 때만 Content-Type을 설정 (JSON 요청 시)
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+  
   const response = await fetch(url, {
     ...options,
-    headers: {
-      ...options.headers,
-      "Authorization": `Bearer ${jwtToken}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   });
+
+  console.log("🆕 [DEBUG] 현재 Access Token:", jwtToken); // ✅ 토큰 정상 출력 확인
+
+  // console.log("🚀 요청 헤더:", response.headers);
 
   // ✅ 403 Forbidden: 권한이 없으므로 Access Token 갱신 X
   if (response.status === 403) {
@@ -105,10 +116,12 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   // ✅ 401 Unauthorized: Access Token 만료 확인 후 갱신 시도
   if (response.status === 401) {
     console.warn("⏳ [DEBUG] 401 Unauthorized - Access Token 만료 확인 중...");
+    console.log("🆕 [DEBUG] 현재 Access Token:", jwtToken);
 
     if (!retry) throw new Error("Access Token 갱신 실패. 다시 로그인 필요.");
 
     const newAccessToken = await refreshAccessToken();
+    console.log("🆕 [DEBUG] 새 Access Token:", newAccessToken);
     if (!newAccessToken) throw new Error("토큰 갱신 실패. 다시 로그인 필요.");
 
     // 새 Access Token 저장 후, 재요청 (최대 1회만)

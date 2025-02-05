@@ -25,7 +25,7 @@ const BoardList: React.FC = () => {
 
         console.log("📢 [DEBUG] API 응답 데이터:", response);
 
-        setPosts(response.data.content); // ✅ `posts` 대신 `content` 사용
+        setPosts(response.data.posts); // ✅ `posts` 대신 `content` 사용???
         setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error("게시글 목록 가져오기 실패:", error);
