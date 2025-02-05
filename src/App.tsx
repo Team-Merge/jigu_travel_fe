@@ -10,6 +10,7 @@ import TravelWithAI from "./pages/TravelWithAI";
 import AiGuideTest from "./pages/AiGuidePage";
 import PasswordReset from "./pages/PasswordReset";
 import PasswordResetNew from "./pages/ResetPasswordNew";
+import AdminLocationPage from "./pages/AdminLocationPage";
 
 
 import BoardList from "./pages/BoardList";
@@ -41,6 +42,7 @@ const App: React.FC = () => {
         <Route path="/auth/reset-password" element={<PasswordResetNew />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/visitor" element={<AdminVisitorPage />} />
+        <Route path="/admin/location" element={<AdminLocationPage />} />
 
         <Route path="/board" element={<BoardTabs />} />
         {/* <Route path="/board" element={<BoardList />} /> */}
