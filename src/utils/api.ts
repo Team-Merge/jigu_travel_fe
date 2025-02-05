@@ -87,14 +87,25 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   let jwtToken = localStorage.getItem("jwt");
   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
 
+  const isFormData = options.body instanceof FormData; // FormData 여부 확인
+
+  const headers: { [key: string]: string } = {
+    "Authorization": `Bearer ${jwtToken}`,
+  };
+
+  // ✅ FormData가 아닐 때만 Content-Type을 설정 (JSON 요청 시)
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(url, {
     ...options,
-    headers: {
-      ...options.headers,
-      "Authorization": `Bearer ${jwtToken}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   });
+
+  console.log("🆕 [DEBUG] 현재 Access Token:", jwtToken); // ✅ 토큰 정상 출력 확인
+
+  // console.log("🚀 요청 헤더:", response.headers);
 
   // ✅ 403 Forbidden: 권한이 없으므로 Access Token 갱신 X
   if (response.status === 403) {
@@ -105,10 +116,12 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   // ✅ 401 Unauthorized: Access Token 만료 확인 후 갱신 시도
   if (response.status === 401) {
     console.warn("⏳ [DEBUG] 401 Unauthorized - Access Token 만료 확인 중...");
+    console.log("🆕 [DEBUG] 현재 Access Token:", jwtToken);
 
     if (!retry) throw new Error("Access Token 갱신 실패. 다시 로그인 필요.");
 
     const newAccessToken = await refreshAccessToken();
+    console.log("🆕 [DEBUG] 새 Access Token:", newAccessToken);
     if (!newAccessToken) throw new Error("토큰 갱신 실패. 다시 로그인 필요.");
 
     // 새 Access Token 저장 후, 재요청 (최대 1회만)
@@ -431,7 +444,7 @@ export const sendImageToAPI = async (file: File): Promise<Detection[]> => {
   return [];
 };
 
-/** 사용자 관심사 (카테고리) 불러오기 & 저장 */
+/** 사용자 관심사 (카테고리) 불러오기 */
 export const getUserInterest = async (): Promise<string[]> => {
   try {
     const responseData = await fetchWithAuth(`${API_BASE_URL}/api/ai/ai_classification/get-user-interest`);
@@ -442,35 +455,48 @@ export const getUserInterest = async (): Promise<string[]> => {
     }
 
     const { interest, interest2 } = responseData.data;
-    const interests =  [interest, interest2];
-
-    localStorage.setItem("interests", JSON.stringify(interests)); // 관심사 로컬 스토리지 저장
-
-    return interests;
+    return [interest, interest2];
   } catch (error) {
     console.error("사용자 관심사 불러오기 실패:", error);
     return [];
   }
 };
 
-/** 모든 장소 불러오기 (페이징 적용) */
 export const fetchPlaces = async (
-  latitude: number,
-  longitude: number,
   page: number,
   size: number,
-  category: string
-): Promise<Place[]> => {
+  category: string = "전체",
+  latitude?: number,
+  longitude?: number,
+  includeDeleted?: boolean,
+  searchQuery?: string,  // 추가: 검색어
+  searchBy: "name" | "types" | "address" = "name" // 추가: 검색 기준 (기본값: name)
+): Promise<{ content: Place[]; totalPages: number }> => {
   try {
     const jwtToken = localStorage.getItem("jwt");
-    const url = `${API_BASE_URL}/place/all?latitude=${latitude}&longitude=${longitude}&page=${page}&size=${size}`;
+
+    // 기본 URL 설정
+    let url = `${API_BASE_URL}/place/all?page=${page}&size=${size}`;
+
+    // 위도, 경도 추가 (입력값이 있을 경우)
+    if (latitude !== undefined && longitude !== undefined) {
+      url += `&latitude=${latitude}&longitude=${longitude}`;
+    }
+
+    // includeDeleted 추가 (입력값이 있을 경우)
+    if (includeDeleted !== undefined) {
+      url += `&includeDeleted=${includeDeleted}`;
+    }
+
+    // 🔍 검색어 및 검색 기준 추가 (입력값이 있을 경우)
+    if (searchQuery && searchQuery.trim() !== "") {
+      url += `&searchQuery=${encodeURIComponent(searchQuery)}&searchBy=${searchBy}`;
+    }
 
     let response;
     if (jwtToken) {
-      // 로그인한 사용자: fetchWithAuth() 사용 (JWT 포함)
       response = await fetchWithAuth(url);
     } else {
-      // 비로그인 사용자: 일반 fetch() 사용 (JWT 없이 요청)
       response = await fetch(url, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -482,20 +508,23 @@ export const fetchPlaces = async (
       response = await response.json();
     }
 
-    if (!response.data) {
-      console.warn("장소 데이터 없음");
-      return [];
+    console.log("API 응답:", response); // API 응답 확인
+
+    let places = response.data.content || [];
+    let totalPages = response.data.totalPages || 1;
+
+    // 카테고리 필터링 (프론트에서 적용)
+    if (category !== "전체") {
+      places = places.filter((place: any) => place.types.includes(category));
     }
 
-    // 카테고리가 '전체'가 아닐 경우 필터링
-    return category === "전체"
-      ? response.data
-      : response.data.filter((place: any) => place.types.includes(category));
+    return { content: places, totalPages };
   } catch (error) {
     console.error("장소 데이터 불러오기 실패:", error);
-    return [];
+    return { content: [], totalPages: 1 };
   }
 };
+
 
 
 /** 방문자 수 증가 (페이지 로드 시 1회 호출) */
@@ -570,6 +599,97 @@ export const getVisitCountByHour = async (startDate: string, endDate: string, ip
   const url = `${API_BASE_URL}/visitor/visit-count-by-hour?startDate=${startDate}&endDate=${endDate}&ip=${ip}`;
   const response = await fetchWithAuth(url);
   return response.data;
+};
+
+/** CSV 파일 업로드 */
+export const uploadPlacesCsv = async (file: File): Promise<string> => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file); // 파일 추가
+
+    const response = await fetch(`${API_BASE_URL}/place/upload`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`, // JWT 포함
+      },
+    });
+
+    const responseData = await response.json();
+    if (response.status !== 200) throw new Error(responseData.message);
+    return "CSV 파일이 성공적으로 업로드되었습니다.";
+  } catch (error) {
+    console.error("CSV 업로드 실패:", error);
+    throw error;
+  }
+};
+
+/** 장소 삭제 (Soft Delete) */
+export const deletePlace = async (placeId: number): Promise<void> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/place/delete/${placeId}`, {
+      method: "DELETE",
+    });
+
+    if (response.code !== 200) throw new Error("장소 삭제 실패");
+  } catch (error) {
+    console.error("장소 삭제 실패:", error);
+    throw error;
+  }
+};
+
+/** 삭제된 장소 목록 불러오기 */
+export const fetchDeletedPlaces = async (
+  page: number = 0,
+  size: number = 10
+): Promise<{ content: Place[]; totalPages: number }> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/place/deleted?page=${page}&size=${size}`);
+
+    return {
+      content: response.data?.content || [],
+      totalPages: response.data?.totalPages || 1,
+    };
+  } catch (error) {
+    console.error("삭제된 장소 불러오기 실패:", error);
+    return { content: [], totalPages: 1 };
+  }
+};
+
+/** 장소 완전 삭제 (Hard Delete) */
+export const permanentlyDeletePlace = async (placeId: number): Promise<void> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/place/permanent-delete/${placeId}`, {
+      method: "DELETE",
+    });
+
+    if (response.code !== 200) throw new Error("완전 삭제 실패");
+  } catch (error) {
+    console.error("장소 완전 삭제 실패:", error);
+    throw error;
+  }
+};
+
+/** 장소 정보 수정 (업데이트) */
+export const updatePlace = async (placeId: number, updatedData: Partial<Place>) => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/place/update/${placeId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (response.code !== 200) {
+      throw new Error(response.message || "장소 업데이트 실패");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("장소 업데이트 실패:", error);
+    throw error;
+  }
 };
 
 /** WebSocket 서비스 UUID 생성 */

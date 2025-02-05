@@ -41,37 +41,47 @@ const Home: React.FC = () => {
   }, []);
   
   const loadPlaces = async (page: number, category: string) => {
-    const newPlaces = await fetchPlaces(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, page, 10, category);
-    setPlaces((prev) => [...prev, ...newPlaces]);
-    setHasMore(newPlaces.length > 0);
-  };
+    try {
+        const response = await fetchPlaces(page, 10, category, DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+        
+        setPlaces((prev) => [...prev, ...response.content]);
 
-  const lastPlaceRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (!node || !hasMore) return;
+        setHasMore(page < response.totalPages - 1);  // 마지막 페이지 체크
+    } catch (error) {
+        console.error("장소 데이터 불러오기 실패:", error);
+    }
+};
+
+const [loading, setLoading] = useState(false);
+
+const lastPlaceRef = useCallback(
+  (node: HTMLDivElement | null) => {
+      if (!node || !hasMore || loading) return;  // ✅ 데이터 로딩 중이면 중복 요청 방지
+
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          setPage((prev) => {
-            const newPage = prev + 1;
-            loadPlaces(newPage, selectedCategory);
-            return newPage;
-          });
-        }
+          if (entries[0].isIntersecting) {
+              setLoading(true);  // ✅ 로딩 시작
+              setPage((prev) => {
+                  const newPage = prev + 1;
+                  loadPlaces(newPage, selectedCategory).then(() => setLoading(false)); // ✅ 로딩 완료 후 상태 업데이트
+                  return newPage;
+              });
+          }
       });
 
       observer.current.observe(node);
-    },
-    [hasMore, selectedCategory]
-  );
+  },
+  [hasMore, selectedCategory, loading]
+);
 
   return (
     <div className="home-wrapper">
       <Header />
       <div className="home-container">
         <div className="title-name">
-          <h3>맞춤형 여행 안내</h3>
+          <h3>AI가 추천하는 여행</h3>
         </div>
         <div className="recommend-section">
           <button className="recommend-card" onClick={() => window.location.href = "/travel-with-ai"}>
@@ -85,7 +95,7 @@ const Home: React.FC = () => {
         </div>
 
         <div className="title-name">
-          <h3>사용자 맞춤형 인근 여행지</h3>
+          <h3>AI가 추천하는 여행지</h3>
         </div>
         <div className="filter-buttons">
           {categories.map((category, index) => (

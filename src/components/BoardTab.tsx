@@ -16,9 +16,9 @@ const BoardTabs: React.FC = () => {
     const [boardState, setBoardState] = useState<TabType>("list");
     const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   return (
-    
+    <>
+    <Header />
     <div className="tabs-container">
-        <Header />
       <div className="tabs">
         {tabs.map((tab, index) => (
           <button
@@ -71,6 +71,7 @@ const BoardTabs: React.FC = () => {
       </div>
       
     </div>
+    </>
   );
 };
 

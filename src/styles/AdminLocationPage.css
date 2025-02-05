@@ -1,0 +1,81 @@
+.location-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw;
+    overflow-y: auto;
+    height: 100vh;
+    min-height: 100vh;
+}
+
+.location-container {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.search-wrapper {
+    place-items: center; 
+    flex: 1;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* 검색 기준 선택 (이름, 종류, 주소) */
+.search-types {
+    flex: 2; /* 2:8 비율 */
+}
+
+/* 검색 입력창 */
+.location-search-container {
+    flex: 8; /* 2:8 비율 */
+}
+.search-wrapper select,
+.search-wrapper input {
+    width: 100%;
+    padding: 15px 0px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    text-indent: 10px;
+}
+
+/* 5열 테이블 (이름, 종류, 주소, 연락처, 삭제/복구 버튼) 비율 고정 */
+.stat-box th:nth-child(1),
+.stat-box td:nth-child(1) {
+  width: 22%; /* 이름 */
+}
+
+.stat-box th:nth-child(2),
+.stat-box td:nth-child(2) {
+  width: 22%; /* 종류 */
+}
+
+stat-box th:nth-child(3),
+.stat-box td:nth-child(3) {
+  width: 19%; /* 주소 */
+}
+
+.stat-box th:nth-child(4),
+.stat-box td:nth-child(4) {
+  width: 15%; /* 연락처 */
+}
+
+.stat-box th:nth-child(5),
+.stat-box td:nth-child(5) {
+  width: 20%; /* 삭제/복구 버튼 */
+  text-align: center;
+}

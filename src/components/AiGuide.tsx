@@ -60,6 +60,13 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
 
     }, []);
 
+    // 텍스트에서 <br>을 렌더링
+    const renderTextWithBrTags = (text: string) => {
+        // **볼드체** -> <b>볼드체</b>로 변환하고, 줄바꿈은 <br>로 변환
+        const boldText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); // **bold** -> <b>bold</b>
+        return { __html: boldText.replace(/\n/g, "<br>") }; // 줄바꿈을 <br>로 변환
+    };
+
     const generateMessageId = () => {
         messageIdRef.current += 1;
         return messageIdRef.current;
