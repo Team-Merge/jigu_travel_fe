@@ -1,4 +1,4 @@
-// src/components/AiVoiceGuide.tsx
+// src/components/AiGuide.tsx
 
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +41,7 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
     const recognitionRef = useRef<any>(null); // SpeechRecognition 참조
 
     const navigate = useNavigate();
-    
+
     const limit = 5;
 
     useEffect(() => {
@@ -59,6 +59,13 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
         }
 
     }, []);
+
+    // 텍스트에서 <br>을 렌더링
+    const renderTextWithBrTags = (text: string) => {
+        // **볼드체** -> <b>볼드체</b>로 변환하고, 줄바꿈은 <br>로 변환
+        const boldText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); // **bold** -> <b>bold</b>
+        return { __html: boldText.replace(/\n/g, "<br>") }; // 줄바꿈을 <br>로 변환
+    };
 
     const generateMessageId = () => {
         messageIdRef.current += 1;
@@ -365,6 +372,13 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
     //     scrollToBottomOfContainer(); // 메시지 추가 후 스크롤 이동
     // };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault();  // 기본 Enter 동작 방지
+            handleSendQuestion();  // 메시지 전송 함수 호출
+        }
+    };
+
     return (
         <div id="chatContainer">
             {/*<Header />*/}
@@ -378,6 +392,7 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
                         id="textQuestion"
                         value={textQuestion}
                         onChange={(e) => setTextQuestion(e.target.value)}
+                        onKeyDown={handleKeyDown} // 엔터키 가능하게
                         placeholder={inputPlaceholder}
                         disabled={isRecordingMode}
                         required

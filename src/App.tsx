@@ -7,7 +7,9 @@ import Register from "./pages/Register";
 import AskAI from "./pages/AskAI";
 import RecommendTravel from "./pages/RecommendTravel";
 import TravelWithAI from "./pages/TravelWithAI";
-import AiGuideTest from "./pages/AiGuideTest";
+import AiGuideTest from "./pages/AiGuidePage";
+import PasswordReset from "./pages/PasswordReset";
+import PasswordResetNew from "./pages/ResetPasswordNew";
 
 
 import BoardList from "./pages/BoardList";
@@ -18,6 +20,7 @@ import BoardEdit from "./pages/BoardEdit";
 import BoardTabs from "./components/BoardTab";
 
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminVisitorPage from "./pages/AdminVisitorPage";
 
 
 
@@ -34,13 +37,17 @@ const App: React.FC = () => {
         <Route path="/recommend-travel" element={<RecommendTravel />} />
         <Route path="/travel-with-ai" element={<TravelWithAI />} />
         <Route path="/ai-guide" element={<AiGuideTest />} />
+        <Route path="/auth/passwordReset-vaild" element={<PasswordReset />} />
+        <Route path="/auth/reset-password" element={<PasswordResetNew />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/visitor" element={<AdminVisitorPage />} />
 
         {/* <Route path="/board" element={<BoardTabs />} /> */}
         <Route path="/board" element={<BoardList />} />
         <Route path="/board/:postId" element={<BoardDetail />} />
         <Route path="/board/create" element={<BoardCreate />} />
         <Route path="/board/edit/:postId" element={<BoardEdit />} />
+
 
 
         <Route path="*" element={<h2>404 - 페이지를 찾을 수 없습니다</h2>} />

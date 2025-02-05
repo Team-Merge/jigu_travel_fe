@@ -1,5 +1,4 @@
 import axios, { AxiosError } from "axios";
-import Header from "../components/Header";
 
 // src/utils/api.ts
 const API_BASE_URL =
@@ -40,6 +39,7 @@ export const register = async (userData: {
   nickname: string;
   birthDate: string;
   gender: string;
+  email: string;
 }) => {
   try {
     console.log("회원가입 요청 데이터:", userData);
@@ -87,14 +87,12 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   let jwtToken = localStorage.getItem("jwt");
   if (!jwtToken) throw new Error("JWT 토큰 없음. 로그인 필요");
 
-  const isFormData = options.body instanceof FormData; // FormData 여부 확인
-
   const response = await fetch(url, {
     ...options,
     headers: {
-      ...(!isFormData && { "Content-Type": "application/json" }), // FormData일 경우 Content-Type 자동 설정
-      "Authorization": `Bearer ${jwtToken}`,
       ...options.headers,
+      "Authorization": `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
     },
   });
 
@@ -156,6 +154,35 @@ export const getUserInfo = async () => {
 export const logout = async () => {
   await fetchWithAuth(`${API_BASE_URL}/api/auth/logout`, { method: "POST" });
   localStorage.removeItem("jwt");
+};
+
+/** 비밀번호 재설정 : 아이디 존재 여부 확인 */
+export const checkUserExists = async (loginId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/auth/check-user?loginId=${loginId}`);
+    return response.data.email; // 서버에서 반환된 이메일 반환
+  } catch (error) {
+    throw new Error("해당 아이디가 존재하지 않습니다.");
+  }
+};
+
+/** 비밀번호 재설정: 비밀번호 재설정 이메일 전송 요청 */
+export const requestPasswordReset = async (email: string) => {
+  try {
+    await axios.post(`${API_BASE_URL}/api/auth/password-reset-request`, { email });
+  } catch (error) {
+    throw new Error("이메일을 찾을 수 없습니다. 다시 확인해주세요.");
+  }
+};
+
+/** 비밀번호 재설정 요청 */
+export const resetPassword = async (token: string, newPassword: string) => {
+  try {
+    await axios.post(`${API_BASE_URL}/api/auth/reset-password`, { token, newPassword });
+    return "비밀번호가 성공적으로 변경되었습니다.";
+  } catch (error) {
+    throw new Error("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+  }
 };
 
 /** FastAPI 추천 요청 타입 */
@@ -264,53 +291,30 @@ export const loadApiKey = async (): Promise<string | null> => {
 /** MAP : 사용자 위치 저장 **/
 export const saveUserLocation = async (latitude: number, longitude: number): Promise<void> => {
   try {
-      const jwtToken = localStorage.getItem("jwt");
-      if (!jwtToken) throw new Error("JWT 토큰 없음");
-
-    const response = await fetch(`${API_BASE_URL}/location/user-location`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/location/user-location`, {
       method: "POST",
-      headers: {
-          Authorization: `Bearer ${jwtToken}`,
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ latitude, longitude }),
-      credentials: "include"
+      credentials: "include",
     });
 
-    if (!response.ok) throw new Error("위치 저장 실패");
-
-    const data = await response.json();
-    console.log("위치 저장 성공:", data);
+    console.log("위치 저장 성공:", response);
   } catch (error) {
-    console.error("saveUserLocation 에러 발생:", error);
+    console.error("사용자 위치 저장 에러 발생:", error);
   }
 };
 
 /** MAP : 위치 기반 주변 명소 검색**/
-export const fetchNearbyPlaces = async (lat: number, lng: number): Promise<Place[]> => {
+export const fetchNearbyPlaces = async (lat: number, lng: number, types?: string[]): Promise<Place[]> => {
   try {
-    const jwtToken = localStorage.getItem("jwt");
-    if (!jwtToken) throw new Error("JWT 토큰 없음");
+    let url = `${API_BASE_URL}/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`;
+    if (types && types.length > 0) url += `&types=${types.join(",")}`;
 
-    const response = await fetch(`${API_BASE_URL}/place/nearby-places?latitude=${lat}&longitude=${lng}&radius=1.0`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",  // 캐시 무시하도록 설정
-        Pragma: "no-cache",
-        Expires: "0"
-      },
-    });
+    const response = await fetchWithAuth(url);
+    console.log("서버 응답 데이터:", response);
 
-    if (!response.ok) throw new Error("명소 정보를 가져올 수 없음");
-
-    const data = await response.json();
-    console.log("서버 응답 데이터:", data);
-
-    return data.data || [];
+    return response.data || [];
   } catch (error) {
-    console.error("fetchNearbyPlaces 에러 발생:", error);
+    console.error("주변 명소 검색 API 호출 실패:", error);
     return [];
   }
 };
@@ -329,6 +333,7 @@ export const checkNickname = async (nickname: string) => {
     return axiosError.response?.data || { code: 500, message: "서버 오류", data: false };
   }
 };
+
 
 /** 아이디 중복 확인 API */
 export const checkLoginId = async (loginId: string) => {
@@ -492,20 +497,11 @@ export const getTodayVisitorCount = async (): Promise<number> => {
   return response.data;
 };
 
-export const getVisitorCountByDate = async (date: string): Promise<number> => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/visitor/count-by-date?date=${date}`);
+/** 특정 날짜 방문자 수 조회 API (IP 필터링 추가) */
+export const getVisitorCountByDate = async (date: string, ip: string = ""): Promise<number> => {
+  const url = `${API_BASE_URL}/visitor/count-by-date?date=${date}&ip=${ip}`;
+  const response = await fetchWithAuth(url);
   return response.data;
-};
-
-export const getVisitorRecords = async (): Promise<any[]> => {
-  try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/visitor/records`);
-    console.log("방문자 기록 응답:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("방문자 기록 조회 실패:", error);
-    return [];
-  }
 };
 
 /** 전체 사용자 조회 (페이지네이션 추가) */
@@ -521,4 +517,30 @@ export const setAdminStatus = async (userId: string, role: string) => {
   await fetchWithAuth(`${API_BASE_URL}/api/user/set-admin?userId=${userId}&role=${role}`, {
     method: "POST",
   });
+};
+
+/** 특정 날짜의 "누적 방문 횟수" 조회 API (IP 필터링 추가) */
+export const getTotalVisitCountByDate = async (date: string, ip: string = ""): Promise<number> => {
+  const url = `${API_BASE_URL}/visitor/total-visit-count?date=${date}&ip=${ip}`;
+  const response = await fetchWithAuth(url);
+  return response.data;
+};
+
+/** 방문자 통계 테이블 조회 API (페이지네이션 + 검색) */
+export const getVisitorRecordsWithPagination = async (
+  page: number = 0,
+  size: number = 10,
+  startDate: string,
+  endDate: string,
+  ip: string = ""
+) => {
+  const url = `${API_BASE_URL}/visitor/records?page=${page}&size=${size}&startDate=${startDate}&endDate=${endDate}&ip=${ip}`;
+  const response = await fetchWithAuth(url);
+  return response.data;
+};
+
+export const getVisitCountByHour = async (startDate: string, endDate: string, ip: string = "") => {
+  const url = `${API_BASE_URL}/visitor/visit-count-by-hour?startDate=${startDate}&endDate=${endDate}&ip=${ip}`;
+  const response = await fetchWithAuth(url);
+  return response.data;
 };

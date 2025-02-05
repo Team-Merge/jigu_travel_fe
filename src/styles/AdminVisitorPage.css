@@ -1,0 +1,118 @@
+.admin-visitor-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw;
+    overflow-y: auto;
+    height: 100vh;
+    min-height: 100vh;
+}
+
+.admin-visitor-container {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.visitor-stats-container {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.visitor-chart-container {
+    width: 100%;
+    margin: auto;
+}
+
+.visitor-stat-box {
+    padding: 10px 20px;
+
+}
+
+.visitor-table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+.visitor-table {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.visitor-table th, 
+.visitor-table td {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.date-buttons{
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 10px;
+}
+
+.date-buttons button {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.date-buttons button.selected {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+.search-container {
+    margin-top: 10px;
+}
+
+.search-container input[type="text"] {
+    width: 100%;
+    padding: 8px 0px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+}
+
+/* 버튼 스타일 */
+.search-btn {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    text-align: center;
+  }
