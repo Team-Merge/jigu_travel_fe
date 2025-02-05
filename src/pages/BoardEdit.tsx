@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getPostDetail, updatePost } from "../api/boardApi";
 import { useNavigate, useParams } from "react-router-dom";
 import BoardForm from "../components/BoardForm";
-import "../styles/BoardList.css"
+import Header from "../components/Header";
 import "../styles/BoardEdit.css"
 
 interface BoardEditProps {
@@ -11,11 +11,19 @@ interface BoardEditProps {
   goToList: () => void; // ✅ 취소 버튼 클릭 시 목록으로 이동
 }
 
-const BoardEdit: React.FC<BoardEditProps> = ({ postId, goToDetail, goToList }) => {
-  // const { boardId } = useParams<{ boardId: string }>();
-  const [post, setPost] = useState<any>(null);
+const BoardEdit: React.FC = () => {
+  const { postId } = useParams<{ postId: string }>();
+  console.log(`📢 [DEBUG] postId: ${postId}`);
+  console.log("📢 [DEBUG] postId:", postId);
+  // const [post, setPost] = useState<any>(null);
+  console.log("📢 [DEBUG] useParams():", useParams());
+  const [post, setPost] = useState<{
+    title: string;
+    content: string;
+    attachments: { fileName: string; filePath: string }[];
+  } | null>(null);
   const [existingFiles, setExistingFiles] = useState<{ fileName: string; filePath: string }[]>([]);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -40,8 +48,10 @@ const BoardEdit: React.FC<BoardEditProps> = ({ postId, goToDetail, goToList }) =
   const handleSubmit = async (title: string, content: string, newFiles: File[], removedFiles: string[]) => {
     try {
      // const token = localStorage.getItem("token") || "";
-      await updatePost(postId, title, content, newFiles, removedFiles);
-      goToDetail();
+      await updatePost(Number(postId), title, content, newFiles, removedFiles);
+      // goToDetail();
+      alert("게시글이 수정되었습니다.");
+      navigate(`/board/${postId}`);
     } catch (error) {
       console.error("게시글 수정 실패:", error);
     }
@@ -50,20 +60,25 @@ const BoardEdit: React.FC<BoardEditProps> = ({ postId, goToDetail, goToList }) =
   if (!post) return <p>로딩 중...</p>;
 
   return (
+    <div className="board-edit-wrapper">
+    <Header/>
     <div className="board-edit-container">
-      <h2 className="board-edit-title">게시글 수정</h2>
-      {/* <button onClick={goToList}>뒤로가기</button> */}
+      <div className="board-edit-header">
+      <h2 className="qna-header">QnA 게시판</h2>
+      <h2 className="title-header">게시글 수정</h2>
+      </div>
 
       <div className="board-edit-form">
       <BoardForm 
         onSubmit={handleSubmit} 
+        mode="edit" 
+        boardId={Number(postId)}
         initialTitle={post?.title} 
         initialContent={post?.content} 
-        initialFiles={existingFiles}
-        goToList={goToList} // ✅ 기존 파일 목록 전달
+        initialFiles={existingFiles} // ✅ 기존 파일 목록 전달
       />
       </div>
-
+    </div>
     </div>
   );
 };

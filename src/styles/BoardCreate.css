@@ -1,4 +1,4 @@
-.board-edit-wrapper {
+.board-create-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -8,7 +8,7 @@
     overflow: auto;
   }
   
-.board-edit-container {
+.board-create-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -20,8 +20,8 @@
     padding: 20px;
     box-sizing: border-box;
   }
-
-  .board-edit-header {
+  
+  .board-create-title {
     width: 100vw;
     height: 20vh;
     text-align: left;
@@ -42,4 +42,6 @@
   .title-header {
     font-size: 1.2rem;
     color: #333333;
-    }
+    /* margin: 0; */
+  }
+
