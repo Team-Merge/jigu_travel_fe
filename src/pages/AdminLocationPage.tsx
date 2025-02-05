@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import PlacePopup from "../components/PlacePopup";
 import "../styles/AdminLocationPage.css";
+import PlaceCategoryChart from "../components/PlaceCategoryChart";
 
 const AdminLocationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -145,9 +146,20 @@ const AdminLocationPage: React.FC = () => {
       <Header />
       <div className="location-container">
         <h2>장소 관리</h2>
-        <div className="csv-upload">
-          <input type="file" accept=".csv" onChange={handleFileChange} />
-          <button onClick={handleUpload}>CSV 업로드</button>
+        <div className="stats-container">
+            <div className="category-upload-wrapper">
+                <div className="chart-wrapper">
+                    <PlaceCategoryChart />
+                </div>
+                <div className="upload-wrapper">
+                    <div className="file-container">
+                        <input type="file" accept=".csv" onChange={handleFileChange} />
+                    </div>
+                    <div className="csv-button-container">
+                        <button className="csv-search-btn" onClick={handleUpload}>CSV 업로드</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div className="stats-container">

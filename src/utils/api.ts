@@ -668,3 +668,8 @@ export const updatePlace = async (placeId: number, updatedData: Partial<Place>) 
     throw error;
   }
 };
+
+export const getPlacesCountByCategory = async () => {
+  const response = await axios.get(`${API_BASE_URL}/place/count-by-category`);
+  return response.data;
+};

@@ -156,8 +156,10 @@ useEffect(() => {
                     <p>{todayCount}명</p>
                 </div>
                 <div className="stat-box">
-                    <h2>특정 날짜 방문자</h2>
-                    <input type="date" value={selectedDate} onChange={handleDateChange} />
+                    <h2>해당일 방문객</h2>
+                    <div className="date-input">
+                      <input type="date" value={selectedDate} onChange={handleDateChange} />
+                    </div>
                     {/* {dateCount !== null && <p>{selectedDate} 방문자 수: {dateCount}명</p>} */}
                     {dateCount !== null && <p>방문자: {dateCount}명</p>}
                 </div>
@@ -228,9 +230,7 @@ useEffect(() => {
                         <h2>장소 목록</h2>
                         <button className="report-btn" onClick={() => navigate("/admin/location")}>장소 관리 →</button>
                     </div>
-
                     {places.length > 0 ? (
-                    <>
                         <table>
                         <thead>
                             <tr>
@@ -249,21 +249,19 @@ useEffect(() => {
                             ))}
                         </tbody>
                         </table>
-
-                        {/* 페이지네이션 UI */}
-                        <div className="pagination">
-                        <button onClick={goToPreviousPlacePage} disabled={placePage === 0}>
-                            이전
-                        </button>
-                        <span>{placePage + 1} / {totalPlacePages}</span>
-                        <button onClick={goToNextPlacePage} disabled={placePage >= totalPlacePages - 1}>
-                            다음
-                        </button>
-                        </div>
-                    </>
                     ) : (
                     <p>장소 데이터가 없습니다.</p>
                     )}
+                    {/* 페이지네이션 UI */}
+                    <div className="pagination">
+                      <button onClick={goToPreviousPlacePage} disabled={placePage === 0}>
+                          이전
+                      </button>
+                      <span>{placePage + 1} / {totalPlacePages}</span>
+                      <button onClick={goToNextPlacePage} disabled={placePage >= totalPlacePages - 1}>
+                          다음
+                      </button>
+                    </div>
                 </div>
             </div>
         </div>
