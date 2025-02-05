@@ -45,7 +45,8 @@ export const createPost = async (title: string, content: string, files?: File[])
   try {
     const response = await fetchWithAuth(`${API_BASE_URL}/api/board/posts`, {
       method: "POST",
-      body: formData, // ✅ FormData 사용
+      body: formData,
+      // headers: {}, 
     });
 
     console.log("✅ [DEBUG] 게시글 작성 성공:", response);
