@@ -11,12 +11,6 @@ interface Attachment {
   fileSize: number;
 }
 
-// interface BoardDetailProps {
-//   postId: number;  
-//   goToList: () => void; // ✅ 목록으로 돌아가기 기능 추가
-//   goToEdit: () => void;
-// }
-
 const BoardDetail: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   console.log("📢 [DEBUG] postId:", postId);
@@ -26,7 +20,8 @@ const BoardDetail: React.FC = () => {
     title: string;
     content: string;
     nickname: string;
-    attachments: Attachment[]; // ✅ attachments 배열의 타입 지정
+    createdAt: string;
+    attachments: Attachment[]; // attachments 배열의 타입 지정
   } | null>(null);
   
   const navigate = useNavigate();
@@ -66,14 +61,23 @@ const BoardDetail: React.FC = () => {
   return (
     <div className="board-detail-wrapper">
     <Header/>
-    <div className="board-detail-group">
-    <h2>게시글 상세</h2>
-    <hr className="divider-line" />
+    <div className="board-detail-container">
+      <div className="board-detail-header">
+      <h2 className="qna-header">QnA 게시판</h2>
+      </div>
+    <div className="board-detail-form-container">
+    <div className="board-detail-form">
       {post ? (
         <>
           <div className="detail-title">
           <h2 className="board-detail-title">{post.title}</h2>
-          <p className="board-detal-author">작성자: {post.nickname}</p>
+          </div>
+          <div className="detail-title">
+          <p className="board-detal-author">작성자 : {post.nickname}</p>
+          <p className="board-detail-date">
+            작성 날짜 : {new Date(post.createdAt).toLocaleDateString()}
+            {/* {new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(post.createdAt))} */}
+          </p> 
           </div>
           <div className="board-detail-content">{post.content}</div>
 
@@ -90,11 +94,8 @@ const BoardDetail: React.FC = () => {
               </ul>
             </div>
           )}
-          {/* <button onClick={() => navigate(`/board/edit/${boardId}`)}>수정</button>
-          <button onClick={handleDelete}>삭제</button> */}
           <div className="board-detail-buttons">
             <button className="back-button" onClick={() => navigate("/board")}>목록</button>
-            {/* <button className="edit-button" onClick={goToEdit}>수정</button> */}
             <button className="edit-button" onClick={() => navigate(`/board/edit/${post.boardId}`)}>수정</button>
             <button className="delete-button" onClick={handleDelete}>삭제</button>
           </div>
@@ -102,6 +103,8 @@ const BoardDetail: React.FC = () => {
       ) : (
         <p>로딩 중...</p>
       )}
+    </div>
+    </div>
     </div>
     </div>
   );

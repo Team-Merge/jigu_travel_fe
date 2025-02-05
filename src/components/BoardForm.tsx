@@ -9,7 +9,6 @@ interface BoardFormProps {
   initialFiles?: { fileName: string; filePath: string }[]; 
   mode: "create" | "edit";
   boardId?: number;
-  // goToList: () => void;
 }
 
 const BoardForm: React.FC<BoardFormProps> = ({ onSubmit, initialTitle = "", initialContent = "", initialFiles = [], mode, boardId  }) => {
@@ -80,6 +79,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ onSubmit, initialTitle = "", init
           onChange={(e) => setContent(e.target.value)} 
           required 
           placeholder="문의 내용을 입력해 주세요."
+          rows={6}
         />
       </div>
 

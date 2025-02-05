@@ -3,7 +3,6 @@ import { getPostDetail, updatePost } from "../api/boardApi";
 import { useNavigate, useParams } from "react-router-dom";
 import BoardForm from "../components/BoardForm";
 import Header from "../components/Header";
-// import "../styles/BoardList.css"
 import "../styles/BoardEdit.css"
 
 interface BoardEditProps {
@@ -64,8 +63,10 @@ const BoardEdit: React.FC = () => {
     <div className="board-edit-wrapper">
     <Header/>
     <div className="board-edit-container">
-      <h2 className="board-edit-title">게시글 수정</h2>
-      {/* <button onClick={goToList}>뒤로가기</button> */}
+      <div className="board-edit-header">
+      <h2 className="qna-header">QnA 게시판</h2>
+      <h2 className="title-header">게시글 수정</h2>
+      </div>
 
       <div className="board-edit-form">
       <BoardForm 
@@ -77,7 +78,6 @@ const BoardEdit: React.FC = () => {
         initialFiles={existingFiles} // ✅ 기존 파일 목록 전달
       />
       </div>
-      {/* <button className="back-button" onClick={() => navigate("/board")}>목록</button> */}
     </div>
     </div>
   );

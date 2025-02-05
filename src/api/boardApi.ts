@@ -10,7 +10,21 @@ const API_BASE_URL =
 /** 📌 게시글 목록 조회 (GET) */
 export const getBoardList = async (page = 0, size = 5) => {
   const response = await fetchWithAuth(`${API_BASE_URL}/api/board/list?page=${page}&size=${size}`);
-  return response.data.content;
+  // return response.data;
+  // const json = await response.json();
+
+    console.log("📢 [DEBUG] API 응답 데이터:", response);
+
+    // ✅ `content` 배열을 `posts`로 변환하여 반환
+    // return {
+      // posts: response.content, // ✅ 백엔드에서 `content` 키를 사용하므로 수정
+      // currentPage: response.number,
+      // totalPages: response.totalPages,
+      // totalItems: response.totalElements,
+      // size: response.size
+    // };
+    return response;
+
 };
 
 /** 📌 게시글 작성 (POST) */

@@ -12,6 +12,9 @@
     width: 100%;
     max-width: 800px;
     margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 30px;
   }
   
   /* ✅ 라벨 스타일 */
@@ -32,26 +35,28 @@
   .form-group textarea {
     width: 100%;
     max-width: 800px;
-    padding: 12px;
+    padding-left: 12px;
+    padding-bottom: 12px;
+    padding-top: 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 16px;
     background: #f8f8f8;
+    
   }
   
   /* ✅ 파일 업로드 영역 */
   .file-upload-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    /* gap: 10px; */
   }
   
   .file-upload-container {
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 12px;
+    padding-bottom: 12px;
+    padding-top: 12px;
     background: #f8f8f8;
     width: 100%;
     max-width: 800px;
@@ -61,11 +66,12 @@
  /* ✅ 버튼 컨테이너 */
  .board-buttons {
     display: flex;
-    justify-content: space-between; /* 📌 양쪽 끝으로 정렬 */
+    justify-content: center; 
     align-items: center;
     margin-top: 20px;
-    max-width: 100%; /* 📌 전체 너비 사용 */
+    max-width: 100%; 
     width: 100%;
+    gap: 10px;
   }
   
   /* ✅ 뒤로가기 버튼 */

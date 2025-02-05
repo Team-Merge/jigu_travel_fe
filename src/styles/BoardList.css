@@ -21,12 +21,6 @@
     box-sizing: border-box;
   }
 
-  .board-qna-container {
-    justify-content: center;
-    display: flex;
-    flex-direction: row;
-  }
-
   /* 게시판 헤더: 타이틀 & 버튼 정렬 */
   .board-header {
     width: 100%;
@@ -35,18 +29,16 @@
     margin-top: 20px;
     margin-bottom: 12px;
     display: flex;
-    justify-content: space-between; 
-    
-    /* top: 40px; */
-    /* transform: translateX(-50%); */
-    /* align-items: flex-start;; */
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    background-color: rgba(76, 169, 231, 0.1);
   }
   
   /* QnA 게시판 타이틀 */
   .qna-header {
     font-size: 1.8rem;
     color: #333333;
-    /* margin: 0; */
   }
   
   /* 글쓰기 버튼 스타일 */
@@ -76,13 +68,20 @@
     padding: 20px;
   }
 
+  .qna-table-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
   .qna-container {
-    width: 70vw;
+    width: 100vw;
+    
   }
   
   /* 테이블 스타일 */
   .qna-table {
-    width: 100%;
+    width: 80%;
     border-collapse: collapse;
     border-radius: 10px;
     overflow: hidden;
@@ -91,19 +90,17 @@
   }
   
   .qna-table th {
-    /* padding: 0px;
+    padding: 0px;
     text-align: left;
-    border-bottom: 1px solid #dddddd; */
-    background-color: #4CA9E7; /* 시원한 블루톤 */
+    border-bottom: 1px solid #dddddd;
+    background-color: #4CA9E7;
     color: white;
     font-weight: bold;
-    padding: 10px 10px;
-    text-align: center;
-    /* border-bottom: 2px solid #2c8abe; */
+    padding: 10px;
   }
 
   .qna-table td {
-    padding: 12px 15px; /* 패딩 증가로 가독성 향상 */
+    padding: 7px 15px; /* 패딩 증가로 가독성 향상 */
     text-align: left;
     border-bottom: 1px solid #dddddd;
   }
@@ -134,5 +131,66 @@
     text-align: center;
     padding: 20px;
     color: #888888;
+  }
+  
+  /* 페이지네이션 */
+
+  .pagination-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+  }
+  
+  .pagination-buttons button {
+    background-color: #4CA9E7;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+  }
+  
+  .pagination-buttons button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination-buttons button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  .pagination-buttons span {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+
+  .floating-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #4CA9E7;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .floating-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
   }
   
