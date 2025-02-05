@@ -288,6 +288,29 @@ export const loadApiKey = async (): Promise<string | null> => {
   }
 };
 
+/** 사용자 현재 위치 가져오기 (Geolocation API) */
+export const getUserLocation = (onSuccess: (location: { lat: number; lng: number }) => void, onError?: (error: GeolocationPositionError) => void) => {
+  if (!navigator.geolocation) {
+    console.error("Geolocation이 지원되지 않습니다.");
+    if (onError) onError(new GeolocationPositionError());
+    return;
+  }
+
+  return navigator.geolocation.watchPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      console.log("실시간 위치 업데이트:", lat, lng);
+      onSuccess({ lat, lng });
+    },
+    (error) => {
+      console.error("위치 정보를 가져올 수 없습니다:", error);
+      if (onError) onError(error);
+    },
+    { enableHighAccuracy: true }
+  );
+};
+
 /** MAP : 사용자 위치 저장 **/
 export const saveUserLocation = async (latitude: number, longitude: number): Promise<void> => {
   try {
@@ -408,7 +431,7 @@ export const sendImageToAPI = async (file: File): Promise<Detection[]> => {
   return [];
 };
 
-/** 사용자 관심사 (카테고리) 불러오기 */
+/** 사용자 관심사 (카테고리) 불러오기 & 저장 */
 export const getUserInterest = async (): Promise<string[]> => {
   try {
     const responseData = await fetchWithAuth(`${API_BASE_URL}/api/ai/ai_classification/get-user-interest`);
@@ -419,7 +442,11 @@ export const getUserInterest = async (): Promise<string[]> => {
     }
 
     const { interest, interest2 } = responseData.data;
-    return [interest, interest2];
+    const interests =  [interest, interest2];
+
+    localStorage.setItem("interests", JSON.stringify(interests)); // 관심사 로컬 스토리지 저장
+
+    return interests;
   } catch (error) {
     console.error("사용자 관심사 불러오기 실패:", error);
     return [];
@@ -543,4 +570,22 @@ export const getVisitCountByHour = async (startDate: string, endDate: string, ip
   const url = `${API_BASE_URL}/visitor/visit-count-by-hour?startDate=${startDate}&endDate=${endDate}&ip=${ip}`;
   const response = await fetchWithAuth(url);
   return response.data;
+};
+
+/** WebSocket 서비스 UUID 생성 */
+export const fetchUUID = async (): Promise<string | null> => {
+  try {
+    const url = `${API_BASE_URL}/guide/init`; // API 엔드포인트
+    const response = await fetchWithAuth(url); // fetchWithAuth 사용
+
+    if (!response || !response.data) {
+      throw new Error("UUID 가져오기 실패");
+    }
+
+    console.log("받은 serviceUUID:", response.data.serviceUUID);
+    return response.data.serviceUUID; // UUID 반환
+  } catch (error) {
+    console.error("UUID 가져오기 오류:", error);
+    return null; // 실패 시 null 반환
+  }
 };
