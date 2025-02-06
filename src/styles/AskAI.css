@@ -32,7 +32,7 @@
     z-index: 1000;
     transform: translateY(100%);
     transition: transform 0.3s ease-in-out;
-    height: calc((100% - 60px) / 2);
+    height: calc((100% - 60px) / 4);
     overflow: hidden;
     padding-top: 20px;
     pointer-events: none;  /* 클릭 방지 */
@@ -67,7 +67,7 @@
     content: "";
     position: absolute;
     top: 13px; /* 꼬리가 시작되는 위치 (필요시 조정) */
-    left: -20px; /* 이미지와 말풍선 사이에 꼬리가 나타나도록 위치 조정 */
+    left: -19px; /* 이미지와 말풍선 사이에 꼬리가 나타나도록 위치 조정 */
     border-width: 10px;
     border-style: solid;
     border-color: transparent;
@@ -330,12 +330,14 @@
     font-size: 12px;
 }
 
-.image-result-section{
+.image-result-section {
     display: flex;
     flex-direction: row;
     width: 80%;
     align-items: center;
     text-align: center;
+    position: relative;
+    z-index: 1000;
 }
 
 .blue-text {
