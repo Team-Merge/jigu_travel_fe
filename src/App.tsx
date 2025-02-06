@@ -23,7 +23,7 @@ import BoardTabs from "./components/BoardTab";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminVisitorPage from "./pages/AdminVisitorPage";
 
-
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
   return (
@@ -40,9 +40,13 @@ const App: React.FC = () => {
         <Route path="/ai-guide" element={<AiGuideTest />} />
         <Route path="/auth/passwordReset-vaild" element={<PasswordReset />} />
         <Route path="/auth/reset-password" element={<PasswordResetNew />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/visitor" element={<AdminVisitorPage />} />
-        <Route path="/admin/location" element={<AdminLocationPage />} />
+
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/visitor" element={<AdminVisitorPage />} />
+          <Route path="/admin/location" element={<AdminLocationPage />} />
+        </Route>
 
         {/* <Route path="/board" element={<BoardTabs />} /> */}
         <Route path="/board" element={<BoardList />} />

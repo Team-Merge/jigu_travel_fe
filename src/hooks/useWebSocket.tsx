@@ -7,6 +7,8 @@ import { fetchUUID } from "../utils/api";
 
 const serverUrl = "ws://localhost:8080/stomp-ws";
 
+
+
 const useWebSocket = (userLocation, interests) => {
   const [client, setClient] = useState<Client | null>(null);
   const [places, setPlaces] = useState([]);

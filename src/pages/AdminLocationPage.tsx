@@ -12,10 +12,15 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import PlacePopup from "../components/PlacePopup";
 import "../styles/AdminLocationPage.css";
+import PlaceCategoryChart from "../components/PlaceCategoryChart";
+import { FaFileUpload } from "react-icons/fa";
 
 const AdminLocationPage: React.FC = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
+
+  const [fileName, setFileName] = useState<string>("CSV 파일을 선택해주세요"); // 선택된 파일 이름 표시
+
   const [places, setPlaces] = useState<Place[]>([]);
   const [deletedPlaces, setDeletedPlaces] = useState<Place[]>([]);
   const [page, setPage] = useState(0);
@@ -34,6 +39,7 @@ const AdminLocationPage: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+      setFileName(e.target.files[0].name); // 파일 이름 업데이트
     }
   };
 
@@ -52,6 +58,7 @@ const AdminLocationPage: React.FC = () => {
       console.error(error);
     }
   };
+
 
   const handleSearch = () => {
     setPage(0); // 검색 시 첫 페이지로 이동
@@ -145,9 +152,35 @@ const AdminLocationPage: React.FC = () => {
       <Header />
       <div className="location-container">
         <h2>장소 관리</h2>
-        <div className="csv-upload">
-          <input type="file" accept=".csv" onChange={handleFileChange} />
-          <button onClick={handleUpload}>CSV 업로드</button>
+        <div className="stats-container">
+            <div className="category-upload-wrapper">
+                <div className="chart-wrapper">
+                    <PlaceCategoryChart />
+                </div>
+                <div className="upload-wrapper">
+                    <div className="file-container">
+                      {/* 숨겨진 파일 선택 input */}
+                      <input
+                        type="file"
+                        id="file-input"
+                        accept=".csv"
+                        onChange={handleFileChange}
+                        hidden
+                      />
+                      <div className="upload-content">
+                          {/* 커스텀 파일 선택 버튼 */}
+                          <label htmlFor="file-input" className="custom-file-label">
+                              <FaFileUpload className="upload-icon" /> 파일 선택
+                          </label>
+                          {/* 선택된 파일 이름 표시 */}
+                          <span className="file-name">{fileName}</span>
+                      </div>
+                    </div>
+                    <div className="csv-button-container">
+                        <button className="csv-search-btn" onClick={handleUpload}>CSV 업로드</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div className="stats-container">

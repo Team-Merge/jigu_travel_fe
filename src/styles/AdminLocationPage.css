@@ -79,3 +79,118 @@ stat-box th:nth-child(3),
   width: 20%; /* 삭제/복구 버튼 */
   text-align: center;
 }
+
+
+/* 📌 원형 차트 + CSV 업로드 7:3 비율 레이아웃 */
+.category-upload-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+/* 📊 원형 차트 (7 비율) */
+.chart-wrapper {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 7;
+    max-width: 900px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* 📂 CSV 업로드 (3 비율) */
+.upload-wrapper {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.file-container {
+    width: 100%;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    display: flex;
+    min-height: 60px;
+    align-items: center;
+    justify-content: center;
+}
+
+.csv-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+}
+
+.csv-search-btn {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.upload-wrapper input {
+    margin-bottom: 10px;
+}
+
+
+/* button:hover {
+    background-color: #0056b3;
+} */
+
+/* 반응형: 768px 이하에서는 `upload-wrapper`가 `chart-wrapper` 아래로 이동 */
+@media (max-width: 768px) {
+    .category-upload-wrapper {
+        flex-direction: column; /* 가로 → 세로 배치 변경 */
+        align-items: center;
+    }
+
+    .chart-wrapper, .upload-wrapper {
+        flex: none; /* 각각 개별 크기로 설정 */
+        width: 100%; /* 전체 너비 사용 */
+        max-width: 768px; /* 최대 크기 지정 */
+    }
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+.custom-file-label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 아이콘과 텍스트 사이 간격 */
+    color: var(--primary-color);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 30px;
+}
+
+.upload-icon {
+    font-size: 40px;
+}

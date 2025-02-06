@@ -92,8 +92,8 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   const headers: { [key: string]: string } = {
     "Authorization": `Bearer ${jwtToken}`,
   };
-
-  // ✅ FormData가 아닐 때만 Content-Type을 설정 (JSON 요청 시)
+  
+  // FormData가 아닐 때만 Content-Type을 설정 (JSON 요청 시)
   if (!isFormData) {
     headers["Content-Type"] = "application/json";
   }
@@ -103,25 +103,23 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
     headers,
   });
 
-  console.log("🆕 [DEBUG] 현재 Access Token:", jwtToken); // ✅ 토큰 정상 출력 확인
+  console.log("현재 Access Token:", jwtToken); // 토큰 정상 출력 확인
 
-  // console.log("🚀 요청 헤더:", response.headers);
-
-  // ✅ 403 Forbidden: 권한이 없으므로 Access Token 갱신 X
+  // 403 Forbidden: 권한이 없으므로 Access Token 갱신 X
   if (response.status === 403) {
-    console.warn("🚨 [DEBUG] 403 Forbidden - 권한 없음");
+    console.warn("403 Forbidden - 권한 없음");
     throw new Error("권한이 없습니다.");
   }
 
-  // ✅ 401 Unauthorized: Access Token 만료 확인 후 갱신 시도
+  // 401 Unauthorized: Access Token 만료 확인 후 갱신 시도
   if (response.status === 401) {
-    console.warn("⏳ [DEBUG] 401 Unauthorized - Access Token 만료 확인 중...");
-    console.log("🆕 [DEBUG] 현재 Access Token:", jwtToken);
+    console.warn("401 Unauthorized - Access Token 만료 확인 중...");
+    console.log("현재 Access Token:", jwtToken);
 
     if (!retry) throw new Error("Access Token 갱신 실패. 다시 로그인 필요.");
 
     const newAccessToken = await refreshAccessToken();
-    console.log("🆕 [DEBUG] 새 Access Token:", newAccessToken);
+    console.log("새 Access Token:", newAccessToken);
     if (!newAccessToken) throw new Error("토큰 갱신 실패. 다시 로그인 필요.");
 
     // 새 Access Token 저장 후, 재요청 (최대 1회만)
@@ -683,6 +681,11 @@ export const updatePlace = async (placeId: number, updatedData: Partial<Place>) 
     console.error("장소 업데이트 실패:", error);
     throw error;
   }
+};
+
+export const getPlacesCountByCategory = async () => {
+  const response = await axios.get(`${API_BASE_URL}/place/count-by-category`);
+  return response.data;
 };
 
 /** WebSocket 서비스 UUID 생성 */

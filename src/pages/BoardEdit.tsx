@@ -5,21 +5,16 @@ import BoardForm from "../components/BoardForm";
 import Header from "../components/Header";
 import "../styles/BoardEdit.css"
 
-interface BoardEditProps {
-  postId: number;
-  goToDetail: () => void; // ✅ 수정 완료 후 상세보기로 이동
-  goToList: () => void; // ✅ 취소 버튼 클릭 시 목록으로 이동
-}
 
 const BoardEdit: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
-  console.log(`📢 [DEBUG] postId: ${postId}`);
-  console.log("📢 [DEBUG] postId:", postId);
-  // const [post, setPost] = useState<any>(null);
-  console.log("📢 [DEBUG] useParams():", useParams());
+  console.log(`postId: ${postId}`);
+  console.log("postId:", postId);
+  console.log("useParams():", useParams());
   const [post, setPost] = useState<{
     title: string;
     content: string;
+    inquiry: string;
     attachments: { fileName: string; filePath: string }[];
   } | null>(null);
   const [existingFiles, setExistingFiles] = useState<{ fileName: string; filePath: string }[]>([]);
@@ -45,11 +40,9 @@ const BoardEdit: React.FC = () => {
     fetchPost();
   }, [postId]);
 
-  const handleSubmit = async (title: string, content: string, newFiles: File[], removedFiles: string[]) => {
+  const handleSubmit = async (title: string, content: string, inquiry: string, newFiles: File[], removedFiles: string[]) => {
     try {
-     // const token = localStorage.getItem("token") || "";
-      await updatePost(Number(postId), title, content, newFiles, removedFiles);
-      // goToDetail();
+      await updatePost(Number(postId), title, content, inquiry, newFiles, removedFiles);
       alert("게시글이 수정되었습니다.");
       navigate(`/board/${postId}`);
     } catch (error) {
@@ -75,7 +68,8 @@ const BoardEdit: React.FC = () => {
         boardId={Number(postId)}
         initialTitle={post?.title} 
         initialContent={post?.content} 
-        initialFiles={existingFiles} // ✅ 기존 파일 목록 전달
+        initialInquiryType={post?.inquiry}
+        initialFiles={existingFiles} 
       />
       </div>
     </div>

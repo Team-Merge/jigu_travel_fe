@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getPostDetail, deletePost } from "../api/boardApi";
+import { getPostDetail, deletePost, downloadFile } from "../api/boardApi";
 import "../styles/BoardDetail.css"
 import Header from "../components/Header";
 
@@ -13,15 +13,16 @@ interface Attachment {
 
 const BoardDetail: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
-  console.log("📢 [DEBUG] postId:", postId);
-  // const [post, setPost] = useState<any>(null);
+  console.log("[DEBUG] postId:", postId);
+
   const [post, setPost] = useState<{ 
     boardId: number;
     title: string;
     content: string;
+    inquiryType: string;
     nickname: string;
     createdAt: string;
-    attachments: Attachment[]; // attachments 배열의 타입 지정
+    attachments: Attachment[]; 
   } | null>(null);
   
   const navigate = useNavigate();
@@ -30,12 +31,12 @@ const BoardDetail: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       if (!postId) {
-        console.error("🚨 postId가 undefined입니다!");
+        console.error("postId가 undefined입니다!");
         return;
       }
 
       try {
-        console.log("📢 [DEBUG] 게시글 요청 ID:", postId);
+        console.log("[DEBUG] 게시글 요청 ID:", postId);
         const data = await getPostDetail(Number(postId));
         setPost(data);
       } catch (error) {
@@ -44,6 +45,16 @@ const BoardDetail: React.FC = () => {
     };
     fetchPost();
   }, [postId]);
+
+  const handleDownload = async (fileName: string) => {
+    try {
+      await downloadFile(fileName);
+    } catch (error) {
+      console.error("다운로드 오류:", error);
+      alert("파일을 다운로드할 수 없습니다.");
+    }
+  };
+  
 
   const handleDelete = async () => {
     console.error("현재 토큰" + token);
@@ -70,7 +81,7 @@ const BoardDetail: React.FC = () => {
       {post ? (
         <>
           <div className="detail-title">
-          <h2 className="board-detail-title">{post.title}</h2>
+          <h2 className="board-detail-title">[{post.inquiryType}] {post.title}</h2>
           </div>
           <div className="detail-title">
           <p className="board-detal-author">작성자 : {post.nickname}</p>
@@ -79,16 +90,19 @@ const BoardDetail: React.FC = () => {
             {/* {new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(post.createdAt))} */}
           </p> 
           </div>
-          <div className="board-detail-content">{post.content}</div>
+          <div className="board-detail-content">
+            <p>{post.content}</p>
+            </div>
 
           {/* ✅ 첨부파일 목록만 표시 */}
           {post.attachments && post.attachments.length > 0 && (
             <div className="board-detail-attachments">
-              <h3>📎 첨부파일</h3>
+              <h3>첨부파일</h3>
               <ul>
                 {post.attachments.map((file) => (
                   <li key={file.fileId}>
                     {file.fileName} ({(file.fileSize / 1024).toFixed(2)} KB)
+                    <button onClick={() => handleDownload(file.fileName)}>다운로드</button>
                   </li>
                 ))}
               </ul>

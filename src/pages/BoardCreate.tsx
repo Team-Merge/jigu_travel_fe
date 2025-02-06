@@ -8,15 +8,16 @@ import Header from "../components/Header";
 const BoardCreate: React.FC<{}> = ()  => {
   const navigate = useNavigate();
 
-  const handleSubmit = async (title: string, content: string, files: File[]) => {
+  const handleSubmit = async (title: string, content: string, inquiryType: string, files: File[]) => {
     try {
-      await createPost(title, content, files); 
+      await createPost(title, content, inquiryType, files); 
       alert("게시글이 작성되었습니다.");
       console.log("데이터:", FormData)
       navigate("/board"); 
     } catch (error) {
       console.error("게시글 작성 실패:", error);
       alert("게시글 작성 중 오류 발생");
+      console.log("데이터:", FormData)
     }
   };
 
