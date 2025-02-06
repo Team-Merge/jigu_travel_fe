@@ -1,0 +1,87 @@
+/* 팝업 배경 (어두운 효과) */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+}
+
+.popup-head {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* 팝업 내용 */
+.popup-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+/* 상세 정보 스타일 */
+.popup-content p {
+    margin: 20px;
+    display: flex;
+    align-items: center;
+}
+
+/* 라벨 (이름, 연락처 등) */
+.popup-content strong {
+    width: 80px;
+    display: inline-block;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 입력 필드 스타일 */
+.popup-content input,
+.popup-content select {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 100%;
+}
+
+/* 버튼 스타일 */
+.popup-buttons {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 500px;
+}
+
+/* 버튼 크기 동일하게 설정 */
+.popup-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* 첫 번째 버튼 (저장 or 편집) */
+.popup-buttons button:first-child {
+    background: var(--primary-color);
+    margin-right: 5px;
+    color: white;
+}
+
+/* 두 번째 버튼 (닫기) */
+.popup-buttons button:last-child {
+    background: #eb4657;
+    margin-left: 5px;
+    color: white;
+}

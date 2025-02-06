@@ -5,6 +5,7 @@ import {
 //   getVisitorRecords,
   getAllUsers,
   setAdminStatus,
+  fetchPlaces,
 } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import VisitorChart from "../components/VisitorChart";
@@ -18,6 +19,13 @@ interface VisitorRecord {
   visitCount: number;
 }
 
+interface Place {
+    placeId: number;
+    name: string;
+    types: string[];
+    address: string;
+  }
+
 interface User {
   userId: string;
   loginId: string;
@@ -27,27 +35,31 @@ interface User {
 
 const AdminDashboard: React.FC = () => {
     
-  const navigate = useNavigate();
+const navigate = useNavigate();
+
+const [userPage, setUserPage] = useState<number>(0);
+const [placePage, setPlacePage] = useState<number>(0);
+const [size] = useState<number>(10);
+const [totalUserPages, setTotalUserPages] = useState<number>(1);
+const [totalPlacePages, setTotalPlacePages] = useState<number>(1);
+
+
   const [todayCount, setTodayCount] = useState<number>(0);
+  const [places, setPlaces] = useState<Place[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [dateCount, setDateCount] = useState<number | null>(null);
   const [records, setRecords] = useState<VisitorRecord[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
-  // 페이지네이션 관련 상태
-  const [page, setPage] = useState<number>(0);
-  const [size] = useState<number>(10);
-  const [totalPages, setTotalPages] = useState<number>(1);
-
   const getTodayKST = () => {
     const now = new Date();
-    now.setHours(now.getHours() + 9); // ✅ UTC → KST 변환
+    now.setHours(now.getHours() + 9); // UTC → KST 변환
     return now.toISOString().split("T")[0]; // yyyy-MM-dd 형식 반환
   };
   
   const getPastDateKST = (days: number) => {
     const date = new Date();
-    date.setHours(date.getHours() + 9); // ✅ UTC → KST 변환
+    date.setHours(date.getHours() + 9); // UTC → KST 변환
     date.setDate(date.getDate() - days);
     return date.toISOString().split("T")[0];
   };
@@ -62,10 +74,14 @@ const AdminDashboard: React.FC = () => {
 const [startDate, setStartDate] = useState<string>(getPastDateKST(7));
 const [endDate] = useState<string>(getTodayKST());
 
-  useEffect(() => {
+useEffect(() => {
     fetchTodayCount();
     fetchUsers();
-  }, [page]);
+  }, [userPage]);
+  
+  useEffect(() => {
+    fetchPlacesList();
+  }, [placePage]);
 
   const fetchTodayCount = async () => {
     const count = await getTodayVisitorCount();
@@ -74,13 +90,40 @@ const [endDate] = useState<string>(getTodayKST());
 
   const fetchUsers = async () => {
     try {
-      const response = await getAllUsers(page, size);
-      setUsers(response.content || []); // undefined 방지
-      setTotalPages(response.totalPages || 1);
+      const response = await getAllUsers(userPage, size);
+      setUsers(response.content || []);
+      setTotalUserPages(response.totalPages || 1);
     } catch (error) {
       console.error("사용자 불러오기 실패:", error);
-      setUsers([]); // 에러 발생 시 빈 배열 유지
+      setUsers([]);
     }
+  };
+
+  const fetchPlacesList = async () => {
+    try {
+      const response = await fetchPlaces(placePage, size, "전체");
+      setPlaces(response.content || []);
+      setTotalPlacePages(response.totalPages || 1);
+    } catch (error) {
+      console.error("장소 데이터 불러오기 실패:", error);
+      setPlaces([]);
+    }
+  };
+  
+  // 사용자 목록 페이지 이동
+  const goToPreviousUserPage = () => {
+    if (userPage > 0) setUserPage(userPage - 1);
+  };
+  const goToNextUserPage = () => {
+    if (userPage < totalUserPages - 1) setUserPage(userPage + 1);
+  };
+  
+  // 장소 목록 페이지 이동
+  const goToPreviousPlacePage = () => {
+    if (placePage > 0) setPlacePage(placePage - 1);
+  };
+  const goToNextPlacePage = () => {
+    if (placePage < totalPlacePages - 1) setPlacePage(placePage + 1);
   };
 
   const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,15 +144,6 @@ const [endDate] = useState<string>(getTodayKST());
     fetchUsers();
   };
 
-  // 페이지 이동
-  const goToPreviousPage = () => {
-    if (page > 0) setPage(page - 1);
-  };
-
-  const goToNextPage = () => {
-    if (page < totalPages - 1) setPage(page + 1);
-  };
-
   return (
     <div className="admin-wrapper">
         <Header />
@@ -122,8 +156,10 @@ const [endDate] = useState<string>(getTodayKST());
                     <p>{todayCount}명</p>
                 </div>
                 <div className="stat-box">
-                    <h2>특정 날짜 방문자</h2>
-                    <input type="date" value={selectedDate} onChange={handleDateChange} />
+                    <h2>해당일 방문객</h2>
+                    <div className="date-input">
+                      <input type="date" value={selectedDate} onChange={handleDateChange} />
+                    </div>
                     {/* {dateCount !== null && <p>{selectedDate} 방문자 수: {dateCount}명</p>} */}
                     {dateCount !== null && <p>방문자: {dateCount}명</p>}
                 </div>
@@ -145,7 +181,7 @@ const [endDate] = useState<string>(getTodayKST());
                 <div className="stat-box">
                     <div className="stat-header">
                         <h2>사용자 목록</h2>
-                        <button className="report-btn" onClick={() => console.log("전체 보고서 이동")}>전체 사용자 →</button>
+                        <button className="report-btn" onClick={() => console.log("전체 보고서 이동")}>사용자 관리 →</button>
                     </div>
                     {users.length > 0 ? (
                         <table>
@@ -176,15 +212,55 @@ const [endDate] = useState<string>(getTodayKST());
                         <p>사용자 데이터가 없습니다.</p>
                     )}
 
-                    {/* 🔥 페이지네이션 UI */}
+                    {/* 페이지네이션 UI */}
                     <div className="pagination">
-                        <button onClick={goToPreviousPage} disabled={page === 0}>
+                        <button onClick={goToPreviousUserPage} disabled={userPage === 0}>
                         이전
                         </button>
-                        <span>{page + 1} / {totalPages}</span>
-                        <button onClick={goToNextPage} disabled={page === totalPages - 1}>
+                        <span>{userPage + 1} / {totalUserPages}</span>
+                        <button onClick={goToNextUserPage} disabled={userPage >= totalUserPages - 1}>
                         다음
                         </button>
+                    </div>
+                </div>
+            </div>
+            <div className="stats-container">
+                <div className="stat-box">
+                    <div className="stat-header">
+                        <h2>장소 목록</h2>
+                        <button className="report-btn" onClick={() => navigate("/admin/location")}>장소 관리 →</button>
+                    </div>
+                    {places.length > 0 ? (
+                        <table>
+                        <thead>
+                            <tr>
+                            <th>이름</th>
+                            <th>종류</th>
+                            <th>주소</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {places.map((place) => (
+                            <tr key={place.placeId}>
+                                <td>{place.name}</td>
+                                <td>{place.types.join(", ")}</td>
+                                <td>{place.address}</td>
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                    ) : (
+                    <p>장소 데이터가 없습니다.</p>
+                    )}
+                    {/* 페이지네이션 UI */}
+                    <div className="pagination">
+                      <button onClick={goToPreviousPlacePage} disabled={placePage === 0}>
+                          이전
+                      </button>
+                      <span>{placePage + 1} / {totalPlacePages}</span>
+                      <button onClick={goToNextPlacePage} disabled={placePage >= totalPlacePages - 1}>
+                          다음
+                      </button>
                     </div>
                 </div>
             </div>

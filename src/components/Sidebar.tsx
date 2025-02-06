@@ -1,6 +1,6 @@
 // src/components/Sidebar.tsx
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // ✅ useLocation 추가
+import { useNavigate, useLocation } from "react-router-dom"; // useLocation 추가
 import { getUserInfo, logout } from "../utils/api";
 import "../styles/Sidebar.css";
 
@@ -11,13 +11,13 @@ interface SidebarProps {
 
 interface User {
   nickname: string;
-  role: string; // ✅ 역할 추가 (ROLE_USER, ROLE_ADMIN 등)
+  role: string; // 역할 추가 (ROLE_USER, ROLE_ADMIN 등)
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ 현재 페이지 경로 가져오기
+  const location = useLocation(); // 현재 페이지 경로 가져오기
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,22 +40,22 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
     navigate("/");
   };
 
-  // ✅ 기본 메뉴 (일반 사용자용)
+  // 기본 메뉴 (일반 사용자용)
   const defaultMenu = [
     { label: "AI 음성 가이드", path: "/ai-guide" },
     { label: "카테고리 추천", path: "/recommend-travel" },
     { label: "Q & A", path: "/board" },
   ];
 
-  // ✅ 관리자 페이지 메뉴 (`/admin`에서만 표시)
+  // 관리자 페이지 메뉴 (`/admin`에서만 표시)
   const adminMenu = [
     { label: "대시보드", path: "/admin" },
-    { label: "사용자 관리", path: "/admin/users" },
-    { label: "방문자 통계", path: "/admin/visitors" },
-    { label: "설정", path: "/admin/settings" },
+    { label: "방문자 통계", path: "/admin/visitor" },
+    { label: "사용자 관리", path: "/admin/visitors" },
+    { label: "장소 관리", path: "/admin/location" },
   ];
 
-  // ✅ 현재 URL이 "/admin"으로 시작하면 관리자 메뉴 사용
+  // 현재 URL이 "/admin"으로 시작하면 관리자 메뉴 사용
   const isAdminPage = location.pathname.startsWith("/admin");
   const menuItems = isAdminPage ? adminMenu : defaultMenu;
 

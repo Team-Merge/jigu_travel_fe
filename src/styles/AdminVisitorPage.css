@@ -101,6 +101,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     outline: none;
+    text-indent: 10px;
 }
 
 /* 버튼 스타일 */
