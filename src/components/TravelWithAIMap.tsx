@@ -13,7 +13,7 @@ interface TravelWithAIMapProps {
 }
 
 const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationChange }) => {
-  const [apiKey, setApiKey] = useState<string | null>(null);
+  const naverMapApiKey = import.meta.env.VITE_NAVER_MAP_API_KEY_ID;
   const [mapLoaded, setMapLoaded] = useState(false);
 
   const mapRef = useRef<any>(null);
@@ -23,24 +23,12 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
   const lastLngRef = useRef<number | null>(null);
   const watchId = useRef<number | null>(null);
 
-  // API Key 로드 (최초 실행)
-  useEffect(() => {
-    const fetchApiKey = async () => {
-      if (apiKey) return;
-
-      const key = await loadApiKey();
-      if (key) {
-        setApiKey(key);
-      } else {
-        console.error("API Key 불러오기 실패!");
-      }
-    };
-    fetchApiKey();
-  }, []);
-
   // 네이버 지도 로드 및 지도 초기화 (API 키 로드 후 한 번 실행)
   useEffect(() => {
-    if (!apiKey) return;
+    if (!naverMapApiKey) {
+        console.error("네이버 API 키가 환경 변수에 설정되지 않았습니다.");
+        return;
+    }
 
     if (document.querySelector(`script[src*="maps.js"]`)) {
           setMapLoaded(true); // 이미 로드된 경우 바로 상태 변경
@@ -48,7 +36,7 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
         }
 
     const script = document.createElement("script");
-    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${apiKey}`;
+    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${naverMapApiKey}`;
     script.async = true;
 
     script.onload = () => {
@@ -71,9 +59,11 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
     document.head.appendChild(script);
 
     return () => {
-      document.head.removeChild(script);
-    };
-  }, [apiKey]);
+      if (script.parentNode) {
+          script.parentNode.removeChild(script);
+      }
+  };
+  }, [naverMapApiKey]);
 
   // 현위치 마커 추가, 업데이트
   const addOrUpdateCurrentMarker = (lat: number, lng: number) => {
