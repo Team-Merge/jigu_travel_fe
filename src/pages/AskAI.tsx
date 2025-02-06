@@ -31,6 +31,7 @@ const AskAI: React.FC = () => {
   const [imageHeightState, setImageHeightState] = useState<number>(0);
   const [wscaleRatio, setWScaleRatio] = useState<number>(1);
   const [hscaleRatio, setHScaleRatio] = useState<number>(1);
+  const [isDetecting, setIsDetecting] = useState(false); // 탐지 중 상태 추가
 
   const imageRef = useRef<HTMLImageElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -75,9 +76,11 @@ const AskAI: React.FC = () => {
     setIsUploaded(true);
     setDetectionResults([]);
     setChatVisible(false);
+    setIsDetecting(true); // 탐지 시작
 
     sendImageToAPI(file).then((detections) => {
       setDetectionResults(detections);
+      setIsDetecting(false); // 탐지 완료
       if (detections.length > 0) setChatVisible(true);
     });
   };
@@ -191,16 +194,18 @@ const AskAI: React.FC = () => {
               <div className="image-result-section">
                 <img src={AiProfile} alt="ai-profile" width="40" height="40" />
                 <div className="image-result-message">
-                  {detectionResults.length > 0 ? (
+                  {isDetecting ? (
+                    <>AI 모델이 건물을 탐지 중입니다...<br/>잠시만 기다려주세요.</>
+                  ) : detectionResults.length > 0 ? (
                     <>
                       사진 분석 결과,
                       <span className="blue-text"> {(detectionResults[0].confidence * 100).toFixed(1)}%</span>
                       의 확률로
                       <span className="blue-text"> {convertClassNameToCustom(detectionResults[0].className)}</span>
-                      로 감지되었습니다.
+                      로 감지되었습니다.<br/>AI와 대화를 나누어보세요!
                     </>
                   ) : (
-                    <>건물이 감지되지 않았습니다.<br/> 다시 찍어주세요.</>
+                    <>건물이 감지되지 않았습니다.<br/>다시 찍어주세요.</>
                   )}
                 </div>
               </div>

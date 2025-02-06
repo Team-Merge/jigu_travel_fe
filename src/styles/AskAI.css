@@ -67,7 +67,7 @@
     content: "";
     position: absolute;
     top: 13px; /* 꼬리가 시작되는 위치 (필요시 조정) */
-    left: -20px; /* 이미지와 말풍선 사이에 꼬리가 나타나도록 위치 조정 */
+    left: -19px; /* 이미지와 말풍선 사이에 꼬리가 나타나도록 위치 조정 */
     border-width: 10px;
     border-style: solid;
     border-color: transparent;
