@@ -1,98 +1,153 @@
 .admin-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    width: 100vw;
-    overflow-y: auto;
-    height: 100vh;
-    min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100vw;
+  overflow-y: auto;
+  height: 100vh;
+  min-height: 100vh;
 }
 
 
-  .admin-dashboard {
-    margin-top: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    max-width: 1200px;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
+.admin-dashboard {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 1200px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-  
-  .stats-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
+.date-input {
+  width: 80%;
+  margin-left: -15px;
 }
 
-  .stat-box {
-    display: grid;
-    place-items: center; 
-    flex: 1;
-    padding: 5px 20px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .stat-box table {
-    width: 100%; /* ✅ 테이블이 부모 요소를 가득 채우도록 */
-    border-collapse: collapse; /* ✅ 테이블 테두리 정렬 */
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-  .stat-box h2 {
-    font-size: 18px;
-    color: #333;
-  }
-  
-  .stat-box p {
-    font-size: 24px;
-    font-weight: bold;
-    color: #007bff;
-    margin-top: 10px;
-  }
-  
-  input[type="date"] {
-    padding: 8px;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .chart-container {
-    margin-top: 20px;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* 🔥 방문자 통계 헤더 (제목 + 전체 보고서 버튼) */
+.stat-box {
+  display: grid;
+  place-items: center; 
+  flex: 1;
+  padding: 5px 15px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* 테이블 컨테이너 */
+.stat-box table {
+width: 100%; /* 부모 요소의 전체 너비 사용 */
+border-collapse: collapse; /* 테두리 간격 제거 */
+table-layout: fixed; /* 테이블 너비 균일하게 고정 */
+}
+
+/* 헤더와 셀 기본 스타일 */
+.stat-box th, .stat-box td {
+padding: 10px;
+border-bottom: 1px solid #ddd;
+text-align: center; /* 중앙 정렬 */
+white-space: nowrap; /* 줄바꿈 방지 */
+overflow: hidden; /* 넘치는 내용 숨김 */
+text-overflow: ellipsis; /* 넘치는 내용 "..." 표시 */
+}
+
+/* 🔥 3열 테이블 (이름, 종류, 주소) 비율 고정 */
+.stat-box th:nth-child(1),
+.stat-box td:nth-child(1) {
+width: 30%; /* 이름 */
+}
+
+.stat-box th:nth-child(2),
+.stat-box td:nth-child(2) {
+width: 30%; /* 종류 */
+}
+
+.stat-box th:nth-child(3),
+.stat-box td:nth-child(3) {
+width: 40%; /* 주소 */
+}
+
+/* 🔥 4열 테이블 (이름, 종류, 주소, 연락처) 비율 고정 */
+.stat-box th:nth-child(1),
+.stat-box td:nth-child(1) {
+width: 25%;
+}
+
+.stat-box th:nth-child(2),
+.stat-box td:nth-child(2) {
+width: 25%;
+}
+
+.stat-box th:nth-child(3),
+.stat-box td:nth-child(3) {
+width: 30%;
+}
+
+.stat-box th:nth-child(4),
+.stat-box td:nth-child(4) {
+width: 20%;
+}
+
+.stat-box h2 {
+  font-size: 18px;
+  color: #333;
+}
+
+.stat-box p {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+  margin-top: 10px;
+}
+
+input[type="date"] {
+  padding: 8px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.chart-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔥 방문자 통계 헤더 (제목 + 전체 보고서 버튼) */
 .stat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 10px;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
 
 /* 전체 보고서 버튼 스타일 */
 .report-btn {
-    background: none;
-    border: none;
-    color: #007bff;
-    font-size: 14px;
-    cursor: pointer;
-    transition: color 0.2s;
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
 .report-btn:hover {
-    color: #0056b3; /* 호버 시 색상 변경 */
+  color: #0056b3; /* 호버 시 색상 변경 */
 }
