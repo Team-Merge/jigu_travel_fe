@@ -54,6 +54,11 @@
   font-weight: bold;
 }
 
+.map-category.active .place-category-icon {
+  filter: brightness(0) saturate(100%) invert(32%) sepia(98%) saturate(1625%) hue-rotate(199deg) brightness(96%) contrast(102%);
+}
+
+
 /* 명소 리스트 */
 .place-list {
   flex: 1;

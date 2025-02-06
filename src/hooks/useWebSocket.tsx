@@ -11,6 +11,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
   const [serviceUUID, setServiceUUID] = useState<string | null>(() => localStorage.getItem("serviceUUID"));
   const lastLocationRef = useRef<{ lat: number; lng: number } | null>(null);
   const subscriptionRef = useRef<any>(null); //
+  const reconnectAttempts = useRef(0);
   const jwtToken = localStorage.getItem("jwtToken");
 
   useEffect(() => {
@@ -33,14 +34,15 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
     const stompClient = new Client({
       brokerURL: serverUrl,
       connectHeaders: {
-                  Authorization: `Bearer ${jwtToken}` // 메시지 전송 시 인증 헤더 추가
-              },
+          Authorization: `Bearer ${jwtToken}` // 메시지 전송 시 인증 헤더 추가
+          },
       debug: (str) => console.log(str),
       reconnectDelay: 5000, // 5초 후 자동 재연결
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
       onConnect: () => {
         console.log("WebSocket 연결 성공!");
+        reconnectAttempts.current = 0;
 
         // 기존 구독 해제 후 새로 구독
         if (subscriptionRef.current) {
@@ -63,10 +65,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
 
           const { lat, lng } = userLocation;
           const lastLocation = lastLocationRef.current;
-          if (
-                      !lastLocation ||
-                      Math.abs(lat - lastLocation.lat) > 0.0001 ||
-                      Math.abs(lng - lastLocation.lng) > 0.0001
+          if (!lastLocation || Math.abs(lat - lastLocation.lat) > 0.0001 || Math.abs(lng - lastLocation.lng) > 0.0001
                     ) {
                       stompClient.publish({
                         destination: "/pub/place",
@@ -82,27 +81,51 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
                   };
         sendLocation();
               },
-            });
+
+      // 웹소켓 재연결
+      onDisconnect: () => {
+              console.warn(" WebSocket 연결 끊김. 재연결 시도 중...");
+              attemptReconnect();
+            },
+
+      onStompError: (frame) => {
+              console.error("WebSocket 에러 발생:", frame.headers["message"]);
+            },
+
+      onWebSocketError: (event) => {
+              console.error("WebSocket 네트워크 오류 발생:", event);
+              attemptReconnect();
+        },
+    });
 
     stompClient.activate();
     setClient(stompClient);
 
     return () => {
-      // 컴포넌트 언마운트 시 `clearInterval()` 및 웹소켓 해제
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      if (subscriptionRef.current) {
-        subscriptionRef.current.unsubscribe();
-        subscriptionRef.current = null;
-      }
-      stompClient.deactivate();
-      setClient(null);
-    };
-  }, [isWebSocketReady, userLocation]);
+          if (subscriptionRef.current) {
+            subscriptionRef.current.unsubscribe();
+            subscriptionRef.current = null;
+          }
+          stompClient.deactivate();
+          setClient(null);
+        };
+      }, [isWebSocketReady, userLocation]);
 
-  return { places };
-};
+    const attemptReconnect = () => {
+        if (reconnectAttempts.current >= 5) {
+          console.error(" WebSocket 재연결 시도 5회 초과! 중단합니다.");
+          return;
+        }
+        reconnectAttempts.current += 1;
+        console.log(`WebSocket 재연결 시도 중.. (${reconnectAttempts.current}/5)`);
+
+        setTimeout(() => {
+          setClient(null); // 기존 클라이언트 초기화
+          setTimeout(() => setClient(new Client({ brokerURL: serverUrl })), 1000); // 새로운 클라이언트 생성
+        }, 5000); // 5초 후 재연결 시도
+      };
+
+      return { places };
+    };
 
 export default useWebSocket;

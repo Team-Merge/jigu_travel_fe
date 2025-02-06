@@ -44,6 +44,7 @@ const TravelWithAI: React.FC = () => {
 
             setInterests(storedInterests);
 
+            // 최초 1회 : REST API로 맞춤 명소
             try {
               const fetchedPlaces = await fetchNearbyPlaces(userLocation.lat, userLocation.lng, storedInterests);
               setPlaces(fetchedPlaces);
@@ -61,12 +62,12 @@ const TravelWithAI: React.FC = () => {
   const { places: webSocketPlaces } = useWebSocket(userLocation, interests, isWebSocketReady);
 
   useEffect(() => {
-      if (activeTab === "interest") {
-        const filtered = webSocketPlaces.filter((place) =>
+      const updatedPlaces = activeTab === "all" ? webSocketPlaces : webSocketPlaces.filter((place) =>
           place.types.some((type) => interests.includes(type))
         );
-        setFilteredPlaces(filtered);
-      }
+
+        setFilteredPlaces(updatedPlaces);
+        setPlacesCount(updatedPlaces.length);
     }, [webSocketPlaces, activeTab, interests]);
 
   // 모든 명소 버튼

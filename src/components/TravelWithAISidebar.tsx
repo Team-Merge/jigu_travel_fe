@@ -34,25 +34,10 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
     <div className="map-sidebar">
       {/* 카테고리 버튼 영역 */}
       <div className="map-sidebar-categories">
-      <button className={`map-category ${activeTab === "custom" ? "active" : ""}`} onClick={onFetchInterestPlaces}>
-                <img
-                  src={Custom_icon}
-                  className="place-category-icon"
-                  alt="맞춤 명소"
-                />
-                맞춤 명소
-              </button>
-        <button
-                  className={`map-category ${activeTab === "all" ? "active" : ""}`}
-                  onClick={onFetchPlaces}
-                >
-          <img
-            src={All_icon}
-            className="place-category-icon"
-            alt="모든 명소"
-          />
-          모든 명소
-        </button>
+      <button className={`map-category ${activeTab === "interest" ? "active" : ""}`} onClick={onFetchInterestPlaces}>
+                <img src={Custom_icon} className="place-category-icon" alt="맞춤 명소"/> 맞춤 명소 </button>
+      <button className={`map-category ${activeTab === "all" ? "active" : ""}`} onClick={onFetchPlaces}>
+          <img src={All_icon} className="place-category-icon" alt="모든 명소" /> 모든 명소 </button>
       </div>
 
       {/* 명소 리스트 영역 */}

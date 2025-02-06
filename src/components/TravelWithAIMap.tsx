@@ -172,15 +172,13 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
   return (
       <div id="map" style={{ width: "100%", height: "100%", position: "relative" }}>
         <button id="recenter-button" onClick={() => {
-                                             if (mapRef.current && lastLatRef.current !== null && lastLngRef.current !== null) {
-                                               mapRef.current.setCenter(new window.naver.maps.LatLng(lastLatRef.current, lastLngRef.current));
-                                             }
-                                           }}>
-                                       현위치
+            if (mapRef.current && lastLatRef.current !== null && lastLngRef.current !== null) {
+                mapRef.current.setCenter(
+                    new window.naver.maps.LatLng(
+                        lastLatRef.current, lastLngRef.current));}}}>현위치
         </button>
       </div>
     );
   };
-
 
 export default TravelWithAIMap;
