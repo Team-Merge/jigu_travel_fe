@@ -282,21 +282,14 @@ export const sendAudio = async (audioBlob: Blob) => {
 
 /** MAP : 네이버맵 API KEY 반환 **/
 export const loadApiKey = async (): Promise<string | null> => {
-  try {
-    const response = await fetch("/service_account_key.json");
-    if (!response.ok) {
-      throw new Error(`JSON 파일을 불러올 수 없습니다. 상태 코드: ${response.status}`);
-    }
-    const data = await response.json();
+  const naverMapApiKey = process.REACT_APP_NAVER_MAP_API_KEY_ID;
 
-    if (!data.NAVER_MAP_API_KEY) {
-      throw new Error("네이버 API 키가 JSON 파일에 없습니다.");
-    }
-    return data.NAVER_MAP_API_KEY;
-  } catch (error) {
-    console.error("API 키 로드 중 오류 발생:", error);
+  if (!naverMapApiKey) {
+    console.error("네이버 API 키가 환경 변수에 설정되지 않았습니다.");
     return null;
   }
+
+  return naverMapApiKey;
 };
 
 /** 사용자 현재 위치 가져오기 (Geolocation API) */
