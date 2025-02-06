@@ -49,8 +49,8 @@
 .divider-line {
     width: 80%;
     border: none;
-    border-top: 2px solid #4CA9E7; /* 연한 회색 줄 */
-    margin: 10px 0; /* 위아래 여백 조정 */
+    border-top: 2px solid #4CA9E7; 
+    margin: 10px 0; 
     opacity: 0.8; 
 }
 
@@ -77,18 +77,16 @@
     width: 90%;
     gap: 20px;
 }
-/* ✅ 제목 스타일 */
+/* 제목 스타일 */
 .board-detail-title {
     font-size: 24px;
     font-weight: bold;
     height: 1vw;
     display: flex;
     align-items: center;
-    /* margin-top: 10px; */
-    /* margin-bottom: 30px; */
 }
 
-/* ✅ 작성자 스타일 */
+/* 작성자 스타일 */
 .board-detail-author
 .board-detail-date {
     font-size: 16px;
@@ -97,7 +95,7 @@
 }
 
 
-/* ✅ 내용 스타일 */
+/* 내용 스타일 */
 .board-detail-content {
     font-size: 16px;
     line-height: 1.6;
@@ -107,9 +105,16 @@
     min-height: 150px;
     margin-bottom: 20px;
     width: 90%;
+    
 }
 
-/* ✅ 첨부파일 스타일 */
+.board-detail-content p {
+    font-size: 18px;
+    margin-bottom: 10px;
+    margin-left: 15px;
+}
+
+/* 첨부파일 스타일 */
 .board-detail-attachments {
     background: #f4f4f4;
     padding-left: 10px;
@@ -122,6 +127,7 @@
 .board-detail-attachments h3 {
     font-size: 18px;
     margin-bottom: 10px;
+    margin-left: 15px;
 }
 
 .attachment-item {
@@ -129,7 +135,7 @@
     padding: 5px 0;
 }
 
-/* ✅ 버튼 컨테이너 */
+/* 버튼 컨테이너 */
 .board-detail-buttons {
     display: flex;
     justify-content:center;
@@ -147,7 +153,6 @@
     max-width: 35px; 
 }
 
-/* ✅ 뒤로가기 버튼 */
 .back-button {
     background: #cccccc;
     color: black;
@@ -163,7 +168,6 @@
     background: #b3b3b3;
 }
 
-/* ✅ 수정 버튼 */
 .edit-button {
     background: #4CA9E7;
     color: white;
@@ -179,7 +183,6 @@
     background: #0056b3;
 }
 
-/* ✅ 삭제 버튼 */
 .delete-button {
     background: #dc3545;
     color: white;
@@ -195,7 +198,6 @@
     background: #a71d2a;
 }
 
-/* ✅ 로딩 텍스트 스타일 */
 .loading-text {
     text-align: center;
     font-size: 16px;
