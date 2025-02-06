@@ -14,6 +14,7 @@ const TravelWithAI: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [interests, setInterests] = useState<string[]>([]);
   const [isWebSocketReady, setIsWebSocketReady] = useState<boolean>(false);
+  const [highlightedPlaceId, setHighlightedPlaceId] = useState<number | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollToBottom = () => {
@@ -101,12 +102,17 @@ const TravelWithAI: React.FC = () => {
     <div className="map-container">
       <TravelWithAISidebar
         places={filteredPlaces}
-                activeTab={activeTab}
-                onFetchPlaces={handleFetchPlaces}
-                onFetchInterestPlaces={handleFetchInterestPlaces}
+        activeTab={activeTab}
+        onFetchPlaces={handleFetchPlaces}
+        onFetchInterestPlaces={handleFetchInterestPlaces}
+        highlightedPlaceId={highlightedPlaceId}
       />
       <div className="map-wrapper">
-        <TravelWithAIMap places={filteredPlaces} onLocationChange={setUserLocation} />
+        <TravelWithAIMap
+                places={filteredPlaces}
+                onLocationChange={setUserLocation}
+                setHighlightedPlaceId={setHighlightedPlaceId}
+              />
       </div>
       <div className="places-count">
         지금 내 주변 관광명소는 {placesCount}개

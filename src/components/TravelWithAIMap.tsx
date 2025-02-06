@@ -10,9 +10,10 @@ declare global {
 interface TravelWithAIMapProps {
   places: Place[];
   onLocationChange: (location: { lat: number; lng: number }) => void;
+  setHighlightedPlaceId: (placeId: number | null) => void;
 }
 
-const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationChange }) => {
+const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationChange, setHighlightedPlaceId }) => {
   const naverMapApiKey = import.meta.env.VITE_NAVER_MAP_API_KEY_ID;
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -141,6 +142,7 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
 
           window.naver.maps.Event.addListener(marker, "click", () => {
             mapRef.current.panTo(marker.getPosition());
+            setHighlightedPlaceId(place.placeId);
           });
 
           newMarkers.set(place.placeId, marker);
@@ -155,6 +157,16 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
 
       placeMarkersRef.current = newMarkers;
     }, [places, mapLoaded]);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    const map = mapRef.current;
+
+    window.naver.maps.Event.addListener(map, "click", () => {
+      setHighlightedPlaceId(null);
+    });
+  }, [mapLoaded, setHighlightedPlaceId]);
 
   // 현위치 버튼
   const handleRecenter = () => {

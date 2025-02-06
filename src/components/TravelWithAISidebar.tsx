@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import "../styles/TravelWithAISidebar.css";
 import Custom_icon from "../assets/images/travelwithai_custom.svg";
@@ -22,37 +22,49 @@ interface TravelWithAISidebarProps {
   activeTab: string;
   onFetchPlaces: () => void;
   onFetchInterestPlaces: () => void;
+  highlightedPlaceId: number | null;
 }
 
 const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   places,
   activeTab,
   onFetchPlaces,
-  onFetchInterestPlaces
+  onFetchInterestPlaces,
+  highlightedPlaceId,
 }) => {
-  return (
-    <div className="map-sidebar">
-      {/* 카테고리 버튼 영역 */}
-      <div className="map-sidebar-categories">
-      <button className={`map-category ${activeTab === "interest" ? "active" : ""}`} onClick={onFetchInterestPlaces}>
-                <img src={Custom_icon} className="place-category-icon" alt="맞춤 명소"/> 맞춤 명소 </button>
-      <button className={`map-category ${activeTab === "all" ? "active" : ""}`} onClick={onFetchPlaces}>
-          <img src={All_icon} className="place-category-icon" alt="모든 명소" /> 모든 명소 </button>
-      </div>
+    const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+
+    useEffect(() => {
+        if (highlightedPlaceId && itemRefs.current[highlightedPlaceId]) {
+              itemRefs.current[highlightedPlaceId]?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }, [highlightedPlaceId]);
+
+    return (
+        <div className="map-sidebar">
+          {/* 카테고리 버튼 영역 */}
+          <div className="map-sidebar-categories">
+          <button className={`map-category ${activeTab === "interest" ? "active" : ""}`} onClick={onFetchInterestPlaces}>
+                    <img src={Custom_icon} className="place-category-icon" alt="맞춤 명소"/> 맞춤 명소 </button>
+          <button className={`map-category ${activeTab === "all" ? "active" : ""}`} onClick={onFetchPlaces}>
+              <img src={All_icon} className="place-category-icon" alt="모든 명소" /> 모든 명소 </button>
+          </div>
 
       {/* 명소 리스트 영역 */}
-      <div className="map-sidebar-places">
-        {places.length > 0 ? (
-          places.map((place, index) => (
-            <div key={index} className="place-item">
-              <h3>
-                {place.name} <span className="place-category">{place.types}</span>
-              </h3>
-              <p className="place-address">{place.address}</p>
-              <p className="place-tel">{place.tel}</p>
-            </div>
-          ))
-        ) : (
+          <div className="map-sidebar-places">
+            {places.length > 0 ? (
+              places.map((place) => (
+                  <div
+                        key={place.placeId}
+                        ref={(el) => (itemRefs.current[place.placeId] = el)}
+                        className={`place-item ${highlightedPlaceId === place.placeId ? "highlighted" : ""}`}
+                  >
+                       <h3>{place.name}</h3>
+                            <p className="place-address">{place.address}</p>
+                            <p className="place-tel">{place.tel}</p>
+                  </div>
+              ))
+            ) : (
           <p className="no-places">주변 명소를 찾을 수 없습니다.</p>
         )}
       </div>
