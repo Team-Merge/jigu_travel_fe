@@ -32,7 +32,7 @@
     z-index: 1000;
     transform: translateY(100%);
     transition: transform 0.3s ease-in-out;
-    height: calc((100% - 60px) / 2);
+    height: calc((100% - 60px) / 4);
     overflow: hidden;
     padding-top: 20px;
     pointer-events: none;  /* 클릭 방지 */
@@ -330,12 +330,14 @@
     font-size: 12px;
 }
 
-.image-result-section{
+.image-result-section {
     display: flex;
     flex-direction: row;
     width: 80%;
     align-items: center;
     text-align: center;
+    position: relative;
+    z-index: 1000;
 }
 
 .blue-text {
