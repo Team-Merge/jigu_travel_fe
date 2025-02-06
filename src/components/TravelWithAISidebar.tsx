@@ -1,8 +1,6 @@
 import React from "react";
 
 import "../styles/TravelWithAISidebar.css";
-import Custom_icon from "../assets/images/travelwithai_custom.svg";
-import All_icon from "../assets/images/travelwithai_all.svg";
 
 interface Place {
   placeId: number;
@@ -32,20 +30,12 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
     <div className="map-sidebar">
       {/* 카테고리 버튼 영역 */}
       <div className="map-sidebar-categories">
-      <button className={`map-category ${activeTab === "custom" ? "active" : ""}`}>
-                <img
-                  src={Custom_icon}
-                  className="place-category-icon"
-                  alt="맞춤 명소"
-                />
-                맞춤 명소
-              </button>
         <button
                   className={`map-category ${activeTab === "all" ? "active" : ""}`}
                   onClick={onFetchPlaces}
                 >
           <img
-            src={All_icon}
+            src="src/assets/images/travelwithai_all.svg"
             className="place-category-icon"
             alt="모든 명소"
           />
