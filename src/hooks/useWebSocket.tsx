@@ -1,19 +1,15 @@
 // npm install @stomp/stompjs
-
-import Stomp from "@stomp/stompjs";
 import { Client } from "@stomp/stompjs";
 import React, { useEffect, useState, useRef } from "react";
 import { fetchUUID } from "../utils/api";
 
 const serverUrl = "ws://localhost:8080/stomp-ws";
 
-
-
-const useWebSocket = (userLocation, interests) => {
+const useWebSocket = (userLocation, interests, isWebSocketReady) => {
   const [client, setClient] = useState<Client | null>(null);
   const [places, setPlaces] = useState([]);
   const [serviceUUID, setServiceUUID] = useState<string | null>(() => localStorage.getItem("serviceUUID"));
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastLocationRef = useRef<{ lat: number; lng: number } | null>(null);
   const subscriptionRef = useRef<any>(null); //
   const jwtToken = localStorage.getItem("jwtToken");
 
@@ -32,7 +28,7 @@ const useWebSocket = (userLocation, interests) => {
   }, []);
 
   useEffect(() => {
-    if (!serviceUUID || !userLocation || interests.length === 0) return;
+    if (!isWebSocketReady || !serviceUUID || !userLocation) return;
 
     const stompClient = new Client({
       brokerURL: serverUrl,
@@ -60,23 +56,33 @@ const useWebSocket = (userLocation, interests) => {
           }
         });
 
-        // 5초마다 위치 정보 & 관심사 전송 (setInterval ID를 useRef에 저장)
-        intervalRef.current = setInterval(() => {
-          if (stompClient.connected) {
-            stompClient.publish({
-              destination: "/pub/place",
-              body: JSON.stringify({
-                serviceUUID,
-                latitude: userLocation.lat,
-                longitude: userLocation.lng,
-                interests, // 관심사 포함
-              }),
+        // 5초마다 위치 정보 전송 (setInterval ID를 useRef에 저장)
+        const sendLocation = () => {
+          if (!stompClient.connected) return;
+          if (!userLocation) return;
+
+          const { lat, lng } = userLocation;
+          const lastLocation = lastLocationRef.current;
+          if (
+                      !lastLocation ||
+                      Math.abs(lat - lastLocation.lat) > 0.0001 ||
+                      Math.abs(lng - lastLocation.lng) > 0.0001
+                    ) {
+                      stompClient.publish({
+                        destination: "/pub/place",
+                        body: JSON.stringify({
+                          serviceUUID,
+                          latitude: lat,
+                          longitude: lng,
+                        }),
+                      });
+                      console.log("웹소켓으로 위치 전송:", userLocation);
+                      lastLocationRef.current = { lat, lng };
+                    }
+                  };
+        sendLocation();
+              },
             });
-            console.log("웹소켓으로 위치 & 관심사 전송:", userLocation, interests);
-          }
-        }, 5000);
-      },
-    });
 
     stompClient.activate();
     setClient(stompClient);
@@ -94,7 +100,7 @@ const useWebSocket = (userLocation, interests) => {
       stompClient.deactivate();
       setClient(null);
     };
-  }, [userLocation, interests]);
+  }, [isWebSocketReady, userLocation]);
 
   return { places };
 };

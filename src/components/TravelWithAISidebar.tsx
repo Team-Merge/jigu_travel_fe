@@ -21,18 +21,20 @@ interface TravelWithAISidebarProps {
   places: Place[];
   activeTab: string;
   onFetchPlaces: () => void;
+  onFetchInterestPlaces: () => void;
 }
 
 const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   places,
   activeTab,
   onFetchPlaces,
+  onFetchInterestPlaces
 }) => {
   return (
     <div className="map-sidebar">
       {/* 카테고리 버튼 영역 */}
       <div className="map-sidebar-categories">
-      <button className={`map-category ${activeTab === "custom" ? "active" : ""}`}>
+      <button className={`map-category ${activeTab === "custom" ? "active" : ""}`} onClick={onFetchInterestPlaces}>
                 <img
                   src={Custom_icon}
                   className="place-category-icon"

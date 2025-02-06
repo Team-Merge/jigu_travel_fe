@@ -281,16 +281,16 @@ export const sendAudio = async (audioBlob: Blob) => {
 };
 
 /** MAP : 네이버맵 API KEY 반환 **/
-export const loadApiKey = async (): Promise<string | null> => {
-  const naverMapApiKey = process.REACT_APP_NAVER_MAP_API_KEY_ID;
-
-  if (!naverMapApiKey) {
-    console.error("네이버 API 키가 환경 변수에 설정되지 않았습니다.");
-    return null;
-  }
-
-  return naverMapApiKey;
-};
+// export const loadApiKey = async (): Promise<string | null> => {
+//   const naverMapApiKey = import.meta.env.VITE_NAVER_MAP_API_KEY_ID;
+//
+//   if (!naverMapApiKey) {
+//     console.error("네이버 API 키가 환경 변수에 설정되지 않았습니다.");
+//     return null;
+//   }
+//
+//   return naverMapApiKey;
+// };
 
 /** 사용자 현재 위치 가져오기 (Geolocation API) */
 export const getUserLocation = (onSuccess: (location: { lat: number; lng: number }) => void, onError?: (error: GeolocationPositionError) => void) => {
