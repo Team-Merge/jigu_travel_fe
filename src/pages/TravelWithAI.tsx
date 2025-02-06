@@ -13,6 +13,15 @@ const TravelWithAI: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [interests, setInterests] = useState<string[]>([]);
 
+  useEffect(() => {
+      const jwtToken = localStorage.getItem("jwt");
+      if (!jwtToken || jwtToken === "undefined") {
+        alert("로그인 후 사용해주세요.");
+        navigate("/auth/login");
+        return;
+      }
+      scrollToBottom();
+    }, []);
 
   // 관심사 로드, 로컬 스토리지 저장
   useEffect(() => {
