@@ -93,6 +93,17 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
           </button>
         )}
       </div>
+      
+
+        
+      {user && (
+        <div className="withdraw-section">
+          <button className="menu-item" onClick={() => navigate("/withdraw")}>
+            회원 탈퇴
+            <img src="/icons/right_arrow.svg" alt="화살표" className="arrow-icon" />
+          </button>
+        </div>
+      )}
 
     </div>
   );
