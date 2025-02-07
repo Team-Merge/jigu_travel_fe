@@ -184,13 +184,13 @@ const Register: React.FC = () => {
               <div className="gender-container">
                 <div>
                 <label className="gender-option">
-                  <input type="radio" value="MALE" checked={gender === "MALE"} onChange={() => setGender("MALE")}/>
+                  <input style={{width:"auto"}} type="radio" value="MALE" checked={gender === "MALE"} onChange={() => setGender("MALE")}/>
                   남성
                 </label>
                 </div>
                 <div>
                 <label className="gender-option">
-                  <input type="radio" value="FEMALE" checked={gender === "FEMALE"}
+                  <input  style={{width:"auto"}} type="radio" value="FEMALE" checked={gender === "FEMALE"}
                          onChange={() => setGender("FEMALE")}/>
                   여성
                 </label>
