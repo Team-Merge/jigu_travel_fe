@@ -3,10 +3,12 @@ import Header from "../components/Header";
 import AiGuide from "../components/AiGuide";
 import "../styles/global.css";
 import { useNavigate } from "react-router-dom";
-const navigate = useNavigate();
 
 
 const AiGuideTest: React.FC = () => {
+
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const jwtToken = localStorage.getItem("jwt");
