@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { register, checkNickname, checkLoginId } from "../utils/api";
+import { register, checkNickname, checkLoginId, calculateDateYearsAge } from "../utils/api";
 import Header from "../components/Header";
 import "../styles/Register.css";
 
@@ -15,6 +15,8 @@ const Register: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(null);
   const [loginIdAvailable, setLoginIdAvailable] = useState<boolean | null>(null);
+  const [minDate, setMinDate] = useState<string>("");
+  const [maxDate, setMaxDate] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -47,7 +49,16 @@ const Register: React.FC = () => {
       setNicknameAvailable(null);
     }
   };
-  
+
+  useEffect(() => {
+    const fetchDates = async () => {
+      const min = await calculateDateYearsAge(110); // 110세까지 허용
+      const max = await calculateDateYearsAge(14);  // 14세 이상만 입력 가능
+      setMinDate(min);
+      setMaxDate(max);
+    };
+    fetchDates();
+  }, []);
 
   /** 🔹 회원가입 요청 */
   const handleSubmit = async (event: React.FormEvent) => {
@@ -98,7 +109,7 @@ const Register: React.FC = () => {
             <div className="nickname-container">
               <input
                   type="text"
-                  placeholder="이메일을 입력하세요"
+                  placeholder="아이디를 입력하세요"
                   value={loginId}
                   onChange={(e) => {
                     setLoginId(e.target.value);
@@ -134,7 +145,9 @@ const Register: React.FC = () => {
             {/* 생년월일 */}
             <div className="input-wrapper">
               <label>생년월일<span className="required">*</span></label>
-              <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required/>
+              <input type="date" value={birthDate} min={minDate} max={maxDate} onChange={(e) => setBirthDate(e.target.value)} required
+              onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("14세 이상만 가입 가능합니다.")}
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}/>
             </div>
 
             {/* 닉네임 입력 + 중복 확인 */}
