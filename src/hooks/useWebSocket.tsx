@@ -1,9 +1,10 @@
-// npm install @stomp/stompjs
 import { Client } from "@stomp/stompjs";
 import React, { useEffect, useState, useRef } from "react";
 import { fetchUUID } from "../utils/api";
 
-const serverUrl = "wss://jigu-travel.kro.kr/stomp-ws";
+const socketUrl = window.location.protocol === "https:"
+    ? "wss://jigu-travel.kro.kr/stomp-ws"
+    : "ws://localhost:8080/stomp-ws";
 
 const useWebSocket = (userLocation, interests, isWebSocketReady) => {
   const [client, setClient] = useState<Client | null>(null);
@@ -32,7 +33,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
     if (!isWebSocketReady || !serviceUUID || !userLocation) return;
 
     const stompClient = new Client({
-      brokerURL: serverUrl,
+      brokerURL: socketUrl,
       connectHeaders: {
           Authorization: `Bearer ${jwtToken}` // 메시지 전송 시 인증 헤더 추가
           },
@@ -58,7 +59,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
           }
         });
 
-        // 5초마다 위치 정보 전송 (setInterval ID를 useRef에 저장)
+        // 위치 정보 변경될 때만 publish
         const sendLocation = () => {
           if (!stompClient.connected) return;
           if (!userLocation) return;
@@ -82,7 +83,6 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
         sendLocation();
               },
 
-      // 웹소켓 재연결
       onDisconnect: () => {
               console.warn(" WebSocket 연결 끊김. 재연결 시도 중...");
               attemptReconnect();
@@ -111,6 +111,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
         };
       }, [isWebSocketReady, userLocation]);
 
+    // 웹소켓 재연결
     const attemptReconnect = () => {
         if (reconnectAttempts.current >= 5) {
           console.error(" WebSocket 재연결 시도 5회 초과! 중단합니다.");
