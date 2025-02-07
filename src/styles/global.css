@@ -21,6 +21,7 @@ button {
 
   :root {
     --primary-color: #4CA9E7;
+    --primary-color-rgb: 76, 169, 231;
     --secondary-color: #007bff;
     --background-color: #f5f5f5;
 }

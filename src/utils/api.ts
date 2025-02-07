@@ -282,7 +282,7 @@ export const sendAudio = async (audioBlob: Blob) => {
 
 /** MAP : 네이버맵 API KEY 반환 **/
 export const loadApiKey = async (): Promise<string | null> => {
-  const naverMapApiKey = process.REACT_APP_NAVER_MAP_API_KEY_ID;
+  const naverMapApiKey = import.meta.env.VITE_NAVER_MAP_API_KEY_ID;
 
   if (!naverMapApiKey) {
     console.error("네이버 API 키가 환경 변수에 설정되지 않았습니다.");

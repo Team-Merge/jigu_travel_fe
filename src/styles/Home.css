@@ -117,3 +117,71 @@ h3 {
     text-align: left;
     margin-top: 20px;
 }
+
+.refresh-button {
+    margin-top: 20px;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.refresh-button:hover {
+    background-color: #0056b3; /* 어두운 파란색 */
+    transform: rotate(180deg);
+}
+
+.title-container {
+    display: flex;
+    justify-content: space-between; /* 왼쪽 끝 + 오른쪽 끝 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(var(--primary-color-rgb), 0.8); 
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    opacity: 0;
+    animation: fadeInOut 2s ease-in-out;
+  }
+  
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    90% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+    }
+  }
+
+  .refresh-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
