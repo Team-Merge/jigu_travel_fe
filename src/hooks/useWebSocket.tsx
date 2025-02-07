@@ -1,9 +1,10 @@
-// npm install @stomp/stompjs
 import { Client } from "@stomp/stompjs";
 import React, { useEffect, useState, useRef } from "react";
 import { fetchUUID } from "../utils/api";
 
-const serverUrl = "wss://jigu-travel.kro.kr/stomp-ws";
+const socketUrl = window.location.protocol === "https:"
+    ? "wss://jigu-travel.kro.kr/stomp-ws"
+    : "ws://localhost:8080/stomp-ws";
 
 const useWebSocket = (userLocation, interests, isWebSocketReady) => {
   const [client, setClient] = useState<Client | null>(null);
@@ -32,7 +33,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
     if (!isWebSocketReady || !serviceUUID || !userLocation) return;
 
     const stompClient = new Client({
-      brokerURL: serverUrl,
+      brokerURL: socketUrl,
       connectHeaders: {
           Authorization: `Bearer ${jwtToken}` // 메시지 전송 시 인증 헤더 추가
           },
