@@ -17,13 +17,13 @@ const AuthLogin: React.FC = () => {
         <h2 className="title">지구 <span className="highlight">구석구석</span> 떠나는 여행</h2>
 
         <button className="login-button" onClick={() => navigate("/auth/login/email")}>
-            이메일로 시작하기
+            아이디로 시작하기
         </button>
 
         <p className="register-text">
             아직 회원이 아니신가요?{" "}
             <span className="register-link" onClick={() => navigate("/auth/register")}>
-            이메일로 회원가입 하기
+            아이디로 회원가입 하기
             </span>
         </p>
         </div>
