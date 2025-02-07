@@ -26,9 +26,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 5px 10px;
+  padding: 0;
   margin: 0;
-  gap: 8px;
+  gap: 0;
   overflow-y: auto;
 }
 
@@ -52,6 +52,7 @@
   color: #007bff;
   background: rgba(0, 123, 255, 0.15);
   font-weight: bold;
+  transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
 }
 
 .map-category.active .place-category-icon {
@@ -64,7 +65,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
   padding: 0;
   margin: 0;
   overflow-x: hidden;
@@ -75,30 +76,31 @@
 /* 명소 개별 항목 */
 .place-item {
   background: white;
-  padding: 8px 12px;
+  padding: 18px;
   border-bottom: 1px solid #ddd;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   word-wrap: break-word;
   box-sizing: border-box;
   margin: 0;
+  position: relative;
 }
 
 .place-item.highlighted {
   background: rgba(200, 200, 200, 0.3);
-  transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
+  transition: background 0.4s ease-in-out, border 0.4s ease-in-out;
+  border-bottom: none;
 }
 
 .place-item h3 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
   color: #333;
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin: 0;
+  gap: 8px;
+  margin: 5px 0 0 0;
 }
 
 .place-item p {

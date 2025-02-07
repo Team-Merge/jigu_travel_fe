@@ -11,9 +11,10 @@ interface TravelWithAIMapProps {
   places: Place[];
   onLocationChange: (location: { lat: number; lng: number }) => void;
   setHighlightedPlaceId: (placeId: number | null) => void;
+  mapCenter: {lat: number, lng: number} | null;
 }
 
-const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationChange, setHighlightedPlaceId }) => {
+const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationChange, setHighlightedPlaceId, mapCenter }) => {
   const naverMapApiKey = import.meta.env.VITE_NAVER_MAP_API_KEY_ID;
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -53,7 +54,7 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
         }
       }, [naverMapApiKey]);
 
-      // 지도 생성
+      // 지도 생성, null이면 초기화
       useEffect(() => {
           if (!mapLoaded || mapRef.current) return;
 
@@ -65,7 +66,7 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
           }
 
           mapRef.current = new window.naver.maps.Map(mapElement, {
-            center: new window.naver.maps.LatLng(37.514296, 127.102013),
+            center: new window.naver.maps.LatLng(37.514296, 127.102013), // 초기 위치: 잠실역
             zoom: 17,
           });
         }, [mapLoaded]);
@@ -118,7 +119,7 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
       };
     }, [mapLoaded, onLocationChange]);
 
-  // 실시간 위치 추적 및 지도 업데이트
+  // 명소 마커 생성 & 마커 업데이트
   useEffect(() => {
       if (!mapLoaded) return;
 
@@ -167,6 +168,13 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
       setHighlightedPlaceId(null);
     });
   }, [mapLoaded, setHighlightedPlaceId]);
+
+  // 명소 리스트 클릭 시, 지도 이동
+  useEffect(() => {
+      if (mapCenter && mapRef.current) {
+        mapRef.current.setCenter(new window.naver.maps.LatLng(mapCenter.lat, mapCenter.lng));
+      }
+    }, [mapCenter]);
 
   // 현위치 버튼
   const handleRecenter = () => {

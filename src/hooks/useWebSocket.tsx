@@ -58,7 +58,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
           }
         });
 
-        // 5초마다 위치 정보 전송 (setInterval ID를 useRef에 저장)
+        // 위치 정보 변경될 때만 publish
         const sendLocation = () => {
           if (!stompClient.connected) return;
           if (!userLocation) return;
@@ -82,7 +82,6 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
         sendLocation();
               },
 
-      // 웹소켓 재연결
       onDisconnect: () => {
               console.warn(" WebSocket 연결 끊김. 재연결 시도 중...");
               attemptReconnect();
@@ -111,6 +110,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
         };
       }, [isWebSocketReady, userLocation]);
 
+    // 웹소켓 재연결
     const attemptReconnect = () => {
         if (reconnectAttempts.current >= 5) {
           console.error(" WebSocket 재연결 시도 5회 초과! 중단합니다.");
