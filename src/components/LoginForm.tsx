@@ -56,7 +56,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <p className="pwReset-register">
           아직 회원이 아니신가요?{" "}
           <span className="pwReset-register-link" onClick={() => navigate("/auth/register")}>
-            이메일로 회원가입
+            아이디로 회원가입
             </span>
         </p>
         <p className="pwReset-register">
