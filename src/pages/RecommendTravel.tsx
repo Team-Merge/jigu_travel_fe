@@ -202,7 +202,7 @@ const RecommendTravel: React.FC = () => {
                           plugins: {
                             title: {
                               display: true,
-                              text: '카테고리별 추천 점수',
+                              text: '카테고리별 추천 점수 : 0~3점',
                             },
                             datalabels: {
                               display: true, // 데이터 라벨 표시
