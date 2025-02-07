@@ -122,12 +122,17 @@ form.register-form .nickname-error {
 }
 
 form.register-form input{
-  padding-left: 3px;
-  padding-right: 3px;
+  width: 100%; /* input 요소가 부모의 너비를 100%로 차지하게 */
+  padding-right: 5px; /* 내부 여백 추가 */
+  padding-left: 5px; /* 내부 여백 추가 */
+  box-sizing: border-box; /* padding을 포함하여 크기를 계산 */
 }
 
 
 /*각 row 감싸는 div*/
 .input-wrapper{
-  margin-bottom: 3px;
+  width: 100%; /* 부모 요소가 전체 너비를 차지하도록 */
+  display: flex; /* 필요 시 flexbox를 사용하여 배치 */
+  flex-direction: column; /* 세로로 배치 */
+  margin-bottom: 5px;
 }
