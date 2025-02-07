@@ -8,10 +8,13 @@ import "../styles/TravelWithAI.css";
 
 const TravelWithAI: React.FC = () => {
   const [places, setPlaces] = useState<Place[]>([]);
+  const [filteredPlaces, setFilteredPlaces] = useState<Place[]>([]);
   const [activeTab, setActiveTab] = useState<string>("interest");
   const [placesCount, setPlacesCount] = useState<number>(0);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [interests, setInterests] = useState<string[]>([]);
+  const [isWebSocketReady, setIsWebSocketReady] = useState<boolean>(false);
+  const [highlightedPlaceId, setHighlightedPlaceId] = useState<number | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollToBottom = () => {
@@ -42,10 +45,13 @@ const TravelWithAI: React.FC = () => {
 
             setInterests(storedInterests);
 
+            // 최초 1회 : REST API로 맞춤 명소
             try {
               const fetchedPlaces = await fetchNearbyPlaces(userLocation.lat, userLocation.lng, storedInterests);
               setPlaces(fetchedPlaces);
+              setFilteredPlaces(fetchedPlaces);
               setPlacesCount(fetchedPlaces.length);
+              setIsWebSocketReady(true);
             } catch (error) {
               console.error("초기 맞춤 명소 불러오기 실패:", error);
             }
@@ -54,33 +60,62 @@ const TravelWithAI: React.FC = () => {
           fetchInitialData();
         }, [userLocation]);
 
-  const { places: webSocketPlaces } = useWebSocket(userLocation, interests);
+  const { places: webSocketPlaces } = useWebSocket(userLocation, interests, isWebSocketReady);
+
+  useEffect(() => {
+      const updatedPlaces = activeTab === "all" ? webSocketPlaces : webSocketPlaces.filter((place) =>
+          place.types.some((type) => interests.includes(type))
+        );
+
+        setFilteredPlaces(updatedPlaces);
+        setPlacesCount(updatedPlaces.length);
+    }, [webSocketPlaces, activeTab, interests]);
 
   // 모든 명소 버튼
   const handleFetchPlaces = async () => {
     if (!userLocation) return;
     try {
-      const fetchedPlaces = await fetchNearbyPlaces(userLocation.lat, userLocation.lng);
-      setPlaces(fetchedPlaces);
-      setPlacesCount(fetchedPlaces.length);
+      setFilteredPlaces(webSocketPlaces);
+      setPlacesCount(webSocketPlaces.length);
       setActiveTab("all");
     } catch (error) {
       console.error("명소 불러오기 실패:", error);
     }
   };
 
+  // 맞춤 명소 버튼
+  const handleFetchInterestPlaces = async () => {
+      if (!userLocation) return;
+      try {
+        const filtered = webSocketPlaces.filter((place) =>
+          place.types.some((type) => interests.includes(type))
+        );
+        setFilteredPlaces(filtered);
+        setPlacesCount(filtered.length);
+        setActiveTab("interest");
+      } catch (error) {
+        console.error("맞춤 명소 필터링 실패:", error);
+      }
+    };
+
   return (
     <div className="map-container">
       <TravelWithAISidebar
-        places={activeTab === "all" ? places : webSocketPlaces}
-                activeTab={activeTab}
-                onFetchPlaces={handleFetchPlaces}
+        places={filteredPlaces}
+        activeTab={activeTab}
+        onFetchPlaces={handleFetchPlaces}
+        onFetchInterestPlaces={handleFetchInterestPlaces}
+        highlightedPlaceId={highlightedPlaceId}
       />
       <div className="map-wrapper">
-        <TravelWithAIMap places={activeTab === "all" ? places : webSocketPlaces} onLocationChange={setUserLocation} />
+        <TravelWithAIMap
+                places={filteredPlaces}
+                onLocationChange={setUserLocation}
+                setHighlightedPlaceId={setHighlightedPlaceId}
+              />
       </div>
       <div className="places-count">
-        지금 내 주변 관광명소는 {activeTab === "all" ? placesCount : webSocketPlaces.length}개
+        지금 내 주변 관광명소는 {placesCount}개
       </div>
     </div>
   );
