@@ -15,12 +15,44 @@
     text-align: center;
 }
 
+/*lable 감싸는 div */
+.label-wrapper{
+    width: 70%;
+    margin: 0 auto;
+}
+
+
+
 /* 여행 횟수 선택 (라디오 버튼) */
 .radio-option {
-    display: block;
-    margin: 10px 0;
+    /*display: block;*/
+    /*margin: 10px 0;*/
+    /*font-size: 18px;*/
+    /*cursor: pointer;*/
+    display: flex;
+    align-items: center; /* 라벨과 라디오 버튼 세로로 정렬 */
     font-size: 18px;
+    margin-bottom: 15px; /* 각 항목 간의 여백을 일정하게 설정 */
     cursor: pointer;
+}
+/* 라벨 텍스트 스타일 */
+.radio-option label {
+    font-size: 16px; /* 텍스트 크기 설정 */
+    margin-left: 10px; /* 라디오 버튼과 라벨 텍스트 간의 간격 설정 */
+    line-height: 1.5; /* 라벨 텍스트의 라인 높이 설정 */
+}
+
+/* 라디오 버튼 크기 조정 */
+.radio-option input[type="radio"] {
+    width: 20px;
+    height: 20px;
+}
+
+/* 모바일에서 라디오 버튼이 균등하게 보이도록 처리 */
+@media (max-width: 768px) {
+    .radio-option {
+        margin-bottom: 12px; /* 모바일에서는 간격을 좀 더 좁게 설정 */
+    }
 }
 
 .radio-option input {
@@ -128,4 +160,28 @@
         width: 140px;
         height: 140px;
     }
+}
+
+/*추천 점수 차트*/
+.recommend-chart{
+    width: 90%;
+    height: 400px;
+    margin: 0 auto;
+}
+
+/*글씨색 변경*/
+.blue-text{
+    color: var(--primary-color);
+}
+
+/*추천결과 각 항목 div*/
+.recommend-result-wrapper{
+    margin-top: 10px;
+
+}
+
+/*구분선*/
+.recommend-hr{
+    border: solid 1px #e1dddd;
+    width: 80%;
 }

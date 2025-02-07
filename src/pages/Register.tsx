@@ -93,96 +93,113 @@ const Register: React.FC = () => {
         <form className="register-form" onSubmit={handleSubmit}>
 
           {/* 아이디 입력 + 중복 확인 */}
-          <label>아이디<span className="required">*</span></label>
-          <div className="nickname-container">
-            <input
-              type="text"
-              placeholder="이메일을 입력하세요"
-              value={loginId}
-              onChange={(e) => {
-                setLoginId(e.target.value);
-                setLoginIdAvailable(null); // 아이디 변경 시 중복 확인 초기화
-              }}
-              required
-            />
-            <button type="button" className="check-btn" onClick={handleCheckLoginId}>
-              중복확인
-            </button>
+          <div className="input-wrapper">
+            <label>아이디<span className="required">*</span></label>
+            <div className="nickname-container">
+              <input
+                  type="text"
+                  placeholder="이메일을 입력하세요"
+                  value={loginId}
+                  onChange={(e) => {
+                    setLoginId(e.target.value);
+                    setLoginIdAvailable(null); // 아이디 변경 시 중복 확인 초기화
+                  }}
+                  required
+              />
+              <button type="button" className="check-btn" onClick={handleCheckLoginId}>
+                중복확인
+              </button>
+            </div>
+            {loginIdAvailable !== null && (
+                <p className={`nickname-status ${loginIdAvailable ? "nickname-success" : "nickname-error"}`}>
+                  {loginIdAvailable ? "✔ 사용 가능한 아이디입니다." : "❌ 이미 사용 중인 아이디입니다."}
+                </p>
+            )}
           </div>
-          {loginIdAvailable !== null && (
-            <p className={`nickname-status ${loginIdAvailable ? "nickname-success" : "nickname-error"}`}>
-              {loginIdAvailable ? "✔ 사용 가능한 아이디입니다." : "❌ 이미 사용 중인 아이디입니다."}
-            </p>
-          )}
 
           {/* 비밀번호 입력 */}
-          <label>비밀번호<span className="required">*</span></label>
-          <input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <div className="input-wrapper">
+            <label>비밀번호<span className="required">*</span></label>
+            <input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)}
+                   required/>
+          </div>
 
           {/* 비밀번호 확인 */}
-          <label>비밀번호 확인<span className="required">*</span></label>
-          <input type="password" placeholder="비밀번호 확인" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-
-          {/* 생년월일 */}
-          <label>생년월일<span className="required">*</span></label>
-          <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required />
-
-          {/* 닉네임 입력 + 중복 확인 */}
-          <label>닉네임<span className="required">*</span></label>
-          <div className="nickname-container">
-            <input
-              type="text"
-              placeholder="닉네임 입력"
-              value={nickname}
-              onChange={(e) => {
-                setNickname(e.target.value);
-                setNicknameAvailable(null);
-              }}
-              required
-            />
-            <button type="button" className="check-btn" onClick={handleCheckNickname}>
-              중복확인
-            </button>
-          </div>
-          {nicknameAvailable !== null && (
-            <p className={`nickname-status ${nicknameAvailable ? "nickname-success" : "nickname-error"}`}>
-              {nicknameAvailable ? "✔ 사용 가능한 닉네임입니다." : "❌ 이미 사용 중인 닉네임입니다."}
-            </p>
-          )}
-
-          {/* 이메일 입력*/}
-          <label>이메일<span className="required">*</span></label>
-          <div className="email-container">
-            <input
-                type="email"
-                placeholder="이메일 입력"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                required
-            />
+          <div className="input-wrapper">
+            <label>비밀번호 확인<span className="required">*</span></label>
+            <input type="password" placeholder="비밀번호 확인" value={confirmPassword}
+                   onChange={(e) => setConfirmPassword(e.target.value)} required/>
           </div>
 
-          {/* 성별 선택 */}
-          <label>성별<span className="required">*</span></label>
-          <div className="gender-container">
-            <label className="gender-option">
-              <input type="radio" value="MALE" checked={gender === "MALE"} onChange={() => setGender("MALE")} />
-              남성
-            </label>
-            <label className="gender-option">
-              <input type="radio" value="FEMALE" checked={gender === "FEMALE"} onChange={() => setGender("FEMALE")} />
-              여성
-            </label>
-          </div>
+            {/* 생년월일 */}
+            <div className="input-wrapper">
+              <label>생년월일<span className="required">*</span></label>
+              <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required/>
+            </div>
 
-          {/* 다음 버튼 */}
-          <button type="submit" className="next-btn">다음</button>
+            {/* 닉네임 입력 + 중복 확인 */}
+            <div className="input-wrapper">
+              <label>닉네임<span className="required">*</span></label>
+              <div className="nickname-container">
+                <input
+                    type="text"
+                    placeholder="닉네임 입력"
+                    value={nickname}
+                    onChange={(e) => {
+                      setNickname(e.target.value);
+                      setNicknameAvailable(null);
+                    }}
+                    required
+                />
+                <button type="button" className="check-btn" onClick={handleCheckNickname}>
+                  중복확인
+                </button>
+              </div>
+              {nicknameAvailable !== null && (
+                  <p className={`nickname-status ${nicknameAvailable ? "nickname-success" : "nickname-error"}`}>
+                    {nicknameAvailable ? "✔ 사용 가능한 닉네임입니다." : "❌ 이미 사용 중인 닉네임입니다."}
+                  </p>
+              )}
+            </div>
+
+            {/* 이메일 입력*/}
+            <div className="input-wrapper">
+              <label>이메일<span className="required">*</span></label>
+              <div className="email-container">
+                <input
+                    type="email"
+                    placeholder="이메일 입력"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                    required
+                />
+              </div>
+            </div>
+
+            {/* 성별 선택 */}
+            <div className="input-wrapper">
+              <label>성별<span className="required">*</span></label>
+              <div className="gender-container">
+                <label className="gender-option">
+                  <input type="radio" value="MALE" checked={gender === "MALE"} onChange={() => setGender("MALE")}/>
+                  남성
+                </label>
+                <label className="gender-option">
+                  <input type="radio" value="FEMALE" checked={gender === "FEMALE"}
+                         onChange={() => setGender("FEMALE")}/>
+                  여성
+                </label>
+              </div>
+            </div>
+
+            {/* 다음 버튼 */}
+            <button type="submit" className="next-btn">다음</button>
         </form>
       </div>
     </div>
-  );
+);
 };
 
 export default Register;
