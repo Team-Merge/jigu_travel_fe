@@ -3,7 +3,7 @@ import { Client } from "@stomp/stompjs";
 import React, { useEffect, useState, useRef } from "react";
 import { fetchUUID } from "../utils/api";
 
-const serverUrl = "wss://localhost:8080/stomp-ws";
+const serverUrl = "wss://jigu-travel.kro.kr/stomp-ws";
 
 const useWebSocket = (userLocation, interests, isWebSocketReady) => {
   const [client, setClient] = useState<Client | null>(null);
