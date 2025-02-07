@@ -23,6 +23,7 @@ interface TravelWithAISidebarProps {
   onFetchPlaces: () => void;
   onFetchInterestPlaces: () => void;
   highlightedPlaceId: number | null;
+  onPlaceClick: {lat: number, lng: number};
 }
 
 const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
@@ -31,6 +32,7 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   onFetchPlaces,
   onFetchInterestPlaces,
   highlightedPlaceId,
+  onPlaceClick
 }) => {
     const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
@@ -58,6 +60,9 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
                         key={place.placeId}
                         ref={(el) => (itemRefs.current[place.placeId] = el)}
                         className={`place-item ${highlightedPlaceId === place.placeId ? "highlighted" : ""}`}
+                        onClick = {() => {
+                            onPlaceClick(place.placeId, place.latitude, place.longitude);
+                            }}
                   >
                        <h3>{place.name}</h3>
                             <p className="place-address">{place.address}</p>
