@@ -1,0 +1,95 @@
+/* src/styles/Withdraw.css */
+.withdraw-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .withdraw-content {
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .withdraw-input-container {
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 12px 0px;
+    margin-bottom: 15px;
+  }
+  
+  .withdraw-form {
+    width: 91%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+  .input-icon {
+    color: var(--primary-color);
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  
+  input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+  }
+  
+  /* 탈퇴 버튼 (로그인 버튼 스타일 활용) */
+  .withdraw-button {
+    width: 100%;
+    
+    max-width: 350px;
+    background-color: red;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 12px 0px;
+    margin-top: 10px;
+  }
+  
+  .withdraw-button:hover {
+    background-color: darkred;
+  }
+  
+  /* 취소 버튼 */
+  .cancel-button {
+    width: 100%;
+    padding: 12px 0px;
+    background-color: #ccc;
+    color: black;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .cancel-button:hover {
+    background-color: #aaa;
+  }
+  
+  /* ❗ 오류 메시지 */
+  .error-msg {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  

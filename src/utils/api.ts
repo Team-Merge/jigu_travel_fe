@@ -704,3 +704,21 @@ export const fetchUUID = async (): Promise<string | null> => {
     return null; // 실패 시 null 반환
   }
 };
+
+export const withdrawUser = async (password: string) => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/user/delete`, {
+      method: "DELETE",
+      body: JSON.stringify({ password }),
+    });
+
+    if (response.code !== 200) {
+      throw new Error(response.message || "비밀번호 입력을 실패하셨습니다.");
+    }
+
+    return response;
+  } catch (error) {
+    console.error("회원 탈퇴 실패:", error);
+    throw error;
+  }
+};

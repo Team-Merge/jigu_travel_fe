@@ -11,6 +11,7 @@ import AiGuideTest from "./pages/AiGuidePage";
 import PasswordReset from "./pages/PasswordReset";
 import PasswordResetNew from "./pages/ResetPasswordNew";
 import AdminLocationPage from "./pages/AdminLocationPage";
+import Withdraw from "./pages/Withdraw";
 
 
 import BoardList from "./pages/BoardList";
@@ -40,6 +41,7 @@ const App: React.FC = () => {
         <Route path="/ai-guide" element={<AiGuideTest />} />
         <Route path="/auth/passwordReset-vaild" element={<PasswordReset />} />
         <Route path="/auth/reset-password" element={<PasswordResetNew />} />
+        <Route path="/withdraw" element={<Withdraw />} />
 
 
         <Route element={<ProtectedRoute />}>
