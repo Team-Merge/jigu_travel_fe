@@ -9,6 +9,7 @@ import Chat_icon from "../assets/images/chat_icon.png";
 import Camera_icon from "../assets/images/camera-icon.png";
 import AiProfile from "../assets/images/ai-profile.png";
 import "../styles/AskAI.css";
+import "../styles/AskAiChatBot.css";
 
 const convertClassNameToCustom = (className: string): string => {
   const customTranslationMap: { [key: string]: string } = {
@@ -162,68 +163,70 @@ const AskAI: React.FC = () => {
           </div>
         ) : (
           <div className="main-content">
-            <div className="image-section" style={{ height: imageHeight }}>
-              <div className="image-container" style={{ position: "relative" }}>
-                <img
-                  ref={imageRef}
-                  className="uploaded-image"
-                  src={image || ""}
-                  alt="Uploaded Preview"
-                />
+              <div className="image-section" style={{ height: imageHeight }}>
+                <div className="image-section-container">
+                  <div className="image-container" style={{ position: "relative" }}>
+                    <img
+                      ref={imageRef}
+                      className="uploaded-image"
+                      src={image || ""}
+                      alt="Uploaded Preview"
+                    />
 
-                {detectionResults.map((detection, index) => (
-                  <div
-                    key={index}
-                    className="bounding-box"
-                    style={{
-                      left: `${(detection.x1 / imageWidth) * 100}%`,
-                      top: `${(detection.y1 / imageHeightState) * 100}%`,
-                      width: `${(detection.x2 - detection.x1) * wscaleRatio}px`,
-                      height: `${(detection.y2 - detection.y1) * hscaleRatio}px`,
-                    }}
-                  >
-                    <span className="bounding-label">
-                      {convertClassNameToCustom(detection.className)} ({(detection.confidence * 100).toFixed(1)}%)
-                    </span>
+                    {detectionResults.map((detection, index) => (
+                      <div
+                        key={index}
+                        className="bounding-box"
+                        style={{
+                          left: `${(detection.x1 / imageWidth) * 100}%`,
+                          top: `${(detection.y1 / imageHeightState) * 100}%`,
+                          width: `${(detection.x2 - detection.x1) * wscaleRatio}px`,
+                          height: `${(detection.y2 - detection.y1) * hscaleRatio}px`,
+                        }}
+                      >
+                        <span className="bounding-label">
+                          {convertClassNameToCustom(detection.className)} ({(detection.confidence * 100).toFixed(1)}%)
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              <div className="image-upload-wrapper">
-                <label htmlFor="image-upload" className="retake-button">
-                  사진 다시 촬영하기
-                </label>
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  style={{ display: "none" }}
-                />
-              </div>
+                  <div className="image-upload-wrapper">
+                    <label htmlFor="image-upload" className="retake-button">
+                      사진 다시 촬영하기
+                    </label>
+                    <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      style={{ display: "none" }}
+                    />
+                  </div>
 
-              <div className="image-result-section">
-                <img src={AiProfile} alt="ai-profile" width="40" height="40" />
-                <div className="image-result-message">
-                  {isDetecting ? (
-                    <>AI 모델이 건물을 탐지 중입니다...<br/>잠시만 기다려주세요.</>
-                  ) : detectionResults.length > 0 ? (
-                    <>
-                      사진 분석 결과, <span className="blue-text">{(detectionResults[0].confidence * 100).toFixed(1)}%</span>의 확률로 <span className="blue-text">{convertClassNameToCustom(detectionResults[0].className)}</span>로 감지되었습니다.
-                      <br/>AI와 대화를 나누어보세요!
-                    </>
-                  ) : (
-                    <>건물이 감지되지 않았습니다.<br />다시 찍어주세요.</>
-                  )}
+                  <div className="image-result-section">
+                    <img src={AiProfile} alt="ai-profile" width="40" height="40" />
+                    <div className="image-result-message">
+                      {isDetecting ? (
+                        <>AI 모델이 건물을 탐지 중입니다...<br/>잠시만 기다려주세요.</>
+                      ) : detectionResults.length > 0 ? (
+                        <>
+                          사진 분석 결과, <span className="blue-text">{(detectionResults[0].confidence * 100).toFixed(1)}%</span>의 확률로 <span className="blue-text">{convertClassNameToCustom(detectionResults[0].className)}</span>로 감지되었습니다.
+                          <br/>AI와 대화를 나누어보세요!
+                        </>
+                      ) : (
+                        <>건물이 감지되지 않았습니다.<br />다시 찍어주세요.</>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="ask-ai-p">
+                    {detectionResults.length > 0
+                      ? "YOLO11을 통해 학습된 자체 모델로 평가한 결과입니다."
+                      : "다른 사진을 찍어 여행 친구에게 질문해 보세요!"}
+                  </p>
                 </div>
               </div>
-
-              <p className="ask-ai-p">
-                {detectionResults.length > 0
-                  ? "YOLO11을 통해 학습된 자체 모델로 평가한 결과입니다."
-                  : "다른 사진을 찍어 여행 친구에게 질문해 보세요!"}
-              </p>
-            </div>
 
             {detectionResults.length > 0 && (
               <>
@@ -243,8 +246,8 @@ const AskAI: React.FC = () => {
               </>
             )}
           </div>
-        )}
-      </div>
+          )}
+       </div>
     </div>
   );
 };

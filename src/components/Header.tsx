@@ -12,6 +12,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="header">
+      <div className="header-container">
         <div className="logo" onClick={() => navigate("/home")}>
           <img src={logo} alt="지구여행" className="logo-img" />
         </div>
@@ -27,6 +28,8 @@ const Header: React.FC = () => {
         </div>
 
         <Sidebar onClose={() => setSidebarOpen(false)} isOpen={isSidebarOpen} />
+
+      </div>
 
     </header>
   );
