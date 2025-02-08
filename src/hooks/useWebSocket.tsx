@@ -66,12 +66,14 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
 
           const { lat, lng } = userLocation;
           const lastLocation = lastLocationRef.current;
-          if (!lastLocation || Math.abs(lat - lastLocation.lat) > 0.0001 || Math.abs(lng - lastLocation.lng) > 0.0001
+          if (!lastLocation ||
+              Math.abs(lat - lastLocation.lat) > 0.0001 ||
+               Math.abs(lng - lastLocation.lng) > 0.0001
                     ) {
                       stompClient.publish({
                         destination: "/pub/place",
                         body: JSON.stringify({
-                          serviceUUID,
+                          serviceUUID: serviceUUID,
                           latitude: lat,
                           longitude: lng,
                         }),

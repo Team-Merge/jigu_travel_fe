@@ -329,6 +329,23 @@ export const saveUserLocation = async (latitude: number, longitude: number): Pro
   }
 };
 
+/** MAP : 여행 종료 - 사용자 위치 DB 저장 **/
+export const endTravel = async (): Promise<void> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/location/end-travel`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    console.log("여행 종료 및 DB 저장 성공:", response);
+    alert("여행이 종료되었습니다!");
+  } catch (error) {
+    console.error("여행 종료 API 호출 중 오류 발생:", error);
+    alert("여행 종료에 실패했습니다. 다시 시도해주세요.");
+  }
+};
+
+
 /** MAP : 위치 기반 주변 명소 검색**/
 export const fetchNearbyPlaces = async (lat: number, lng: number, types?: string[]): Promise<Place[]> => {
   try {

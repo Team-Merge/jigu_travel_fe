@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import TravelWithAISidebar from "../components/TravelWithAISidebar";
 import TravelWithAIMap from "../components/TravelWithAIMap";
 import useWebSocket from "../hooks/useWebSocket";
-import { fetchNearbyPlaces, getUserInterest } from "../utils/api";
+import { fetchNearbyPlaces, getUserInterest, endTravel } from "../utils/api";
 
 import "../styles/TravelWithAI.css";
 
@@ -113,6 +113,15 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
       setMapCenter({lat, lng});
       };
 
+    // 여행 종료 버튼
+    const handleEndTravel = async () => {
+      try {
+        await endTravel(); // 여행 종료 API 호출
+      } catch (error) {
+        console.error("여행 종료 중 오류 발생:", error);
+      }
+    };
+
   return (
     <div className="map-container">
       <TravelWithAISidebar
@@ -120,6 +129,7 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
         activeTab={activeTab}
         onFetchPlaces={handleFetchPlaces}
         onFetchInterestPlaces={handleFetchInterestPlaces}
+        handleEndTravel={handleEndTravel}
         highlightedPlaceId={highlightedPlaceId}
         onPlaceClick={handlePlaceClick}
         onAiGuideRequest={onAiGuideRequest} 
