@@ -115,3 +115,36 @@ export const downloadFile = async (fileName: string) => {
   // Blob URL 해제
   window.URL.revokeObjectURL(url);
 };
+
+// 댓글 조회
+export const getComments = async (boardId: number) => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/comments/${boardId}`);
+  return response.data;
+}
+
+// 댓글 작성
+export const addComment = async (boardId: number, content: string) => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/comments`, {
+    method: "POST",
+    body: JSON.stringify({ boardId, content }),
+    headers: { "Content-Type": "application/json" },
+  });
+  return response.data;
+};
+
+// 댓글 수정
+export const updateComments = async (commentId: number, content: string) => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/comments/${commentId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ content }),
+    headers: { "Content-Type": "application/json" },
+  });
+  return response.data;
+};
+
+// 댓글 삭제
+export const deleteComment = async (commentId: number) => {
+  await fetchWithAuth(`${API_BASE_URL}/api/comments/${commentId}`, {
+    method: "DELETE",
+  });
+}

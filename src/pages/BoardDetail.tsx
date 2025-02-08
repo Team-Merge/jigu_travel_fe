@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getPostDetail, deletePost, downloadFile } from "../api/boardApi";
 import "../styles/BoardDetail.css"
 import Header from "../components/Header";
+import CommentSection from "../components/CommentsSection";
 
 // 첨부파일 타입 정의
 interface Attachment {
@@ -117,9 +118,10 @@ const BoardDetail: React.FC = () => {
       ) : (
         <p>로딩 중...</p>
       )}
-    </div>
-    </div>
-    </div>
+          </div>
+        </div>
+        <CommentSection boardId={Number(postId)} />
+      </div>
     </div>
   );
 };
