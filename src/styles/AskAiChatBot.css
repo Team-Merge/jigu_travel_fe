@@ -74,7 +74,7 @@
     border-radius: 50%;
     position: fixed;
     bottom: 20px;
-    left: 20px;
+    right: 20px;
     background-color: #ffffff; /* 버튼 배경 */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #cccccc;

@@ -105,36 +105,34 @@ const AskAI: React.FC = () => {
   const toggleChat = () => {
     setChatVisible((prev) => !prev);
   };
-
+  
   const startDrag = (e: React.MouseEvent | React.TouchEvent) => {
-      const startY = "touches" in e ? e.touches[0].clientY : e.clientY;
-      const initialHeight = chatbotRef.current?.clientHeight || 0;
-      const maxHeight = window.innerHeight * 0.8; // 화면 높이의 80%로 제한
+    const startY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    const initialHeight = chatbotRef.current?.clientHeight || 0;
+    const maxHeight = window.innerHeight * 0.8; // 화면 높이의 80%까지 확장 가능
 
-      const onMouseMove = (moveEvent: MouseEvent | TouchEvent) => {
-          const currentY = "touches" in moveEvent ? moveEvent.touches[0].clientY : (moveEvent as MouseEvent).clientY;
-          const newHeight = initialHeight - (currentY - startY);
-          const finalHeight = Math.min(Math.max(newHeight, 100), maxHeight); // 최소 100px, 최대 maxHeight
+    const onMouseMove = (moveEvent: MouseEvent | TouchEvent) => {
+        const currentY = "touches" in moveEvent ? moveEvent.touches[0].clientY : (moveEvent as MouseEvent).clientY;
+        const newHeight = Math.min(Math.max(initialHeight - (currentY - startY), 100), maxHeight);
 
-          if (chatbotRef.current) {
-              chatbotRef.current.style.height = `${finalHeight}px`;
-              setChatHeight(finalHeight);
-          }
-      };
+        if (chatbotRef.current) {
+            chatbotRef.current.style.height = `${newHeight}px`;
+            setChatHeight(newHeight);
+        }
+    };
 
-      const stopDrag = () => {
-          window.removeEventListener("mousemove", onMouseMove);
-          window.removeEventListener("touchmove", onMouseMove);
-          window.removeEventListener("mouseup", stopDrag);
-          window.removeEventListener("touchend", stopDrag);
-      };
+    const stopDrag = () => {
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("touchmove", onMouseMove);
+        window.removeEventListener("mouseup", stopDrag);
+        window.removeEventListener("touchend", stopDrag);
+    };
 
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("touchmove", onMouseMove);
-      window.addEventListener("mouseup", stopDrag);
-      window.addEventListener("touchend", stopDrag);
-  };
-
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("touchmove", onMouseMove);
+    window.addEventListener("mouseup", stopDrag);
+    window.addEventListener("touchend", stopDrag);
+};
 
   return (
     <div className="ask-ai">
@@ -163,7 +161,7 @@ const AskAI: React.FC = () => {
           </div>
         ) : (
           <div className="main-content">
-              <div className="image-section" style={{ height: imageHeight }}>
+              <div className="image-section" style={{ height: `calc(100vh - ${chatHeight}px - 80px) ` }}>
                 <div className="image-section-container">
                   <div className="image-container" style={{ position: "relative" }}>
                     <img

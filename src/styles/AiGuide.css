@@ -3,6 +3,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #fafafa;
+    overflow-y: auto; /* 전체 페이지에 스크롤 적용 */
 }
 
 #chatContainer {
@@ -11,6 +12,10 @@ body {
     overflow: hidden;
     height: 100%;
     width: 100%;
+    overflow-y: auto; /* 전체 페이지 스크롤 */
+    align-items: center; /* 채팅창 가운데 정렬 */
+    margin-top: 15px;
+    margin-bottom: 60px;
 }
 
 #messagesContainer {
@@ -18,6 +23,9 @@ body {
     padding: 10px;
     /*overflow-y: auto; !* 스크롤이 가능하도록 *!*/
     height: calc(100% - 100px); /* 입력창 높이를 뺀 채팅창 높이 */
+    max-width: 1200px; /* 최대 너비 제한 */
+    overflow: visible; /* 내부 스크롤 제거 */
+    margin: 0 auto; /* 가운데 정렬 */
 }
 
 #messagesContainer-scroll{
@@ -25,9 +33,11 @@ body {
     overflow-y: auto;
     padding: 10px;
     height: 100%;
+    overflow: visible; /* 내부 스크롤 제거 */
 }
 
 #userInputContainer {
+    max-width: 1200px;
     position: fixed;
     bottom: 0;
     left: 50%;

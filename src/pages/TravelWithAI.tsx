@@ -101,6 +101,7 @@ const TravelWithAI: React.FC = () => {
 
   // 명소 리스트 클릭
   const handlePlaceClick = (placeId: number, lat: number, lng: number) => {
+      console.log(`클릭한 명소 ID: ${placeId}, 위치: (${lat}, ${lng})`);
       setHighlightedPlaceId(null);
       setTimeout(() => {
           setHighlightedPlaceId(placeId);
