@@ -24,6 +24,7 @@ interface TravelWithAISidebarProps {
   onFetchInterestPlaces: () => void;
   highlightedPlaceId: number | null;
   onPlaceClick: {lat: number, lng: number};
+  onAiGuideRequest: (placeName: string) => void;  // 명소 안내버튼? 동작? ㄱㄴ?
 }
 
 const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
@@ -32,7 +33,8 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   onFetchPlaces,
   onFetchInterestPlaces,
   highlightedPlaceId,
-  onPlaceClick
+  onPlaceClick,
+  onAiGuideRequest
 }) => {
     const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
@@ -67,6 +69,10 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
                        <h3>{place.name}</h3>
                             <p className="place-address">{place.address}</p>
                             <p className="place-tel">{place.tel}</p>
+                        {/* AI 명소 안내받기 버튼 */}
+                        <button className="ai-guide-button" onClick={() => onAiGuideRequest(place.name)}>
+                            AI 명소 안내받기
+                        </button>
                   </div>
               ))
             ) : (

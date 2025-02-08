@@ -6,7 +6,11 @@ import { fetchNearbyPlaces, getUserInterest } from "../utils/api";
 
 import "../styles/TravelWithAI.css";
 
-const TravelWithAI: React.FC = () => {
+interface TravelWithAIProps {
+  onAiGuideRequest: (placeName: string) => void;
+}
+
+const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [filteredPlaces, setFilteredPlaces] = useState<Place[]>([]);
   const [activeTab, setActiveTab] = useState<string>("interest");
@@ -118,6 +122,7 @@ const TravelWithAI: React.FC = () => {
         onFetchInterestPlaces={handleFetchInterestPlaces}
         highlightedPlaceId={highlightedPlaceId}
         onPlaceClick={handlePlaceClick}
+        onAiGuideRequest={onAiGuideRequest} 
       />
       <div className="map-wrapper">
         <TravelWithAIMap

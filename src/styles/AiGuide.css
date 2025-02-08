@@ -20,11 +20,13 @@ body {
 
 #messagesContainer {
     flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
+    scroll-behavior: smooth; 
     padding: 10px;
     /*overflow-y: auto; !* 스크롤이 가능하도록 *!*/
     height: calc(100% - 100px); /* 입력창 높이를 뺀 채팅창 높이 */
     max-width: 1200px; /* 최대 너비 제한 */
-    overflow: visible; /* 내부 스크롤 제거 */
+    /* overflow-y: auto; */
+    overflow: visible; 
     margin: 0 auto; /* 가운데 정렬 */
 }
 

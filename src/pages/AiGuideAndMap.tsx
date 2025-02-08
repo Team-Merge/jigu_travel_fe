@@ -10,9 +10,10 @@ const AiGuideAndMap: React.FC = () => {
     const [chatVisible, setChatVisible] = useState(false);  // 기본적으로 채팅창 닫힘
     const [chatHeight, setChatHeight] = useState<number>(0);
     const [buttonVisible, setButtonVisible] = useState(true);  // 버튼을 보이도록 설정
-
+    const [aiGuideMessage, setAiGuideMessage] = useState("");
     const chatbotRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
+
 
     // 로그인 확인
     useEffect(() => {
@@ -60,17 +61,25 @@ const AiGuideAndMap: React.FC = () => {
         window.addEventListener("touchend", stopDrag);
     };
 
+
+    // 특정 명소의 AI 가이드 요청 시 호출할 함수
+    const requestAiGuide = (placeName: string) => {
+        setAiGuideMessage(`${placeName}에 대해 알려줘`);
+        setChatVisible(true);
+        setButtonVisible(false);
+    };
+
     return (
         <div className="ai-guide-map">
             <div className="header-wrapper">
                 <Header />
             </div>
 
-            <div className="main-container">
+            <div className="main-container" style={{ height: "calc(100vh - 60px)", overflow: "hidden" }}>
                 <div className="main-content">
                     {/* 맵 영역 */}
                     <div className="map-section" style={{ height: "100%", width: "100%" }}>
-                        <MapComponemt />
+                        <MapComponemt onAiGuideRequest={requestAiGuide} />
                     </div>
 
                     {/* 채팅방 토글 버튼 */}
@@ -105,7 +114,7 @@ const AiGuideAndMap: React.FC = () => {
                                 <button className="close-chat" onClick={toggleChat}>
                                     ✖
                                 </button>
-                                <AiGuide defaultMessage="" />
+                                <AiGuide defaultMessage={aiGuideMessage} />
                             </div>
                         </>
                     )}

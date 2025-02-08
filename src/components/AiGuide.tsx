@@ -32,6 +32,7 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
     const [inputPlaceholder, setInputPlaceholder] = useState<string>("여행 친구에게 관광지에 대해 질문하세요!"); // 질문창 placeholder 텍스트
 
     const messageIdRef = useRef<number>(0); // 메시지 고유 ID ref
+    const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
     const messagesContainerRef = useRef<HTMLDivElement | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null); // MediaRecorder 객체를 참조
@@ -59,6 +60,14 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
         }
 
     }, []);
+    // messages 변경될 때 자동으로 실행
+    useEffect(() => {
+        console.log("📩 messages 상태 변경됨! 새로운 메시지 수:", messages.length);
+        setTimeout(() => {
+            scrollToBottomOfChatContainer();
+        }, 100);
+    }, [messages]);
+
 
     // 텍스트에서 <br>을 렌더링
     const renderTextWithBrTags = (text: string) => {
@@ -97,12 +106,22 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
         }
     };
 
-    const scrollToBottomOfContainer = () => {
-        if (messagesContainerRef.current) {
-            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    const scrollToBottomOfChatContainer = () => {
+        if (chatContainerRef.current && messagesContainerRef.current) {
+            console.log("✅ scrollToBottomOfChatContainer 실행됨!");
+            console.log("📏 현재 chatContainer 스크롤 위치:", chatContainerRef.current.scrollTop);
+            console.log("📏 전체 chatContainer 높이:", chatContainerRef.current.scrollHeight);
+            console.log("📏 messagesContainer 높이:", messagesContainerRef.current.scrollHeight);
+    
+            requestAnimationFrame(() => {
+                chatContainerRef.current!.scrollTop = messagesContainerRef.current!.scrollHeight;
+                console.log("📌 스크롤 이동 완료! 새로운 위치:", chatContainerRef.current!.scrollTop);
+            });
+        } else {
+            console.log("⚠ chatContainerRef 또는 messagesContainerRef가 null입니다!");
         }
     };
-
+    
     const handleSendQuestion = async () => {
         if (!textQuestion.trim()) {
             alert("질문을 입력하세요.");
@@ -117,7 +136,7 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
 
         setMessages((prev) => [...prev, userMessage, loadingMessage]);
         setTextQuestion(""); // 질문 입력창 초기화
-        scrollToBottomOfContainer();
+        scrollToBottomOfChatContainer();
 
         try {
             const data = await sendTextQuestion(userMessage.text);
@@ -143,7 +162,7 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
                 playAudioFromUrl(data.file_url);
             }
 
-            scrollToBottomOfContainer();
+            scrollToBottomOfChatContainer();
 
         } catch (error) {
             console.error("Failed to send question:", error);
@@ -328,7 +347,7 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
                     playAudioFromUrl(response.file_url);
                 }
 
-                scrollToBottomOfContainer();
+                scrollToBottomOfChatContainer();
             } catch (error) {
                 console.error("Failed to upload audio:", error);
                 // 에러 발생 시 로딩 메시지 제거 및 에러 메시지 추가
@@ -380,7 +399,7 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
     };
 
     return (
-        <div id="chatContainer">
+        <div id="chatContainer" ref={chatContainerRef}>
             {/*<Header />*/}
             <div id="messagesContainer" ref={messagesContainerRef}>
                 <AiGuideChat messages={messages} hasMore={hasMore} loadMore={loadChatHistory} />

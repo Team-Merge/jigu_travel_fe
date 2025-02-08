@@ -142,6 +142,7 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
           });
 
           window.naver.maps.Event.addListener(marker, "click", () => {
+            console.log(` 마커 클릭됨! ID: ${place.placeId}, 이름: ${place.name}, 위치: (${place.latitude}, ${place.longitude})`);
             mapRef.current.panTo(marker.getPosition());
             setHighlightedPlaceId(place.placeId);
           });
