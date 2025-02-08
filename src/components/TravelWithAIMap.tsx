@@ -191,7 +191,7 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({ places, onLocationCha
   };
 
   return (
-      <div id="map" style={{ width: "100%", height: "100%", position: "relative" }}>
+      <div id="map">
         <button id="recenter-button" onClick={() => {
             if (mapRef.current && lastLatRef.current !== null && lastLngRef.current !== null) {
                 mapRef.current.setCenter(
