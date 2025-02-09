@@ -6,7 +6,7 @@ const socketUrl = window.location.protocol === "https:"
     ? "wss://jigu-travel.kro.kr/stomp-ws"
     : "ws://localhost:8080/stomp-ws";
 
-const useWebSocket = (userLocation, interests, isWebSocketReady) => {
+const useWebSocket = (userLocation, interests, isWebSocketReady, isWebSocketActive, setIsTravelEnding) => {
   const [client, setClient] = useState<Client | null>(null);
   const [places, setPlaces] = useState([]);
   const [serviceUUID, setServiceUUID] = useState<string | null>(() => localStorage.getItem("serviceUUID"));
@@ -31,7 +31,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
   }, []);
 
   useEffect(() => {
-    if (!isWebSocketReady || !serviceUUID || !userLocation) return;
+    if (!isWebSocketReady || !serviceUUID || !userLocation || !isWebSocketActive) return;
 
     const stompClient = new Client({
       brokerURL: socketUrl,
@@ -92,10 +92,12 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
               },
 
       onDisconnect: () => {
+          if (!isTravelEnding) {
               console.warn(" WebSocket 연결 끊김. 재연결 시도 중...");
               alert(" 네트워크 연결이 끊어졌습니다. 자동으로 다시 연결을 시도합니다.");
               attemptReconnect();
-            },
+            }
+        },
 
       onStompError: (frame) => {
               console.error("WebSocket 에러 발생:", frame.headers["message"]);
@@ -120,7 +122,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
           stompClient.deactivate();
           setClient(null);
         };
-      }, [isWebSocketReady, userLocation, serviceUUID]);
+      }, [isWebSocketReady, userLocation, serviceUUID, isWebSocketActive]);
 
     // 웹소켓 재연결
     const attemptReconnect = () => {
@@ -155,4 +157,5 @@ const useWebSocket = (userLocation, interests, isWebSocketReady) => {
 
     return { places };
         };
+
 export default useWebSocket;
