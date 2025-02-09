@@ -44,7 +44,7 @@ const App: React.FC = () => {
         <Route path="/auth/passwordReset-vaild" element={<PasswordReset />} />
         <Route path="/auth/reset-password" element={<PasswordResetNew />} />
         <Route path="/withdraw" element={<Withdraw />} />
-        <Route path="/ai-guid-map" element={<AiGuideAndMap />} />
+        <Route path="/ai-guide-map" element={<AiGuideAndMap />} />
 
 
         <Route element={<ProtectedRoute />}>
