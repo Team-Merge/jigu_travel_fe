@@ -40,14 +40,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
     navigate("/");
   };
 
-  // 기본 메뉴 (일반 사용자용)
-  const defaultMenu = [
+  // ✅ 로그인한 사용자만 볼 수 있는 메뉴
+  const loggedInMenu = [
     { label: "AI 음성 가이드", path: "/ai-guide" },
     { label: "카테고리 추천", path: "/recommend-travel" },
-    { label: "Q & A", path: "/board" },
   ];
 
-  // 관리자 페이지 메뉴 (`/admin`에서만 표시)
+  // ✅ 기본 메뉴 (로그인 여부 상관 없음)
+  const defaultMenu = [{ label: "Q & A", path: "/board" }];
+
+  // ✅ 관리자 페이지 메뉴 (`/admin`에서만 표시)
   const adminMenu = [
     { label: "대시보드", path: "/admin" },
     { label: "방문자 통계", path: "/admin/visitor" },
@@ -55,9 +57,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
     { label: "장소 관리", path: "/admin/location" },
   ];
 
-  // 현재 URL이 "/admin"으로 시작하면 관리자 메뉴 사용
+  // ✅ 현재 URL이 "/admin"으로 시작하면 관리자 메뉴 사용
   const isAdminPage = location.pathname.startsWith("/admin");
-  const menuItems = isAdminPage ? adminMenu : defaultMenu;
+  const menuItems = isAdminPage ? adminMenu : defaultMenu.concat(user ? loggedInMenu : []);
 
   return (
     <div className={`sidebar ${isOpen ? "open" : ""}`}>
@@ -93,9 +95,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
           </button>
         )}
       </div>
-      
 
-        
+      {/* ✅ 로그인한 사용자만 "회원 탈퇴" 버튼 표시 */}
       {user && (
         <div className="withdraw-section">
           <button className="menu-item" onClick={() => navigate("/withdraw")}>
@@ -104,7 +105,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
           </button>
         </div>
       )}
-
     </div>
   );
 };

@@ -3,31 +3,62 @@ import { useNavigate } from "react-router-dom";
 import { register, checkNickname, checkLoginId, calculateDateYearsAge } from "../utils/api";
 import Header from "../components/Header";
 import "../styles/Register.css";
+import { termsContent } from "../constants/terms";
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
+
+  /** STEP 상태 추가 */
+  const [step, setStep] = useState<number>(1);
+
+  /** 약관 동의 상태 */
+  const [terms, setTerms] = useState({
+    terms1: false,
+    terms2: false,
+    terms3: false,
+  });
+
+  /** 회원가입 입력값 */
   const [loginId, setLoginId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [birthDate, setBirthDate] = useState<string>("");
   const [gender, setGender] = useState<string>("MALE");
-  const [email,setEmail]=useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(null);
   const [loginIdAvailable, setLoginIdAvailable] = useState<boolean | null>(null);
   const [minDate, setMinDate] = useState<string>("");
   const [maxDate, setMaxDate] = useState<string>("");
 
-  const navigate = useNavigate();
+  /** 약관 동의 체크 */
+  const handleCheckboxChange = (name: string) => {
+    setTerms((prev) => ({ ...prev, [name]: !prev[name as keyof typeof prev] }));
+  };
+
+  /** 모두 동의 버튼 */
+  const handleAgreeAll = () => {
+    setTerms({ terms1: true, terms2: true, terms3: true });
+  };
+
+  const allChecked = terms.terms1 && terms.terms2 && terms.terms3;
+
+  /** STEP 1 → STEP 2 이동 */
+  const handleNextStep = () => {
+    if (!terms.terms1 || !terms.terms2 || !terms.terms3) {
+      setError("모든 약관에 동의해야 합니다.");
+      return;
+    }
+    setError(null);
+    setStep(2);
+  };
 
   /** 아이디 중복 확인 */
   const handleCheckLoginId = async () => {
-    console.log("아이디 입력값:", loginId);
     if (!loginId.trim()) return;
-
     try {
       const response = await checkLoginId(loginId);
-      console.log("아이디 중복 확인 응답:", response);
       setLoginIdAvailable(response.data);
     } catch (error) {
       console.error("아이디 중복 확인 실패:", error);
@@ -37,12 +68,9 @@ const Register: React.FC = () => {
 
   /** 닉네임 중복 확인 */
   const handleCheckNickname = async () => {
-    console.log("닉네임 입력값:", nickname);
     if (!nickname.trim()) return;
-
     try {
       const response = await checkNickname(nickname);
-      console.log("닉네임 중복 확인 응답:", response);
       setNicknameAvailable(response.data);
     } catch (error) {
       console.error("닉네임 중복 확인 실패:", error);
@@ -60,7 +88,7 @@ const Register: React.FC = () => {
     fetchDates();
   }, []);
 
-  /** 🔹 회원가입 요청 */
+  /** 회원가입 요청 */
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -86,7 +114,7 @@ const Register: React.FC = () => {
     }
 
     try {
-      await register({ loginId, password, nickname, birthDate, gender,email });
+      await register({ loginId, password, nickname, birthDate, gender, email });
       alert("회원가입 성공!");
       navigate("/auth/login/email");
     } catch (error) {
@@ -99,9 +127,42 @@ const Register: React.FC = () => {
     <div className="register-wrapper">
       <Header />
       <div className="register-container">
-        <h2>회원가입</h2>
-        {error && <p className="error-message">{error}</p>}
+        {step === 1 ? (
+          /** STEP 1: 이용약관 동의 */
+          <form className="register-form">
+            <h2>이용약관 동의</h2>
+            {error && <p className="error-message">{error}</p>}
+
+            {/* 약관 동의 항목 */}
+            {Object.keys(terms).map((key, index) => (
+              <div key={index} className="input-wrapper">
+                <div className="terms-content">
+                  <p>{termsContent[key as keyof typeof termsContent]}</p>
+                </div>
+                <label className="checkbox-container">
+                  <input type="checkbox" checked={terms[key as keyof typeof terms]} onChange={() => handleCheckboxChange(key)} />
+                  {["이용약관", "개인정보 처리방침", "마케팅 활용 동의"][index]}에 동의합니다.
+                </label>
+              </div>
+            ))}
+
+            <div className="input-wrapper">
+              <label className="checkbox-container">
+                <input type="checkbox" checked={allChecked} onChange={handleAgreeAll} />
+                모두 동의
+              </label>
+            </div>
+
+            {/* 다음 버튼 */}
+            <button type="button" className="next-btn" onClick={handleNextStep}>
+              다음
+            </button>
+          </form>
+        ) : (
+          /** STEP 2: 회원가입 (기존 코드 유지) */
+          
         <form className="register-form" onSubmit={handleSubmit}>
+            <h2>회원가입</h2>
 
           {/* 아이디 입력 + 중복 확인 */}
           <div className="input-wrapper">
@@ -214,9 +275,10 @@ const Register: React.FC = () => {
             {/* 다음 버튼 */}
             <button type="submit" className="next-btn">다음</button>
         </form>
+        )}
       </div>
     </div>
-);
+  );
 };
 
 export default Register;

@@ -195,3 +195,45 @@ stat-box th:nth-child(3),
 .upload-icon {
     font-size: 40px;
 }
+
+
+/* 관리자 설정 버튼 */
+.admin-btn,
+.restore-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.admin-btn.selected,
+.restore-btn {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+.admin-btn:hover,
+.restore-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* 강제 탈퇴 버튼 */
+.delete-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px 10px;
+    transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #cc0000;
+}

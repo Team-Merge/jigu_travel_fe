@@ -42,7 +42,7 @@ const Withdraw: React.FC = () => {
       <div className="withdraw-content">
         <h2>회원 탈퇴</h2>
         
-        <p>탈퇴하려면 비밀번호를 입력하세요.</p>
+        <h3>탈퇴하려면 비밀번호를 입력하세요.</h3>
         
         <div className="withdraw-form">
           <div className="withdraw-input-container">
@@ -62,6 +62,7 @@ const Withdraw: React.FC = () => {
           <button className="cancel-button" onClick={() => navigate(-1)}>
             취소
           </button>
+          <p>탈퇴시 30일간 회원정보가 유지되며 30일 이후에는 데이터 복구가 불가능 합니다.</p>
         </div>
       </div>
     </div>

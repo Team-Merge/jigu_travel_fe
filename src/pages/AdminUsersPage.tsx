@@ -44,11 +44,6 @@ const AdminUsersPage: React.FC = () => {
         try {
             const response = await getAllActiveUsers(activeUserPage, 10);
 
-            // createdAt 기준 내림차순 정렬 (최신 가입자 순)
-            const sortedUsers = response.content.sort((a: User, b: User) => 
-                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            );
-
             setActiveUsers(response.content || []);
             setTotalActivePages(response.totalPages || 1);
         } catch (error) {

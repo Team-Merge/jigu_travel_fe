@@ -39,12 +39,14 @@ const App: React.FC = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/ask-ai" element={<AskAI />} />
         <Route path="/recommend-travel" element={<RecommendTravel />} />
-        <Route path="/travel-with-ai" element={<TravelWithAI />} />
+        <Route path="/travel-with-ai" element={<AiGuideAndMap />} />
+        
+        {/* <Route path="/travel-with-ai" element={<TravelWithAI />} /> */}
         <Route path="/ai-guide" element={<AiGuideTest />} />
         <Route path="/auth/passwordReset-vaild" element={<PasswordReset />} />
         <Route path="/auth/reset-password" element={<PasswordResetNew />} />
         <Route path="/withdraw" element={<Withdraw />} />
-        <Route path="/ai-guid-map" element={<AiGuideAndMap />} />
+        {/* <Route path="/ai-guid-map" element={<AiGuideAndMap />} /> */}
 
 
         <Route element={<ProtectedRoute />}>

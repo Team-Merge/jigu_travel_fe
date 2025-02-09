@@ -18,12 +18,12 @@ const Header: React.FC = () => {
         </div>
 
         <div className="header-icons">
-          <button className="search-icon">
+          {/* <button className="search-icon">
               <img src="/icons/search_logo.svg" alt="검색" className="icon-img" />
-          </button>
+          </button> */}
           
           <button className="menu-icon" onClick={() => setSidebarOpen(true)}>
-              <img src="/icons/menu_logo.svg" alt="검색" className="icon-img" />
+              <img src="/icons/menu_logo.svg" alt="메뉴" className="icon-img" />
           </button>
         </div>
 

@@ -165,7 +165,7 @@ useEffect(() => {
         <Header />
         <div className="admin-dashboard">
 
-            <h2>개요</h2>
+            <h2>대시보드</h2>
             <div className="stats-container">
                 <div className="stat-box">
                     <h2>오늘 방문자</h2>
@@ -214,7 +214,7 @@ useEffect(() => {
                             <tr key={user.userId}>
                                 <td>{user.loginId}</td>
                                 <td>{user.nickname}</td>
-                                <td>{user.role === "ROLE_ADMIN" ? "✅" : "❌"}</td>
+                                <td>{user.role === "ROLE_ADMIN" ? "O" : "X"}</td>
                                 {/* <td>
                                 <button onClick={() => toggleAdmin(user.userId, user.role)}>
                                     {user.role === "ROLE_ADMIN" ? "해제" : "부여"}

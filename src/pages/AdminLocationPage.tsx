@@ -233,6 +233,7 @@ const AdminLocationPage: React.FC = () => {
                             e.stopPropagation();
                             handleDelete(place.placeId);
                           }}
+                          className="delete-btn"
                         >
                           삭제
                         </button>
@@ -292,10 +293,12 @@ const AdminLocationPage: React.FC = () => {
                         <td>{place.types.join(", ")}</td>
                         <td>{place.address}</td>
                         <td>
-                        <button onClick={() => handleRestore(place.placeId)}>복구</button>
+                        <button onClick={() => handleRestore(place.placeId)}
+                          className="restore-btn">복구</button>
                         </td>
                         <td>
-                        <button onClick={() => handlePermanentDelete(place.placeId)}>삭제</button>
+                        <button onClick={() => handlePermanentDelete(place.placeId)}
+                          className="delete-btn">삭제</button>
                         </td>
                     </tr>
                     ))
