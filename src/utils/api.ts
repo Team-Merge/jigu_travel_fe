@@ -292,10 +292,13 @@ export const sendAudio = async (audioBlob: Blob) => {
 // };
 
 /** 사용자 현재 위치 가져오기 (Geolocation API) */
-export const getUserLocation = (onSuccess: (location: { lat: number; lng: number }) => void, onError?: (error: GeolocationPositionError) => void) => {
+export const getUserLocation = (
+    onSuccess: (location: { lat: number; lng: number }) => void,
+    onError?: (error: GeolocationPositionError) => void
+    ) => {
   if (!navigator.geolocation) {
     console.error("Geolocation이 지원되지 않습니다.");
-    if (onError) onError(new GeolocationPositionError());
+    alert("현재 브라우저에서 위치 서비스를 지원하지 않습니다.");
     return;
   }
 
@@ -308,6 +311,7 @@ export const getUserLocation = (onSuccess: (location: { lat: number; lng: number
     },
     (error) => {
       console.error("위치 정보를 가져올 수 없습니다:", error);
+      alert("위치 정보를 가져올 수 없습니다. 다시 시도해주세요.");
       if (onError) onError(error);
     },
     { enableHighAccuracy: true }
@@ -331,25 +335,30 @@ export const saveUserLocation = async (latitude: number, longitude: number): Pro
 };
 
 /** MAP : 여행 종료 - 사용자 위치 DB 저장 **/
-export const endTravel = async (): Promise<void> => {
-  try {
+export const endTravel = async (): Promise<{ code: number; message?: string } | null> => {
+    try {
     const response = await fetchWithAuth(`${API_BASE_URL}/location/end-travel`, {
       method: "POST",
       credentials: "include",
     });
 
-    if (!response || response.code !== 200) {
-          throw new Error("여행 종료 요청이 실패했습니다.");
+    if (!response) {
+        throw new Error("서버 응답이 없습니다. 네트워크 상태를 확인하세요.");
         }
 
-    console.log("여행 종료 및 DB 저장 성공:", response);
-    alert("여행이 종료되었습니다!");
+    if (response.code !== 200) {
+        throw new Error(`여행 종료 요청 실패. 서버 응답 코드: ${response.code}`);
+    }
 
-  } catch (error) {
-    console.error("여행 종료 API 호출 중 오류 발생:", error);
-    alert("여행 종료에 실패했습니다. 다시 시도해주세요.");
-  }
-};
+    console.log("여행 종료 및 DB 저장 성공:", response);
+    return response; // 여기서 정상적으로 응답 반환
+
+    } catch (error) {
+        console.error("여행 종료 API 호출 중 오류 발생:", error);
+        alert("여행 종료에 실패했습니다. 다시 시도해주세요.");
+        return null; // 실패한 경우 null 반환
+      }
+    };
 
 
 /** MAP : 위치 기반 주변 명소 검색**/
@@ -364,6 +373,7 @@ export const fetchNearbyPlaces = async (lat: number, lng: number, types?: string
     return response.data || [];
   } catch (error) {
     console.error("주변 명소 검색 API 호출 실패:", error);
+    alert("주변 명소를 불러오는 데 실패했습니다. 네트워크 상태를 확인해주세요.");
     return [];
   }
 };

@@ -20,6 +20,8 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
   const [isWebSocketReady, setIsWebSocketReady] = useState<boolean>(false);
   const [highlightedPlaceId, setHighlightedPlaceId] = useState<number | null>(null);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null);
+  const [isWebSocketActive, setIsWebSocketActive] = useState(true);
+  const [isTravelEnding, setIsTravelEnding] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollToBottom = () => {
@@ -65,7 +67,7 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
           fetchInitialData();
         }, [userLocation]);
 
-  const { places: webSocketPlaces } = useWebSocket(userLocation, interests, isWebSocketReady);
+  const { places: webSocketPlaces } = useWebSocket(userLocation, interests, isWebSocketReady, isWebSocketActive);
 
   useEffect(() => {
       const updatedPlaces = activeTab === "all" ? webSocketPlaces : webSocketPlaces.filter((place) =>
@@ -120,19 +122,29 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
                 return;
             }
 
+            setIsTravelEnding(true);
+
             // 종료 전 마지막 위치 저장
             await saveUserLocation(userLocation.lat, userLocation.lng);
             console.log("여행 종료 전 마지막 위치 저장 완료:", userLocation);
 
             // 여행 종료 API 호출
-            await endTravel();
+            const response = await endTravel();
 
-            // 사용자 알림 및 페이지 이동
-            window.location.href = "/home";
+            // API 응답이 200일 때만 페이지 이동
+            if (response && response.code === 200) {
+                alert("여행이 종료되었습니다. 메인 화면으로 이동합니다.");
+                setIsWebSocketActive(false);
+                window.location.replace("/home");
+            } else {
+                alert("여행 종료에 실패했습니다. 다시 시도해주세요.");
+                setIsTravelEnding(false);
+                }
 
         } catch (error) {
             console.error("여행 종료 중 오류 발생:", error);
             alert("여행 종료 중 오류가 발생했습니다. 다시 시도해주세요.");
+            setIsTravelEnding(false);
         }
     };
 
