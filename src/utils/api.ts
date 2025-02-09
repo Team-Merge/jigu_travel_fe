@@ -319,13 +319,14 @@ export const saveUserLocation = async (latitude: number, longitude: number): Pro
   try {
     const response = await fetchWithAuth(`${API_BASE_URL}/location/user-location`, {
       method: "POST",
-      body: JSON.stringify({ latitude, longitude }),
+      body: JSON.stringify({ latitude, longitude,}),
       credentials: "include",
     });
 
     console.log("위치 저장 성공:", response);
   } catch (error) {
     console.error("사용자 위치 저장 에러 발생:", error);
+    alert("위치 저장에 실패했습니다. 네트워크 상태를 확인해주세요.");
   }
 };
 
@@ -337,8 +338,13 @@ export const endTravel = async (): Promise<void> => {
       credentials: "include",
     });
 
+    if (!response || response.code !== 200) {
+          throw new Error("여행 종료 요청이 실패했습니다.");
+        }
+
     console.log("여행 종료 및 DB 저장 성공:", response);
     alert("여행이 종료되었습니다!");
+
   } catch (error) {
     console.error("여행 종료 API 호출 중 오류 발생:", error);
     alert("여행 종료에 실패했습니다. 다시 시도해주세요.");
@@ -718,6 +724,7 @@ export const fetchUUID = async (): Promise<string | null> => {
     return response.data.serviceUUID; // UUID 반환
   } catch (error) {
     console.error("UUID 가져오기 오류:", error);
+    alert("서버와의 연결이 원활하지 않습니다. 다시 시도해주세요.");
     return null; // 실패 시 null 반환
   }
 };
