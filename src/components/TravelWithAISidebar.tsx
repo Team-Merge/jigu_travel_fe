@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import "../styles/TravelWithAISidebar.css";
 import Custom_icon from "../assets/images/travelwithai_custom.svg";
 import All_icon from "../assets/images/travelwithai_all.svg";
+import End_icon from "../assets/images/travelwithai_end.png";
 
 interface Place {
   placeId: number;
@@ -22,6 +23,7 @@ interface TravelWithAISidebarProps {
   activeTab: string;
   onFetchPlaces: () => void;
   onFetchInterestPlaces: () => void;
+  handleEndTravel: () => void;
   highlightedPlaceId: number | null;
   onPlaceClick: {lat: number, lng: number};
   onAiGuideRequest: (placeName: string) => void;  // 명소 안내버튼? 동작? ㄱㄴ?
@@ -32,6 +34,7 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   activeTab,
   onFetchPlaces,
   onFetchInterestPlaces,
+  handleEndTravel,
   highlightedPlaceId,
   onPlaceClick,
   onAiGuideRequest
@@ -40,7 +43,7 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
 
     useEffect(() => {
         if (highlightedPlaceId && itemRefs.current[highlightedPlaceId]) {
-              itemRefs.current[highlightedPlaceId]?.scrollIntoView({ behavior: "smooth", block: "start" });
+              itemRefs.current[highlightedPlaceId]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
             }
           }, [highlightedPlaceId]);
 
@@ -52,6 +55,8 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
                     <img src={Custom_icon} className="place-category-icon" alt="맞춤 명소"/> 맞춤 명소 </button>
           <button className={`map-category ${activeTab === "all" ? "active" : ""}`} onClick={onFetchPlaces}>
               <img src={All_icon} className="place-category-icon" alt="모든 명소" /> 모든 명소 </button>
+          <button className={`map-category ${activeTab === "" ? "active" : ""}`} onClick={handleEndTravel}>
+                        <img src={End_icon} className="place-category-icon" alt="" /> 여행 종료 </button>
           </div>
 
       {/* 명소 리스트 영역 */}

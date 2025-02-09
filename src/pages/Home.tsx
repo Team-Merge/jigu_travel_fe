@@ -135,7 +135,7 @@ const Home: React.FC = () => {
           <h3>AI가 추천하는 여행</h3>
         </div>
         <div className="recommend-section">
-          <button className="recommend-card" onClick={() => window.location.href = "/travel-with-ai"}>
+          <button className="recommend-card" onClick={() => window.location.href = "/ai-guide-map"}>
             <p>AI와 함께 여행 시작!</p>
             <h3>여행친구와 함께 여행하기</h3>
           </button>
