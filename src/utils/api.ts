@@ -551,10 +551,22 @@ export const getVisitorCountByDate = async (date: string, ip: string = ""): Prom
 };
 
 /** 전체 사용자 조회 (페이지네이션 추가) */
-export const getAllUsers = async (page: number = 0, size: number = 10) => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/api/user/all?page=${page}&size=${size}`);
+// export const getAllUsers = async (page: number = 0, size: number = 10) => {
+//   const response = await fetchWithAuth(`${API_BASE_URL}/api/user/all?page=${page}&size=${size}`);
   
-  // Page 객체에서 content 추출 (사용자 데이터 배열)
+//   // Page 객체에서 content 추출 (사용자 데이터 배열)
+//   return response.data?.content ? response.data : { content: [], totalPages: 1 };
+// };
+
+/** 일반 사용자 목록 조회 (탈퇴되지 않은 유저) */
+export const getAllActiveUsers = async (page: number = 0, size: number = 10) => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/user/all?page=${page}&size=${size}`);
+  return response.data?.content ? response.data : { content: [], totalPages: 1 };
+};
+
+/** 탈퇴된 사용자 목록 조회 */
+export const getDeletedUsers = async (page: number = 0, size: number = 10) => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/api/user/deleted?page=${page}&size=${size}`);
   return response.data?.content ? response.data : { content: [], totalPages: 1 };
 };
 
@@ -729,3 +741,49 @@ export const calculateDateYearsAge = async(years: number) => {
   .toISOString()
   .split('T')[0];
 }
+
+export const getTodayUserStats = async () => {
+  try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+          console.error("JWT 토큰이 없습니다. 로그인이 필요합니다.");
+          throw new Error("JWT 토큰이 없습니다. 로그인이 필요합니다.");
+      }
+
+      const response = await axios.get(`${API_BASE_URL}/api/user/admin/stats/today`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
+      });
+
+      return response.data.data;
+  } catch (error) {
+      console.error("API 요청 실패: getTodayUserStats", error);
+      throw error;
+  }
+};
+
+/** 사용자 강제 탈퇴 (Soft Delete) */
+export const deleteUserByAdmin = async (userId: string) => {
+  try {
+      await fetchWithAuth(`${API_BASE_URL}/api/user/admin/delete/${userId}`, {
+          method: "DELETE",
+      });
+  } catch (error) {
+      console.error("API 요청 실패: deleteUserByAdmin", error);
+      throw error;
+  }
+};
+
+/** 탈퇴된 사용자 복구 API */
+export const restoreUser = async (userId: string) => {
+  try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/api/user/admin/restore/${userId}`, {
+          method: "PUT",
+      });
+      return response;
+  } catch (error) {
+      console.error("API 요청 실패: restoreUser", error);
+      throw error;
+  }
+};

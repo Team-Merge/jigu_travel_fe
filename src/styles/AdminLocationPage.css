@@ -33,6 +33,7 @@
     align-items: center;
     gap: 10px;
 }
+
 /* 검색 기준 선택 (이름, 종류, 주소) */
 .search-types {
     flex: 2; /* 2:8 비율 */

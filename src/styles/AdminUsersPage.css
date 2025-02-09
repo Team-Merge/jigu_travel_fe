@@ -1,4 +1,4 @@
-.admin-visitor-wrapper {
+.admin-users-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -8,7 +8,7 @@
     min-height: 100vh;
 }
 
-.admin-visitor-container {
+.admin-users-container {
     margin-top: 40px;
     display: flex;
     flex-direction: column;
@@ -20,7 +20,7 @@
     box-sizing: border-box;
 }
 
-.visitor-stats-container {
+.user-stats-container {
     width: 100%;
     background: #ffffff;
     border-radius: 8px;
@@ -28,70 +28,30 @@
     margin-bottom: 20px;
 }
 
-.visitor-chart-container {
+.user-table-container {
     width: 100%;
-    margin: auto;
-}
-
-.visitor-stat-box {
-    padding: 10px 20px;
-
-}
-
-.visitor-table-container {
-    width: 100%;
-    overflow-x: auto;
     border-radius: 8px;
 }
 
-.visitor-table {
+.user-table {
     width: 100%;
-    min-width: 800px;
     border-collapse: collapse;
     white-space: nowrap;
 }
 
-.visitor-table th, 
-.visitor-table td {
+.user-table th,
+.user-table td {
     text-align: center;
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
 
 
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 5px;
-}
-
-.date-buttons{
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    gap: 10px;
-}
-
-.date-buttons button {
-    padding: 6px 14px;
-    border: none;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    background-color: #f0f0f0;
-    color: #333;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.date-buttons button.selected {
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: bold;
-}
-
 .search-container {
     margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    width: 100%;
 }
 
 .search-container input[type="text"] {
@@ -104,16 +64,54 @@
     text-indent: 10px;
 }
 
-/* 버튼 스타일 */
-.search-btn {
-    width: 100%;
+.search-btn:hover {
+    background-color: #0077cc;
+}
+
+/* 관리자 설정 버튼 */
+.admin-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.admin-btn.selected {
     background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+.admin-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* 강제 탈퇴 버튼 */
+.delete-btn {
+    background-color: #ff4d4d;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 18px;
-    margin-bottom: 20px;
-    padding: 10px 0;
-    text-align: center;
-  }
+    font-size: 14px;
+    padding: 6px 10px;
+    transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #cc0000;
+}
+
+@media (max-width: 768px) {
+    .active-user-table th:nth-child(2),
+    .active-user-table td:nth-child(2),
+    .active-user-table th:nth-child(3),
+    .active-user-table td:nth-child(3) {
+        display: none;
+    }
+
+}

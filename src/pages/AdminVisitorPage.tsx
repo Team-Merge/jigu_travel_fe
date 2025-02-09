@@ -123,7 +123,7 @@ const AdminVisitorPage: React.FC = () => {
         <div className="visitor-stats-container">
           <div className="visitor-stat-box">
             <h3>시간대별 방문 기록</h3>
-            {/* ✅ IP 필터링 추가 */}
+            {/* IP 필터링 추가 */}
             <VisitorHourlyChart startDate={finalStartDate} endDate={finalEndDate} searchIp={finalIp} />
           </div>
         </div>
@@ -132,7 +132,7 @@ const AdminVisitorPage: React.FC = () => {
             <div className="visitor-stat-box">
                 <h3>날짜별 방문자 수</h3>
                 <div className="visitor-chart-container">
-                    {/* ✅ IP 필터링 추가 */}
+                    {/* IP 필터링 추가 */}
                     <VisitorChart startDate={finalStartDate} endDate={finalEndDate} searchIp={finalIp} />
                 </div>
             </div>

@@ -3,9 +3,10 @@ import {
   getTodayVisitorCount,
   getVisitorCountByDate,
 //   getVisitorRecords,
-  getAllUsers,
+  getAllActiveUsers,
   setAdminStatus,
   fetchPlaces,
+  getTodayUserStats,
 } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import VisitorChart from "../components/VisitorChart";
@@ -90,7 +91,7 @@ useEffect(() => {
 
   const fetchUsers = async () => {
     try {
-      const response = await getAllUsers(userPage, size);
+      const response = await getAllActiveUsers(userPage, size);
       setUsers(response.content || []);
       setTotalUserPages(response.totalPages || 1);
     } catch (error) {
@@ -110,6 +111,21 @@ useEffect(() => {
     }
   };
   
+  const [todayStats, setTodayStats] = useState<{ newUsers: number; deletedUsers: number } | null>(null);
+
+  useEffect(() => {
+      fetchTodayStats();
+  }, []);
+  
+  const fetchTodayStats = async () => {
+      try {
+          const stats = await getTodayUserStats();
+          setTodayStats(stats);
+      } catch (error) {
+          console.error("오늘 가입/탈퇴자 수 가져오기 실패:", error);
+      }
+  };
+
   // 사용자 목록 페이지 이동
   const goToPreviousUserPage = () => {
     if (userPage > 0) setUserPage(userPage - 1);
@@ -156,12 +172,12 @@ useEffect(() => {
                     <p>{todayCount}명</p>
                 </div>
                 <div className="stat-box">
-                    <h2>해당일 방문객</h2>
-                    <div className="date-input">
-                      <input type="date" value={selectedDate} onChange={handleDateChange} />
-                    </div>
-                    {/* {dateCount !== null && <p>{selectedDate} 방문자 수: {dateCount}명</p>} */}
-                    {dateCount !== null && <p>방문자: {dateCount}명</p>}
+                    <h2>오늘 가입자 / 탈퇴자</h2>
+                    {todayStats ? (
+                        <p>{todayStats.newUsers}명 / {todayStats.deletedUsers}명</p>
+                    ) : (
+                        <p>데이터 로딩 중...</p>
+                    )}
                 </div>
             </div>
             
@@ -181,7 +197,7 @@ useEffect(() => {
                 <div className="stat-box">
                     <div className="stat-header">
                         <h2>사용자 목록</h2>
-                        <button className="report-btn" onClick={() => console.log("전체 보고서 이동")}>사용자 관리 →</button>
+                        <button className="report-btn" onClick={() => navigate("/admin/users")}>사용자 관리 →</button>
                     </div>
                     {users.length > 0 ? (
                         <table>
@@ -190,7 +206,7 @@ useEffect(() => {
                             <th>아이디</th>
                             <th>닉네임</th>
                             <th>관리자 여부</th>
-                            <th>관리자 설정</th>
+                            {/* <th>관리자 설정</th> */}
                             </tr>
                         </thead>
                         <tbody>
@@ -199,11 +215,11 @@ useEffect(() => {
                                 <td>{user.loginId}</td>
                                 <td>{user.nickname}</td>
                                 <td>{user.role === "ROLE_ADMIN" ? "✅" : "❌"}</td>
-                                <td>
+                                {/* <td>
                                 <button onClick={() => toggleAdmin(user.userId, user.role)}>
                                     {user.role === "ROLE_ADMIN" ? "해제" : "부여"}
                                 </button>
-                                </td>
+                                </td> */}
                             </tr>
                             ))}
                         </tbody>

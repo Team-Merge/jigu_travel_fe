@@ -26,6 +26,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminVisitorPage from "./pages/AdminVisitorPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminUsersPage from "./pages/AdminUsersPage";
 
 const App: React.FC = () => {
   return (
@@ -50,6 +51,7 @@ const App: React.FC = () => {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/visitor" element={<AdminVisitorPage />} />
           <Route path="/admin/location" element={<AdminLocationPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
         </Route>
 
         {/* <Route path="/board" element={<BoardTabs />} /> */}
