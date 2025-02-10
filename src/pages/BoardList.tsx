@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getBoardList } from "../api/boardApi";
 import { useNavigate } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 import "../styles/BoardList.css";
 import Header from "../components/Header";
 
@@ -9,6 +10,7 @@ const BoardList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const BoardList: React.FC = () => {
 
         setPosts(response.data.posts); //`posts` 대신 `content` 사용???
         setTotalPages(response.data.totalPages);
+        setTotalItems(response.data.totalItems);
       } catch (error) {
         console.error("게시글 목록 가져오기 실패:", error);
       } finally {
@@ -43,6 +46,10 @@ const BoardList: React.FC = () => {
     }
   };
 
+  const handlePageChange = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected);
+  };
+
   return (
     <div className="board-wrapper">
       <Header/>
@@ -51,11 +58,18 @@ const BoardList: React.FC = () => {
       <div className="board-header">
         <h2 className="qna-header">QnA 게시판</h2>
       </div>
+
+      <div className="total-posts-container">
+        <p className="total-posts-text">
+          총 <span className="total-posts-number">{totalItems}</span>건의 게시글이 있습니다.</p> 
+      </div>
+
       <div className="qna-table-wrapper">
-      {loading ? (
+              {loading ? (
         <p className="loading-text">⏳ 로딩 중...</p>
       ) : (
         <>
+        
         <table className="qna-table">
           <thead>
             <tr>
@@ -88,7 +102,7 @@ const BoardList: React.FC = () => {
       )}
       </div>
       
-      <div className="pagination-buttons">
+      {/* <div className="pagination-buttons">
           <button onClick={goToPrevPage} disabled={currentPage === 0}>
             ◀ 이전
           </button>
@@ -96,9 +110,22 @@ const BoardList: React.FC = () => {
           <button onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>
             다음 ▶
           </button>
-        </div>
+        </div> */}
+      <ReactPaginate
+            previousLabel="〈"
+            nextLabel="〉"
+            breakLabel="..."
+            pageCount={totalPages}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageChange}
+            containerClassName="pagination"
+            activeClassName="active"
+            previousClassName="prev"
+            nextClassName="next"
+            disabledClassName="disabled"
+          />
       </div>
-      
     </div>
     <button className="floating-button" onClick={() => navigate(`/board/create`)}>
       +

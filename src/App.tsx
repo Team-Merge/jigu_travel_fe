@@ -20,7 +20,7 @@ import BoardDetail from "./pages/BoardDetail";
 import BoardCreate from "./pages/BoardCreate";
 import BoardEdit from "./pages/BoardEdit";
 
-import BoardTabs from "./components/BoardTab";
+// import BoardTabs from "./components/BoardTab";
 
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminVisitorPage from "./pages/AdminVisitorPage";

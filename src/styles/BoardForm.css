@@ -2,7 +2,8 @@
 .board-form-container {
     display: flex;
     justify-content: center;
-    width: 100vw;
+    width: 100%;
+    align-items: center;
 }
 .board-form {
     display: flex;
@@ -17,7 +18,7 @@
   }
 
   select {
-    display: block !important; /* ✅ 반드시 보이도록 강제 */
+    display: block !important; /* 반드시 보이도록 강제 */
     width: 100%;
     padding: 8px;
     font-size: 16px;
@@ -93,7 +94,7 @@
     background: #b3b3b3;
   }
   
-  /* ✅ 저장 버튼 */
+  /* 저장 버튼 */
   .submit-button {
     background: #4CA9E7;
     color: white;

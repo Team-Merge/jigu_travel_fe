@@ -4,25 +4,24 @@
     align-items: flex-start;
     min-height: 100vh;
     width: 100vw;
-    padding-top: 20px;
     overflow: auto;
+    height: 100vh;
   }
   
 .board-edit-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     justify-content: flex-start;
-    height: auto;
     align-items: center;
     max-width: 1200px;
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
+    margin-top: 20px;
   }
 
   .board-edit-header {
-    width: 100vw;
+    width: 100%;
     height: 20vh;
     text-align: left;
     margin-top: 20px;
@@ -43,3 +42,7 @@
     font-size: 1.2rem;
     color: #333333;
     }
+
+  .board-edit-form {
+    width: 100%;
+  }
