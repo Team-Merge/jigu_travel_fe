@@ -95,7 +95,10 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
               position: newCenter,
               map: mapRef.current,
               icon: {
-                content: '<div style="width: 12px; height: 12px; background-color: red; border-radius: 50%;"></div>',
+                content: `
+                        <div class="current-location-marker">
+                          <div class="pulse"></div>
+                        </div>`,
                 anchor: new window.naver.maps.Point(7, 7),
               },
             });
@@ -199,7 +202,7 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
   return (
     <div id="map" ref={mapContainerRef} style={{ width: "100%", height: "100%" }}>
       <button id="recenter-button" onClick={handleRecenter}>
-        현위치
+        <img src="/icons/gps.png" alt="현위치" />
       </button>
     </div>
   );

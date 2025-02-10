@@ -91,7 +91,7 @@
 /* 명소 개별 항목 */
 .place-item {
   background: white;
-  padding: 18px;
+  padding: 15px;
   border-bottom: 1px solid #ddd;
   width: 100%;
   display: flex;
@@ -102,55 +102,66 @@
   position: relative;
 }
 
+/* 클릭된 명소 강조 */
 .place-item.highlighted {
   background: rgba(200, 200, 200, 0.3);
   transition: background 0.4s ease-in-out, border 0.4s ease-in-out;
   border-bottom: none;
-}
+  }
 
-.place-item h3 {
-  font-size: 15px;
-  font-weight: bold;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 5px 0 0 0;
-}
-
-.place-item p {
-  font-size: 13px;
-  color: #666;
-  margin: 0;
-}
-
-/* 명소 정보 */
+/* 명소 헤더 (이름 + 타입) */
 .place-header {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 14px;
+  justify-content: space-between; /* name과 types를 양쪽 정렬 */
   font-weight: bold;
+  margin-bottom: 4px;
 }
 
-.place-category {
-  font-size: 12px;
-  color: grey;
-  font-weight: 500;
+/* 명소 이름 */
+.place-header h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  line-height: 1.4;
+  align-items: center;
+}
+
+/* 명소 타입 (작은 글씨) */
+.place-types {
+  font-size: 14px;
+  color: #777;
+  white-space: nowrap;
 }
 
 /* 주소 & 전화번호 */
-.place-address,
-.place-tel {
-  font-size: 13px;
+.place-address {
+  font-size: 15px;
   color: #555;
   display: flex;
   align-items: center;
+  gap: 6px;
+  margin-bottom: 0; /* 주소와 전화번호 간격 감소 */
+}
+
+.place-tel {
+  font-size: 15px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
   gap: 8px;
 }
 
 .place-tel::before {
   content: "📞";
+}
+
+.place-tel:empty::before {
+  content: "정보 없음";
+  color: #999; /* 연한 회색 */
 }
 
 /* 명소 없을 때 */
@@ -209,16 +220,4 @@
     width: 100%;
   }
 
-  .place-item {
-    background: white;
-    padding: 8px 15px 10px;
-    border-bottom: 1px solid #ddd;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    word-wrap: break-word;
-    box-sizing: border-box;
-    margin: 0;
-  }
 }

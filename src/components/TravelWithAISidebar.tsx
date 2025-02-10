@@ -73,9 +73,16 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
               className={`place-item ${highlightedPlaceId === place.placeId ? "highlighted" : ""}`}
               onClick={() => onPlaceClick(place.placeId, place.latitude, place.longitude)}
             >
-              <h3>{place.name}</h3>
+              <div className="place-header">
+                <h3>{place.name}</h3>
+                {place.types.length > 0 && (
+                  <span className="place-types">
+                    {place.types.join(", ")} {/* 타입 여러 개면 쉼표로 구분 */}
+                  </span>
+                )}
+              </div>
               <p className="place-address">{place.address}</p>
-              {place.tel && <p className="place-tel">{place.tel}</p>}
+              <p className="place-tel">{place.tel ? place.tel : "정보 없음"}</p>
               {/* AI 명소 안내 버튼 */}
               <button className="ai-guide-button" onClick={() => onAiGuideRequest(place.name)}>
                 AI 명소 안내받기
