@@ -60,7 +60,7 @@ export const updatePost = async (boardId: number, title: string, content: string
   formData.append("boardId", boardId.toString());
   formData.append("title", title);
   formData.append("content", content);
-  formData.append("inquriyType", inquiryType);
+  formData.append("inquiryType", inquiryType);
 
   if (files && files.length > 0) {
     files.forEach((file) => formData.append("files", file));
@@ -72,10 +72,23 @@ export const updatePost = async (boardId: number, title: string, content: string
     removedFiles.forEach((fileName) => formData.append("removedFiles", fileName));
     console.log("[DEBUG] 삭제할 파일 개수:", removedFiles.length);
   }
-  return fetchWithAuth(`${API_BASE_URL}/api/board/update`, {
-    method: "PATCH",
-    body: formData,
-  });
+  // return fetchWithAuth(`${API_BASE_URL}/api/board/update`, {
+  //   method: "PATCH",
+  //   body: formData,
+  // });
+
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/board/update`, {
+      method: "PATCH",
+      body: formData, 
+    });
+
+    console.log("[DEBUG] 게시글 수정 성공:", response);
+    return response;
+  } catch (error) {
+    console.error("[ERROR] 게시글 수정 실패:", error);
+    throw error;
+  }
 };
 
 /** 게시글 삭제 (DELETE) */
@@ -144,7 +157,32 @@ export const updateComments = async (commentId: number, content: string) => {
 
 // 댓글 삭제
 export const deleteComment = async (commentId: number) => {
-  await fetchWithAuth(`${API_BASE_URL}/api/comments/${commentId}`, {
-    method: "DELETE",
-  });
-}
+  try {
+    const jwtToken = localStorage.getItem("jwt");
+    if (!jwtToken) {
+      throw new Error("JWT 토큰이 없습니다. 로그인 후 다시 시도해주세요.");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/comments/${commentId}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // 204 No Content 응답 처리
+    if (response.status === 204 || response.headers.get("content-length") === "0") {
+      console.log(`[DEBUG] 댓글 삭제 완료 - ID: ${commentId}`);
+      return; // JSON 파싱을 하지 않도록 함
+    }
+
+    return await response.json(); // 혹시라도 JSON 응답이 있을 경우 대비
+  } catch (error) {
+    console.error("[ERROR] 댓글 삭제 실패:", error);
+    throw error;
+  }
+};

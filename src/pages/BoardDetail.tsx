@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { CgMoreVertical } from "react-icons/cg";
 import { getPostDetail, deletePost, downloadFile } from "../api/boardApi";
 import "../styles/BoardDetail.css"
 import Header from "../components/Header";
 import CommentSection from "../components/CommentsSection";
+import { jwtDecode } from "jwt-decode";
+
+import profile from '../assets/images/profile.png';
 
 // 첨부파일 타입 정의
 interface Attachment {
@@ -22,6 +26,7 @@ const BoardDetail: React.FC = () => {
     content: string;
     inquiryType: string;
     nickname: string;
+    userId: string;
     createdAt: string;
     attachments: Attachment[]; 
   } | null>(null);
@@ -70,27 +75,107 @@ const BoardDetail: React.FC = () => {
     }
   };
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
+
+  let currentUserNickname = "";
+
+  if (token) {
+    try {
+      const decoded = jwtDecode<{ sub?: string }>(token);
+      console.log("[DEBUG] 디코딩된 토큰 데이터:", decoded);
+  
+      if (decoded.sub) {
+        currentUserNickname = decoded.sub;
+      } else {
+        console.warn("[WARN] 토큰에 nickname 필드가 없습니다.");
+      }
+    } catch (error) {
+      console.error("[ERROR] JWT 디코딩 실패:", error);
+    }
+  }
+  
+  console.log("[DEBUG] 현재 로그인한 사용자 닉네임:", currentUserNickname);
+
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (!postId) return;
+      try {
+        const data = await getPostDetail(Number(postId));
+        setPost(data);
+      } catch (error) {
+        console.error("게시글 불러오기 실패:", error);
+      }
+    };
+    fetchPost();
+  }, [postId]);
+
   return (
     <div className="board-detail-wrapper">
     <Header/>
     <div className="board-detail-container">
       <div className="board-detail-header">
       <h2 className="qna-header">QnA 게시판</h2>
-      </div>
+    </div>
     <div className="board-detail-form-container">
     <div className="board-detail-form">
       {post ? (
         <>
           <div className="detail-title">
+          <h2 className="board-detail-title-post">게시글</h2>
+
           <h2 className="board-detail-title">[{post.inquiryType}] {post.title}</h2>
           </div>
-          <div className="detail-title">
-          <p className="board-detal-author">작성자 : {post.nickname}</p>
-          <p className="board-detail-date">
-            작성 날짜 : {new Date(post.createdAt).toLocaleDateString()}
-            {/* {new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(post.createdAt))} */}
-          </p> 
-          </div>
+          {/* ✅ 작성자 & 날짜 + 옵션 버튼 */}
+          <div className="detail-header">
+                  <div className="detail-info">
+                    <img 
+                      src={profile}
+                      alt="작성자 프로필"
+                      className="profile-image"
+                    />
+                    <p className="board-detail-author">{post.nickname}</p>
+                    <p className="board-detail-date">
+                      작성 날짜 : {new Date(post.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  {/* ✅ 작성자만 메뉴 보이기 */}
+                  {post.nickname === currentUserNickname && (
+                    <div className="detail-menu-container" ref={menuRef}>
+                      <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
+                        <CgMoreVertical size={20} />
+                      </button>
+
+                      {menuOpen && (
+                        <div className="dropdown-menu">
+                          <button onClick={() => navigate(`/board/edit/${post.boardId}`)}>수정하기</button>
+                          <button onClick={handleDelete}>삭제하기</button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <hr className="divider-line"/>
           <div className="board-detail-content">
             <p>{post.content}</p>
             </div>
@@ -109,18 +194,19 @@ const BoardDetail: React.FC = () => {
               </ul>
             </div>
           )}
+           <hr className="divider-line"/>
           <div className="board-detail-buttons">
             <button className="back-button" onClick={() => navigate("/board")}>목록</button>
-            <button className="edit-button" onClick={() => navigate(`/board/edit/${post.boardId}`)}>수정</button>
-            <button className="delete-button" onClick={handleDelete}>삭제</button>
+            {/* <button className="edit-button" onClick={() => navigate(`/board/edit/${post.boardId}`)}>수정</button>
+            <button className="delete-button" onClick={handleDelete}>삭제</button> */}
           </div>
+          <CommentSection boardId={Number(postId)} />
         </>
       ) : (
         <p>로딩 중...</p>
       )}
           </div>
         </div>
-        <CommentSection boardId={Number(postId)} />
       </div>
     </div>
   );

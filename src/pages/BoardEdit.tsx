@@ -14,7 +14,7 @@ const BoardEdit: React.FC = () => {
   const [post, setPost] = useState<{
     title: string;
     content: string;
-    inquiry: string;
+    inquiryType: string;
     attachments: { fileName: string; filePath: string }[];
   } | null>(null);
   const [existingFiles, setExistingFiles] = useState<{ fileName: string; filePath: string }[]>([]);
@@ -40,9 +40,9 @@ const BoardEdit: React.FC = () => {
     fetchPost();
   }, [postId]);
 
-  const handleSubmit = async (title: string, content: string, inquiry: string, newFiles: File[], removedFiles: string[]) => {
+  const handleSubmit = async (title: string, content: string, inquiryType: string, newFiles: File[], removedFiles: string[]) => {
     try {
-      await updatePost(Number(postId), title, content, inquiry, newFiles, removedFiles);
+      await updatePost(Number(postId), title, content, inquiryType, newFiles, removedFiles);
       alert("게시글이 수정되었습니다.");
       navigate(`/board/${postId}`);
     } catch (error) {
@@ -68,7 +68,7 @@ const BoardEdit: React.FC = () => {
         boardId={Number(postId)}
         initialTitle={post?.title} 
         initialContent={post?.content} 
-        initialInquiryType={post?.inquiry}
+        initialInquiryType={post?.inquiryType}
         initialFiles={existingFiles} 
       />
       </div>
