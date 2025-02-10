@@ -46,13 +46,13 @@ const AiGuide: React.FC<AiGuideProps> = ({defaultMessage }) => {
     const limit = 5;
 
     useEffect(() => {
-        const jwtToken = localStorage.getItem("jwt");
-        console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
-        if (!jwtToken || jwtToken === "undefined") {
-            alert("로그인 후 사용해주세요.");
-            navigate("/auth/login"); // 로그인 페이지로 리다이렉트
-            return;
-        }
+        // const jwtToken = localStorage.getItem("jwt");
+        // console.log("JWT Token:", jwtToken); // 디버깅용 로그 추가
+        // if (!jwtToken || jwtToken === "undefined") {
+        //     alert("로그인 후 사용해주세요.");
+        //     navigate("/auth/login"); // 로그인 페이지로 리다이렉트
+        //     return;
+        // }
         loadChatHistory();
         if (defaultMessage.length > 0) {
             setTextQuestion(defaultMessage);
