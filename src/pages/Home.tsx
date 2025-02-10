@@ -4,6 +4,9 @@ import TravelCard from "../components/TravelCard";
 import "../styles/Home.css";
 import { getUserInterest, fetchPlaces, countVisitor, Place } from "../utils/api";
 import { FaSyncAlt } from "react-icons/fa";
+import MainGuideLogo from "../assets/images/main_guide_logo.png"
+import MainImageLogo from "../assets/images/main_image_logo.png"
+
 
 const Home: React.FC = () => {
   const [categories, setCategories] = useState<string[]>(["전체"]);
@@ -136,12 +139,21 @@ const Home: React.FC = () => {
         </div>
         <div className="recommend-section">
           <button className="recommend-card" onClick={() => window.location.href = "/travel-with-ai"}>
+            <div className="main-log-wrapper">
+            <img src={MainGuideLogo} width="75" height="70"/>
+            </div>
             <p>AI와 함께 여행 시작!</p>
-            <h3>여행친구와 함께 여행하기</h3>
+            <h3>여행친구와 <br/>
+              함께 여행하기</h3>
           </button>
           <button className="recommend-card" onClick={() => window.location.href = "/ask-ai"}>
-            <p>저건 뭘까?</p>
-            <h3>사진 찍어서 AI에게 물어보기</h3>
+            <div className="main-log-wrapper">
+              <img src={MainImageLogo} width="60" height="70"/>
+            </div>
+              <p>저건 뭘까?</p>
+              <h3>사진 찍어서
+                <br/>
+                AI에게 물어보기</h3>
           </button>
         </div>
 
