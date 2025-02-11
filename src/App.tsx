@@ -1,33 +1,33 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import AuthLogin from "./pages/AuthLogin";
-import Register from "./pages/Register";
-import AskAI from "./pages/AskAI";
-import RecommendTravel from "./pages/RecommendTravel";
-import TravelWithAI from "./pages/TravelWithAI";
-import AiGuideTest from "./pages/AiGuidePage";
-import PasswordReset from "./pages/PasswordReset";
-import PasswordResetNew from "./pages/ResetPasswordNew";
-import AdminLocationPage from "./pages/AdminLocationPage";
-import Withdraw from "./pages/Withdraw";
-import AiGuideAndMap from "./pages/AiGuideAndMap";
+import Login from "./auth/pages/Login";
+import Home from "./home/pages/Home";
+import AuthLogin from "./auth/pages/AuthLogin";
+import Register from "./auth/pages/Register";
+import AskAI from "./Imagequeryai/pages/AskAI";
+import RecommendTravel from "./interestai/pages/RecommendTravel";
+import TravelWithAI from "./TravelWithAi/pages/TravelWithAI";
+import AiGuideTest from "./AiGuide/pages/AiGuidePage";
+import PasswordReset from "./auth/pages/PasswordReset";
+import PasswordResetNew from "./auth/pages/ResetPasswordNew";
+import AdminLocationPage from "./admin/pages/AdminLocationPage";
+import Withdraw from "./auth/pages/Withdraw";
+import AiGuideAndMap from "./TravelWithAi/pages/AiGuideAndMap";
 
-import ErrorPage from "./pages/ErrorPage";
+import ErrorPage from "./error/pages/ErrorPage";
 
-import BoardList from "./pages/BoardList";
-import BoardDetail from "./pages/BoardDetail";
-import BoardCreate from "./pages/BoardCreate";
-import BoardEdit from "./pages/BoardEdit";
+import BoardList from "./board/pages/BoardList";
+import BoardDetail from "./board/pages/BoardDetail";
+import BoardCreate from "./board/pages/BoardCreate";
+import BoardEdit from "./board/pages/BoardEdit";
 
 // import BoardTabs from "./components/BoardTab";
 
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminVisitorPage from "./pages/AdminVisitorPage";
+import AdminDashboard from "./admin/pages/AdminDashboard";
+import AdminVisitorPage from "./admin/pages/AdminVisitorPage";
 
-import ProtectedRoute from "./components/ProtectedRoute";
-import AdminUsersPage from "./pages/AdminUsersPage";
+import ProtectedRoute from "./auth/components/ProtectedRoute";
+import AdminUsersPage from "./admin/pages/AdminUsersPage";
 
 const App: React.FC = () => {
   return (
