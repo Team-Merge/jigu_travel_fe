@@ -52,35 +52,6 @@
   border: none;
 }
 
-.ai-guide-button {
-  background: rgba(0, 120, 255, 0.80);
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content; /* 내용 크기에 맞춤 */
-  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
-  margin-left: auto;
-}
-
-/* 버튼 호버 효과 */
-.ai-guide-button:hover {
-  background: #005ecb; /* 살짝 어두운 블루 */
-  transform: scale(1.05); /* 약간 확대 */
-}
-
-/* 버튼 클릭 효과 */
-.ai-guide-button:active {
-  background: #004a9f;
-  transform: scale(0.98);
-}
-
 /* 네이버 지도 스타일 */
 #map {
   flex: 1;

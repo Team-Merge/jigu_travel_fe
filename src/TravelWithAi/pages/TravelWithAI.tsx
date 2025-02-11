@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TravelWithAISidebar from "../components/TravelWithAISidebar";
 import TravelWithAIMap from "../components/TravelWithAIMap";
 import useWebSocket from "../../hooks/useWebSocket";
-import { fetchNearbyPlaces, getUserInterest, endTravel, saveUserLocation } from "../../utils/api";
+import { fetchNearbyPlaces, getUserInterest, endTravel, saveUserLocation, calculateDistance } from "../../utils/api";
 import "../styles/TravelWithAI.css";
 
 interface TravelWithAIProps {
@@ -22,15 +22,6 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [isWebSocketActive, setIsWebSocketActive] = useState(true);
   const [isTravelEnding, setIsTravelEnding] = useState(false);
-
-  // JWT 체크 및 로그인 페이지 리다이렉트
-  useEffect(() => {
-    const jwtToken = localStorage.getItem("jwt");
-    if (!jwtToken || jwtToken === "undefined") {
-      alert("로그인 후 사용해주세요.");
-      navigate("/auth/login");
-    }
-  }, [navigate]);
 
   // 사용자 위치가 결정되면 초기 관심사 및 명소 로드 (REST API)
   useEffect(() => {
@@ -128,6 +119,17 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
     }
   };
 
+  // 거리순 정렬
+  const handleSortByDistance = () => {
+      if (!userLocation) return;
+      const sorted = [...filteredPlaces].sort((a, b) => {
+        const distanceA = calculateDistance(userLocation.lat, userLocation.lng, a.latitude, a.longitude);
+        const distanceB = calculateDistance(userLocation.lat, userLocation.lng, b.latitude, b.longitude);
+        return distanceA - distanceB;
+      });
+      setFilteredPlaces(sorted);
+    };
+
   return (
     <div className="map-container">
       <TravelWithAISidebar
@@ -139,6 +141,7 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
         highlightedPlaceId={highlightedPlaceId}
         onPlaceClick={handlePlaceClick}
         onAiGuideRequest={onAiGuideRequest}
+        onSortByDistance={handleSortByDistance}
       />
       <div className="map-wrapper">
         <TravelWithAIMap
@@ -148,8 +151,8 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
           mapCenter={mapCenter}
           highlightedPlaceId={highlightedPlaceId}
         />
-      </div>
       <div className="places-count">지금 내 주변 관광명소는 {placesCount}개</div>
+      </div>
     </div>
   );
 };
