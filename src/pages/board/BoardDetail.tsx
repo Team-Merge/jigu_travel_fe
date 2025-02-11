@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CgMoreVertical } from "react-icons/cg";
-import { getPostDetail, deletePost, downloadFile } from "../api/boardApi";
-import "../styles/BoardDetail.css"
-import Header from "../components/Header";
-import CommentSection from "../components/CommentsSection";
+import { getPostDetail, deletePost, downloadFile } from "../../api/boardApi";
+import "../../styles/board/BoardDetail.css"
+import Header from "../../components/layout/Header";
+import CommentSection from "../../components/board/CommentsSection";
 import { jwtDecode } from "jwt-decode";
 
-import profile from '../assets/images/profile.png';
+import profile from '../../assets/images/profile.png';
 
 // 첨부파일 타입 정의
 interface Attachment {

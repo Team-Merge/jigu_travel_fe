@@ -1,8 +1,8 @@
 // src/components/Sidebar.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // useLocation 추가
-import { getUserInfo, logout } from "../utils/api";
-import "../styles/Sidebar.css";
+import { getUserInfo, logout } from "../../utils/api";
+import "../../styles/layout/Sidebar.css";
 
 interface SidebarProps {
   onClose: () => void;

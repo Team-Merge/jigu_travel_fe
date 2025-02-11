@@ -9,7 +9,7 @@ import {
   updatePlace,
 } from "../utils/api";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import PlacePopup from "../components/PlacePopup";
 import "../styles/AdminLocationPage.css";
 import PlaceCategoryChart from "../components/PlaceCategoryChart";

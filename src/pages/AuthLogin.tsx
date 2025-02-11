@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/AuthLogin.css";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import logo from "../assets/images/logo.png";
 
 const AuthLogin: React.FC = () => {

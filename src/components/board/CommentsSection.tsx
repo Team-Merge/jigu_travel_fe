@@ -1,9 +1,9 @@
 import React, {useEffect, useState, useRef} from "react";
-import { getComments, addComment, updateComments, deleteComment } from "../api/boardApi";
+import { getComments, addComment, updateComments, deleteComment } from "../../api/boardApi";
 import { jwtDecode } from "jwt-decode";
-import "../styles/CommentSection.css"
+import "../../styles/board/CommentSection.css"
 import { CgMoreVertical } from "react-icons/cg";
-import profile from '../assets/images/profile.png';
+import profile from '../../assets/images/profile.png';
 
 interface Comment {
     commentId: number;

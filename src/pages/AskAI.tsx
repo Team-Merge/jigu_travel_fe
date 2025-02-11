@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import AiGuide from "../components/AiGuide";
 import { sendImageToAPI, Detection } from "../utils/api";
 import Chat_icon from "../assets/images/chat_icon.png";

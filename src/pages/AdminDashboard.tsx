@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import VisitorChart from "../components/VisitorChart";
 import "../styles/AdminDashboard.css";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 
 interface VisitorRecord {
   id: number;

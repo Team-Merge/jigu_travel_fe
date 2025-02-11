@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserInfo, getRecommendations, UserInfo, RecommendationResponse } from "../utils/api";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels'; // chartjs-plugin-datalabels 추가

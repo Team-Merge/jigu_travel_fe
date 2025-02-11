@@ -1,12 +1,12 @@
 import React, {useState} from "react";
-import "../styles/BoardTab.css";
-import FAQ from "./FAQ";
+import "../../styles/BoardTab.css";
+import FAQ from "../FAQ";
 import ServiceDescription  from "./ServiceDescription";
-import BoardList from "../pages/BoardList";
-import BoardCreate from "../pages/BoardCreate";
-import BoardDetail from "../pages/BoardDetail";
-import BoardEdit from "../pages/BoardEdit"; 
-import Header from "./Header";
+import BoardList from "../../pages/board/BoardList";
+import BoardCreate from "../../pages/board/BoardCreate";
+import BoardDetail from "../../pages/board/BoardDetail";
+import BoardEdit from "../../pages/board/BoardEdit"; 
+import Header from "../layout/Header";
 
 const tabs = ["서비스 설명", "자주 묻는 질문", "묻고 답하기"];
 type TabType = "list" | "create" | "detail" | "edit";

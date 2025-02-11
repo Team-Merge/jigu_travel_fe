@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import TravelCard from "../components/TravelCard";
 import "../styles/Home.css";
 import { getUserInterest, fetchPlaces, countVisitor, Place } from "../utils/api";

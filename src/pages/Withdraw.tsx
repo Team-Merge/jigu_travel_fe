@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { withdrawUser, logout } from "../utils/api";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import "../styles/Withdraw.css";
 
 const Withdraw: React.FC = () => {

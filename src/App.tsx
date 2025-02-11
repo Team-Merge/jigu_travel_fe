@@ -15,10 +15,10 @@ import Withdraw from "./pages/Withdraw";
 import AiGuideAndMap from "./pages/AiGuideAndMap"
 
 
-import BoardList from "./pages/BoardList";
-import BoardDetail from "./pages/BoardDetail";
-import BoardCreate from "./pages/BoardCreate";
-import BoardEdit from "./pages/BoardEdit";
+import BoardList from "./pages/board/BoardList";
+import BoardDetail from "./pages/board/BoardDetail";
+import BoardCreate from "./pages/board/BoardCreate";
+import BoardEdit from "./pages/board/BoardEdit";
 
 // import BoardTabs from "./components/BoardTab";
 

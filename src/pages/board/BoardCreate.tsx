@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { createPost } from "../api/boardApi";
-import BoardForm from "../components/BoardForm";
-import "../styles/BoardCreate.css"
-import Header from "../components/Header";
+import { createPost } from "../../api/boardApi";
+import BoardForm from "../../components/board/BoardForm";
+import "../../styles/board/BoardCreate.css"
+import Header from "../../components/layout/Header";
 
 const BoardCreate: React.FC<{}> = ()  => {
   const navigate = useNavigate();

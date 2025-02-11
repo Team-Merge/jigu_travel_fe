@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import AiGuide from "../components/AiGuide";
 import "../styles/global.css";
 import { useNavigate } from "react-router-dom";

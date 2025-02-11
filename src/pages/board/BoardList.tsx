@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getBoardList } from "../api/boardApi";
+import { getBoardList } from "../../api/boardApi";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
-import "../styles/BoardList.css";
-import Header from "../components/Header";
+import "../../styles/board/BoardList.css";
+import Header from "../../components/layout/Header";
 
 const BoardList: React.FC = () => {
   const [posts, setPosts] = useState<any[]>([]);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getAllActiveUsers, getDeletedUsers, setAdminStatus, deleteUserByAdmin, restoreUser } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import "../styles/AdminUsersPage.css";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 
 interface User {
     userId: string;

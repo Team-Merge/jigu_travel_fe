@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getPostDetail, updatePost } from "../api/boardApi";
+import { getPostDetail, updatePost } from "../../api/boardApi";
 import { useNavigate, useParams } from "react-router-dom";
-import BoardForm from "../components/BoardForm";
-import Header from "../components/Header";
-import "../styles/BoardEdit.css"
+import BoardForm from "../../components/board/BoardForm";
+import Header from "../../components/layout/Header";
+import "../../styles/board/BoardEdit.css"
 
 
 const BoardEdit: React.FC = () => {

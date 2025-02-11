@@ -1,10 +1,10 @@
 // src/components/Header.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Header.css";
-import "../styles/global.css";
+import "../../styles/layout/Header.css";
+import "../../styles/global.css";
 import Sidebar from "./Sidebar";
-import logo from "../assets/images/logo.png";
+import logo from "../../assets/images/logo.png";
 
 const Header: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);

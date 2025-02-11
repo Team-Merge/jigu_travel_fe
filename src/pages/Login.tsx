@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, checkUserInterest } from "../utils/api";
 import LoginForm from "../components/LoginForm";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import "../styles/Login.css";
 
 const Login: React.FC = () => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 import { checkUserExists, requestPasswordReset } from "../utils/api"; // API 호출 함수 임포트
 import "../styles/PasswordReset.css";
 

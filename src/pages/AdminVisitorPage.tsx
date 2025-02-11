@@ -3,7 +3,7 @@ import VisitorChart from "../components/VisitorChart";
 import { getVisitorRecordsWithPagination } from "../utils/api";
 import VisitorHourlyChart from "../components/VisitorHourlyChart";
 import "../styles/AdminVisitorPage.css";
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
 
 const getTodayKST = () => {
     const now = new Date();

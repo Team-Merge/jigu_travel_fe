@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../styles/BoardForm.css"
+import "../../styles/board/BoardForm.css"
 import { useNavigate } from "react-router-dom";
 
 interface BoardFormProps {
