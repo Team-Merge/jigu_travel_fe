@@ -1,0 +1,131 @@
+/* 에러 페이지 css */
+.error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  margin: 0 auto;
+  text-align: center;
+  background-color: #f8f9fa;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.error-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* 404 텍스트 */
+.error-title {
+  font-size: 6rem;
+  font-weight: bold;
+  color: #d32f2f;
+  margin-bottom: 60px;
+}
+
+/* 가이드 이미지 */
+.error-profile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-image {
+  width: 180px;
+  height: 180px;
+}
+
+/* 말풍선 스타일 */
+.error-bubble {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+/* 텍스트 스타일 */
+.error-text {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.error-text h2 {
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+}
+
+.error-text p {
+  margin-top: 8px;
+  font-size: 16px;
+  color: #666;
+}
+
+/* 버튼 스타일 */
+.error-button {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+.error-button:hover {
+  background-color: #0056b3;
+}
+
+/* 모바일에서는 글씨 크기 작아지도록 */
+@media (max-width: 768px) {
+  .error-title {
+    font-size: 4rem;
+  }
+
+  .error-text h2 {
+    font-size: 20px;
+  }
+
+  .error-text p {
+    font-size: 14px;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .error-button {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+}

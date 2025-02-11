@@ -12,8 +12,9 @@ import PasswordReset from "./pages/PasswordReset";
 import PasswordResetNew from "./pages/ResetPasswordNew";
 import AdminLocationPage from "./pages/AdminLocationPage";
 import Withdraw from "./pages/Withdraw";
-import AiGuideAndMap from "./pages/AiGuideAndMap"
+import AiGuideAndMap from "./pages/AiGuideAndMap";
 
+import ErrorPage from "./pages/ErrorPage";
 
 import BoardList from "./pages/board/BoardList";
 import BoardDetail from "./pages/board/BoardDetail";
@@ -61,9 +62,7 @@ const App: React.FC = () => {
         <Route path="/board/create" element={<BoardCreate />} />
         <Route path="/board/edit/:postId" element={<BoardEdit />} />
 
-
-
-        <Route path="*" element={<h2>404 - 페이지를 찾을 수 없습니다</h2>} />
+        <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </Router>
   );
