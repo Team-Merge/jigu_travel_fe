@@ -85,7 +85,7 @@ const AiGuideAndMap: React.FC = () => {
                     {/* 채팅방 토글 버튼 */}
                     {buttonVisible && (
                         <button className="open-chat" onClick={toggleChat}
-                        style={{"z-index":"2000",right:"20px",left:"auto"}}> {/*오른쪽으로 버튼 이동*/}
+                        style={{"zIndex":"2000",right:"20px",left:"auto"}}> {/*오른쪽으로 버튼 이동*/}
                             <img src={Chat_icon} alt="Chat Icon" className="chat-icon" />
                         </button>
                     )}

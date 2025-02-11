@@ -83,10 +83,16 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
               </div>
               <p className="place-address">{place.address}</p>
               <p className="place-tel">{place.tel ? place.tel : "정보 없음"}</p>
+              <div className="place-buttons">
+              {/* 길찾기 버튼 */}
+              <button className="direction-button" onClick={() => {}}>
+                길찾기
+              </button>
               {/* AI 명소 안내 버튼 */}
               <button className="ai-guide-button" onClick={() => onAiGuideRequest(place.name)}>
                 AI 명소 안내받기
               </button>
+              </div>
             </div>
           ))
         ) : (
