@@ -94,32 +94,41 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
       };
 
       const [menuOpen, setMenuOpen] = useState(false);
-        const menuRef = useRef<HTMLDivElement | null>(null);
+      const menuRef = useRef<HTMLDivElement | null>(null);
       
-        useEffect(() => {
-          const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-              setMenuOpen(false);
-            }
-          };
-      
-          if (menuOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-          } else {
-            document.removeEventListener("mousedown", handleClickOutside);
+      useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            setMenuOpen(false);
           }
-      
-          return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-          };
-        }, [menuOpen]);
-
+        };
     
+        if (menuOpen) {
+          document.addEventListener("mousedown", handleClickOutside);
+        } else {
+          document.removeEventListener("mousedown", handleClickOutside);
+        }
+    
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [menuOpen]);
+
+      const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
+
+      const toggleMenu = (commentId: number) => {
+        if (menuOpenId === commentId) {
+          setMenuOpenId(null); // 같은 버튼을 누르면 닫기
+        } else {
+          setMenuOpenId(commentId); // 해당 댓글의 ID로 상태 설정
+        }
+      };
+
       return (
         <div className="comments-section">
           <h3>댓글</h3>
     
-          {/* ✅ 댓글 입력창 */}
+          {/* 댓글 입력창 */}
           <div className="comment-input">
             <textarea
               placeholder="댓글을 입력하세요"
@@ -133,7 +142,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
               )}          
               </div>
     
-          {/* ✅ 기존 댓글 목록 */}
+          {/* 기존 댓글 목록 */}
           {comments.length > 0 ? (
             <ul className="comment-list">
             {comments.map((comment) => (
@@ -149,11 +158,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
                   </div>
                   {comment.nickname === currentUserNickname && (
                     <div className="detail-menu-container" ref={menuRef}>
-                      <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
+                      <button className="menu-button" onClick={() => toggleMenu(comment.commentId)}>
                         <CgMoreVertical size={20} />
                       </button>
 
-                      {menuOpen && (
+                      {menuOpenId === comment.commentId && ( // 현재 댓글 id와 일치할 때만 메뉴 표시
                         <div className="dropdown-menu">
                           <button onClick={() => handleEdit(comment)}>수정하기</button>
                           <button onClick={() => handleDelete(comment.commentId)}>삭제하기</button>
