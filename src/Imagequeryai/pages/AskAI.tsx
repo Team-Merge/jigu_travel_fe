@@ -103,7 +103,13 @@ const AskAI: React.FC = () => {
   };
 
   const toggleChat = () => {
-    setChatVisible((prev) => !prev);
+    setChatVisible((prev) => !prev); // 토글 상태
+    // 채팅창이 닫힐 때는 높이를 0으로, 열릴 때는 실제 높이를 계산
+    if (chatVisible) {
+      setChatHeight(0);  // 닫을 때는 높이를 0으로 설정
+    } else {
+      setChatHeight(chatbotRef.current?.offsetHeight || 0);  // 열릴 때는 현재 높이를 사용
+    }
   };
   
   const startDrag = (e: React.MouseEvent | React.TouchEvent) => {
