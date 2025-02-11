@@ -24,10 +24,10 @@ interface TravelWithAISidebarProps {
   onFetchInterestPlaces: () => void;
   handleEndTravel: () => void;
   highlightedPlaceId: number | null;
-  // onPlaceClick: (placeId: number, lat: number, lng: number) => void;
   onPlaceClick: (placeId: number, lat: number, lng: number) => void;
   onAiGuideRequest: (placeName: string) => void;
-}
+  onSortByDistance: () => void;
+  }
 
 const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   places,
@@ -38,6 +38,7 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   highlightedPlaceId,
   onPlaceClick,
   onAiGuideRequest,
+  onSortByDistance,
 }) => {
   const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
@@ -65,7 +66,13 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
 
       {/* 명소 리스트 영역 */}
       <div className="map-sidebar-places">
-        {places.length > 0 ? (
+        <div className="sidebar-sort-header">
+            <button className="sort-distance-button" onClick={onSortByDistance}>
+            거리순
+            </button>
+        </div>
+          {/* 명소 리스트 */}
+          {places.length > 0 ? (
           places.map((place) => (
             <div
               key={place.placeId}
@@ -83,17 +90,11 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
               </div>
               <p className="place-address">{place.address}</p>
               <p className="place-tel">{place.tel ? place.tel : "정보 없음"}</p>
-              <div className="place-buttons">
-              {/* 길찾기 버튼 */}
-              <button className="direction-button" onClick={() => {}}>
-                길찾기
-              </button>
               {/* AI 명소 안내 버튼 */}
               <button className="ai-guide-button" onClick={() => onAiGuideRequest(place.name)}>
                 AI 명소 안내받기
               </button>
               </div>
-            </div>
           ))
         ) : (
           <p className="no-places">주변 명소를 찾을 수 없습니다.</p>

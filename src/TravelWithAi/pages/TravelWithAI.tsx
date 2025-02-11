@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TravelWithAISidebar from "../components/TravelWithAISidebar";
 import TravelWithAIMap from "../components/TravelWithAIMap";
 import useWebSocket from "../../hooks/useWebSocket";
-import { fetchNearbyPlaces, getUserInterest, endTravel, saveUserLocation } from "../../utils/api";
+import { fetchNearbyPlaces, getUserInterest, endTravel, saveUserLocation, calculateDistance } from "../../utils/api";
 import "../styles/TravelWithAI.css";
 
 interface TravelWithAIProps {
@@ -119,6 +119,17 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
     }
   };
 
+  // 거리순 정렬
+  const handleSortByDistance = () => {
+      if (!userLocation) return;
+      const sorted = [...filteredPlaces].sort((a, b) => {
+        const distanceA = calculateDistance(userLocation.lat, userLocation.lng, a.latitude, a.longitude);
+        const distanceB = calculateDistance(userLocation.lat, userLocation.lng, b.latitude, b.longitude);
+        return distanceA - distanceB;
+      });
+      setFilteredPlaces(sorted);
+    };
+
   return (
     <div className="map-container">
       <TravelWithAISidebar
@@ -130,6 +141,7 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
         highlightedPlaceId={highlightedPlaceId}
         onPlaceClick={handlePlaceClick}
         onAiGuideRequest={onAiGuideRequest}
+        onSortByDistance={handleSortByDistance}
       />
       <div className="map-wrapper">
         <TravelWithAIMap

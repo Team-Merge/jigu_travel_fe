@@ -318,6 +318,28 @@ export const getUserLocation = (
   );
 };
 
+/** MAP : 거리 계산 **/
+export function calculateDistance(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number
+): number {
+  const R = 6371e3; // 지구 반지름 (미터)
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+  return distance;
+}
+
 /** MAP : 사용자 위치 저장 **/
 export const saveUserLocation = async (latitude: number, longitude: number): Promise<void> => {
   try {
@@ -330,7 +352,6 @@ export const saveUserLocation = async (latitude: number, longitude: number): Pro
     console.log("위치 저장 성공:", response);
   } catch (error) {
     console.error("사용자 위치 저장 에러 발생:", error);
-    alert("위치 저장에 실패했습니다. 네트워크 상태를 확인해주세요.");
   }
 };
 
@@ -373,7 +394,6 @@ export const fetchNearbyPlaces = async (lat: number, lng: number, types?: string
     return response.data || [];
   } catch (error) {
     console.error("주변 명소 검색 API 호출 실패:", error);
-    alert("주변 명소를 불러오는 데 실패했습니다. 네트워크 상태를 확인해주세요.");
     return [];
   }
 };

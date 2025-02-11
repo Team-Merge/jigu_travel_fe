@@ -75,6 +75,35 @@
   margin-top: auto;
 }
 
+.sidebar-sort-header {
+  top: 0;
+  padding: 0;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  z-index: 10;
+}
+
+/* 정렬 버튼 스타일 */
+.sort-distance-button {
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease-in-out;
+  border: none;
+  background: rgba(108, 200, 83, 0.5);
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.sort-distance-button:hover {
+  background: rgba(108, 200, 83, 0.8);
+  transform: scale(1.02);
+}
+
+.sort-distance-button:active {
+  background: rgba(108, 200, 83, 0.9);
+  transform: scale(0.95);
+}
+
 /* 명소 리스트 */
 .place-list {
   flex: 1;
@@ -178,25 +207,6 @@
   max-height: 100%;
   object-fit: contain;
   display: block;
-}
-
-.place-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-.direction-button{
-  background: rgba(108, 200, 83, 1);
-  color: white;
-  border: none;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  width: fit-content; /* 내용 크기에 맞춤 */
-  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
-  margin-right: auto;
 }
 
 .ai-guide-button {
