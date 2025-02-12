@@ -182,7 +182,8 @@ const Home: React.FC = () => {
         </div>
 
         <div className="travel-list">
-          {places.map((place, index) => (
+        {places.length > 0 ? (
+          places.map((place, index) => (
             <TravelCard
               key={place.placeId}
               name={place.name}
@@ -190,7 +191,10 @@ const Home: React.FC = () => {
               tel={place.tel ?? "연락처 정보 없음"}
               ref={index === places.length - 1 ? lastPlaceRef : null} // forwardRef 적용
             />
-          ))}
+          ))
+      ) : (
+          <p className="no-places-message">주변 명소 없음</p>
+          )}
         </div>
       </div>
     </div>
