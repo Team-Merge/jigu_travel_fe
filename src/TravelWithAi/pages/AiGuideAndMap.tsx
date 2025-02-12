@@ -29,6 +29,9 @@ const AiGuideAndMap: React.FC = () => {
     const toggleChat = () => {
         setChatVisible((prev) => !prev);
         setButtonVisible((prev) => !prev); // 채팅방을 닫을 때 버튼도 토글
+        if (chatVisible) {
+            setAiGuideMessage(""); // 채팅창을 닫을 때 메시지 초기화
+        }
     };
 
     // 채팅창 드래그 기능
