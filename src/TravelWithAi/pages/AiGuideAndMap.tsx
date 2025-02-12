@@ -13,15 +13,18 @@ const AiGuideAndMap: React.FC = () => {
     const [aiGuideMessage, setAiGuideMessage] = useState("");
     const chatbotRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
+    const alertShown = useRef(false);
 
 
     // 로그인 확인
     useEffect(() => {
         const jwtToken = localStorage.getItem("jwt");
         if (!jwtToken || jwtToken === "undefined") {
-            alert("로그인 후 사용해주세요.");
+            if (!alertShown.current) {
+                alert("로그인 후 사용해주세요.");
+                alertShown.current = true;
+            }
             navigate("/auth/login");
-            return;
         }
     }, [navigate]);
 
@@ -85,7 +88,7 @@ const AiGuideAndMap: React.FC = () => {
                     {/* 채팅방 토글 버튼 */}
                     {buttonVisible && (
                         <button className="open-chat" onClick={toggleChat}
-                        style={{"zIndex":"2000",right:"20px",left:"auto"}}> {/*오른쪽으로 버튼 이동*/}
+                        style={{"zIndex":"990",right:"20px",left:"auto"}}> {/*오른쪽으로 버튼 이동*/}
                             <img src={Chat_icon} alt="Chat Icon" className="chat-icon" />
                         </button>
                     )}
@@ -102,7 +105,7 @@ const AiGuideAndMap: React.FC = () => {
                                     left: 0,
                                     width: "100%", // 전체 너비
                                     backgroundColor: "white",
-                                    zIndex: 1000, // 다른 요소 위에 표시되도록 설정
+                                    zIndex: 990, // 다른 요소 위에 표시되도록 설정
                                     height: chatHeight ? `${chatHeight}px` : "50vh", // 기본 높이를 50%로 설정
                                 }}
                             >
