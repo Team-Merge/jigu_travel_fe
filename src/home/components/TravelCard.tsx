@@ -14,7 +14,7 @@ const TravelCard = forwardRef<HTMLDivElement, TravelCardProps>(
       <div ref={ref} className="travel-card">
         <h3>{name}</h3>
         <p>{address}</p>
-        {tel && <p>☎ {tel}</p>}
+        {tel && <p>📞 {tel}</p>}
       </div>
     );
   }
