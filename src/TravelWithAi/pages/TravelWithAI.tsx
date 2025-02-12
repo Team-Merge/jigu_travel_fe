@@ -107,7 +107,7 @@ const TravelWithAI: React.FC<TravelWithAIProps> = ({ onAiGuideRequest }) => {
       if (response && response.code === 200) {
         alert("여행이 종료되었습니다. 메인 화면으로 이동합니다.");
         setIsWebSocketActive(false);
-        window.location.replace("/home");
+        navigate("/home", { replace: true });
       } else {
         alert("여행 종료에 실패했습니다. 다시 시도해주세요.");
         setIsTravelEnding(false);

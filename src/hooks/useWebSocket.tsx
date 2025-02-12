@@ -1,6 +1,6 @@
 import { Client } from "@stomp/stompjs";
 import React, { useEffect, useState, useRef } from "react";
-import { fetchUUID, saveUserLocation } from "../utils/api";
+import { fetchUUID, calculateDistance } from "../utils/api";  // `saveUserLocation` 제거
 
 const socketUrl = window.location.protocol === "https:"
     ? "wss://jigu-travel.kro.kr/stomp-ws"
@@ -11,11 +11,13 @@ const useWebSocket = (userLocation, interests, isWebSocketReady, isWebSocketActi
   const [places, setPlaces] = useState([]);
   const [serviceUUID, setServiceUUID] = useState<string | null>(() => localStorage.getItem("serviceUUID"));
   const lastLocationRef = useRef<{ lat: number; lng: number } | null>(null);
-  const subscriptionRef = useRef<any>(null); //
+  const subscriptionRef = useRef<any>(null);
   const reconnectAttempts = useRef(0);
   const jwtToken = localStorage.getItem("jwtToken");
   const lastSentTime = useRef(0);
+  const maxReconnectAttempts = 5;
 
+  // UUID 가져오기
   useEffect(() => {
     const fetchAndStoreUUID = async () => {
       if (!serviceUUID) {
@@ -30,6 +32,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady, isWebSocketActi
     fetchAndStoreUUID();
   }, []);
 
+  // 웹소켓 연결 및 메시지 수신
   useEffect(() => {
     if (!isWebSocketReady || !serviceUUID || !userLocation || !isWebSocketActive) return;
 
@@ -46,7 +49,7 @@ const useWebSocket = (userLocation, interests, isWebSocketReady, isWebSocketActi
         console.log("WebSocket 연결 성공!");
         reconnectAttempts.current = 0;
 
-        // 기존 구독 해제 후 새로 구독
+        // 기존 구독 해제 후 재구독
         if (subscriptionRef.current) {
           subscriptionRef.current.unsubscribe();
         }
@@ -60,102 +63,90 @@ const useWebSocket = (userLocation, interests, isWebSocketReady, isWebSocketActi
           }
         });
 
-        // 위치 정보 변경될 때만 publish
-        const sendLocation = () => {
-          if (!stompClient.connected) return;
-          if (!userLocation || !serviceUUID) return;
-
-          const { lat, lng } = userLocation;
-          const lastLocation = lastLocationRef.current;
-          const now = Date.now();
-
-          // 최소 5초 간격으로 11m 이상 위치 변화 있는 경우에만 전송
-          if (now - lastSentTime.current < 5000) return;
-          if (!lastLocation ||
-              Math.abs(lat - lastLocation.lat) > 0.0001 ||
-               Math.abs(lng - lastLocation.lng) > 0.0001
-                    ) {
-                      stompClient.publish({
-                        destination: "/pub/place",
-                        body: JSON.stringify({
-                          serviceUUID: serviceUUID,
-                          latitude: lat,
-                          longitude: lng,
-                        }),
-                      });
-                      console.log("웹소켓으로 위치 전송:", userLocation);
-                      lastLocationRef.current = { lat, lng };
-                      lastSentTime.current = now;
-                    }
-                  };
-        sendLocation();
-              },
+        // 위치 정보 전송
+        sendLocation(stompClient);
+      },
 
       onDisconnect: () => {
-          if (!isTravelEnding) {
+          if (!isWebSocketActive || isTravelEnding) return;
               console.warn(" WebSocket 연결 끊김. 재연결 시도 중...");
-              alert(" 네트워크 연결이 끊어졌습니다. 자동으로 다시 연결을 시도합니다.");
               attemptReconnect();
-            }
         },
 
       onStompError: (frame) => {
-              console.error("WebSocket 에러 발생:", frame.headers["message"]);
-              alert(" 알 수 없는 오류가 발생했습니다. 페이지를 새로고침 해보세요.");
-            },
+        console.error("WebSocket 에러 발생:", frame.headers["message"]);
+      },
 
       onWebSocketError: (event) => {
-              console.error("WebSocket 네트워크 오류 발생:", event);
-              alert(" 인터넷 연결이 원활하지 않습니다. 인터넷 연결을 확인해주세요.");
-              attemptReconnect();
-        },
+        console.error(" WebSocket 네트워크 오류 발생:", event);
+        attemptReconnect();
+      },
     });
 
     stompClient.activate();
     setClient(stompClient);
 
     return () => {
-          if (subscriptionRef.current) {
-            subscriptionRef.current.unsubscribe();
-            subscriptionRef.current = null;
-          }
-          stompClient.deactivate();
-          setClient(null);
-        };
-      }, [isWebSocketReady, userLocation, serviceUUID, isWebSocketActive]);
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        subscriptionRef.current = null;
+      }
+      stompClient.deactivate();
+      setClient(null);
+    };
+  }, [isWebSocketReady, userLocation, serviceUUID, isWebSocketActive]);
 
-    // 웹소켓 재연결
-    const attemptReconnect = () => {
-        if (reconnectAttempts.current >= 5) {
-          console.error(" WebSocket 재연결 시도 5회 초과! 중단합니다.");
-          alert("실시간 위치 감지에 실패했습니다. 페이지를 새로고침 하거나 인터넷 연결을 확인해주세요.");
-          return;
-        }
-        reconnectAttempts.current += 1;
-        console.log(`WebSocket 재연결 시도 중.. (${reconnectAttempts.current}/5)`);
+  // 위치 전송 로직 (5초마다 & 일정 거리 이상 이동한 경우)
+  const sendLocation = (stompClient) => {
+    if (!stompClient.connected) return;
+    if (!userLocation || !serviceUUID) return;
 
-        setTimeout(() => {
-          console.log("새로운 WebSocket 클라이언트 생성");
-          const newClient = new Client({ brokerURL: socketUrl });
-          newClient.activate();
-          setClient(newClient);
-        }, 5000); // 5초 후 재연결 시도
-      };
+    const { lat, lng } = userLocation;
+    const lastLocation = lastLocationRef.current;
+    const now = Date.now();
 
-    // 위치 데이터 5분마다 자동 저장
-    useEffect(() => {
-        if (!userLocation) return; // 위치 정보가 없으면 실행하지 않음
+    // 최소 5초 간격으로 22m 이상 이동한 경우 전송
+    if (now - lastSentTime.current >= 5000) {
+      const distance = lastLocation ? calculateDistance(lastLocation.lat, lastLocation.lng, lat, lng) : Infinity;
+      if (distance >= 22) {
+        stompClient.publish({
+          destination: "/pub/place",
+          body: JSON.stringify({ serviceUUID, latitude: lat, longitude: lng }),
+        });
+        console.log("📡 웹소켓으로 위치 전송:", userLocation);
+        lastLocationRef.current = { lat, lng };
+        lastSentTime.current = now;
+      }
+    }
+  };
 
-        const interval = setInterval(() => {
-          saveUserLocation(userLocation.lat, userLocation.lng)
-            .then(() => console.log("5분마다 위치 저장 완료:", userLocation))
-            .catch((error) => console.error("위치 저장 오류:", error));
-        }, 300000); // 5분마다 실행
+  // 웹소켓 재연결
+  const attemptReconnect = () => {
+    if (reconnectAttempts.current >= maxReconnectAttempts) {
+      console.error(" WebSocket 재연결 시도 5회 초과! 중단합니다.");
+      return;
+    }
 
-        return () => clearInterval(interval);
-      }, [userLocation]); // userLocation 변경 시 실행
+    reconnectAttempts.current += 1;
+    console.log(` WebSocket 재연결 시도 중.. (${reconnectAttempts.current}/${maxReconnectAttempts})`);
 
-    return { places };
-        };
+    if (client) {
+        client.deactivate();
+        setClient(null);
+    }
+
+    setTimeout(() => {
+      console.log("새로운 WebSocket 클라이언트 생성");
+      const newClient = new Client({
+        brokerURL: socketUrl,
+        connectHeaders: { Authorization: `Bearer ${jwtToken}` },
+      });
+      newClient.activate();
+      setClient(newClient);
+    }, 5000);
+  };
+
+  return { places };
+};
 
 export default useWebSocket;
