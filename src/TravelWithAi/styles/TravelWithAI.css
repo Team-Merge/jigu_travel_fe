@@ -1,7 +1,7 @@
 /* travelwithai.css */
 .map-container {
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 60px);
   width: 100vw;
   overflow: hidden;
 }
@@ -59,19 +59,20 @@
   height: 100%;
   background-color: #f0f0f0; /* 지도 로드 전 배경 */
   position: relative;
+  z-index: 800;
 }
 
 .map-wrapper {
   flex: 1;
   position: relative;
-  height: calc(100vh - 60px);
+  height:100%;
 }
 
 #recenter-button {
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 1000;
+  z-index: 905;
   border: none;
   background: none;
   padding: 0;
@@ -90,7 +91,8 @@
 
 @media (max-width: 1024px) {
   .map-wrapper {
-    height: 55vh;
+    height: calc(100vh - 60px - 45vh);
+    width: 100%
   }
 
   #map {
@@ -98,8 +100,8 @@
   }
 
   #recenter-button {
-      top: auto;
-      bottom: 80px;
-      right: 15px;
+    top: auto;
+    bottom: 20px;
+    right: 20px;
     }
 }
