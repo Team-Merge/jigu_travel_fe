@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { getUserLocation, saveUserLocation, calculateDistance } from "../../utils/api";
+import { getUserLocation, saveUserLocation } from "../../utils/api";
 
 declare global {
   interface Window {
@@ -32,6 +32,9 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
   const placeMarkersRef = useRef<Map<number, any>>(new Map());
   const watchId = useRef<number | null>(null);
   const lastLocationRef = useRef<{ lat: number; lng: number } | null>(null);
+
+  // "처음 위치" 여부를 추적하기 위한 ref
+  const isInitialLocationSet = useRef(false);
 
   // 네이버 지도 API 로드
   useEffect(() => {
@@ -67,20 +70,19 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
     if (!mapLoaded || mapRef.current || !mapContainerRef.current) return;
     console.log("지도 초기화 진행");
 
-    const initialCenter = lastLocationRef.current
-        ? new window.naver.maps.LatLng(lastLocationRef.current.lat, lastLocationRef.current.lng)
-        : new window.naver.maps.LatLng(37.514296, 127.102013);
-
+    // 필요하다면 최소한의 기본 좌표를 설정합니다.
+    // 아래에서는 center가 잠실역으로 되어 있습니다.
     mapRef.current = new window.naver.maps.Map(mapContainerRef.current, {
-      center: initialCenter, // 초기 위치: 잠실역
       zoom: 17,
+      center: new window.naver.maps.LatLng(37.514296, 127.102013),
     });
   }, [mapLoaded]);
 
-  // 현위치 마커 추가 및 업데이트
+  // 현재 위치 마커 추가 및 업데이트
   useEffect(() => {
     if (!mapRef.current) return;
 
+    // 기존 watchId가 있으면 제거
     if (watchId.current !== null) {
       navigator.geolocation.clearWatch(watchId.current);
     }
@@ -94,43 +96,48 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
 
         const lastLocation = lastLocationRef.current;
         const distance = lastLocation
-          ? calculateDistance(lastLocation.lat, lastLocation.lng, lat, lng)
+          ? Math.hypot(lastLocation.lat - lat, lastLocation.lng - lng)
           : Infinity;
 
-        if (distance > 20) { // 20m 이상 이동한 경우에만 위치 저장
+        // 필요에 맞게 50m(0.0005) 이상 이동시에만 갱신하도록 설정
+        if (distance > 0.0005) {
           onLocationChange({ lat, lng });
-
-          saveUserLocation(lat, lng)
-            .catch((error) => console.error("위치 저장 오류:", error));
-
+          saveUserLocation(lat, lng).catch((error) =>
+            console.error("위치 저장 오류:", error)
+          );
           lastLocationRef.current = { lat, lng };
-          setLocationError(false);
         }
 
         const newCenter = new window.naver.maps.LatLng(lat, lng);
-        if (mapRef.current) mapRef.current.panTo(newCenter);
 
-        // 기존 마커가 없으면 생성, 있으면 위치 업데이트
+        // 처음 위치를 받아온 경우에만 지도 중심으로 panTo
+        if (!isInitialLocationSet.current) {
+          mapRef.current.panTo(newCenter);
+          isInitialLocationSet.current = true;
+        }
+
+        // 마커 생성/업데이트
         if (!currentMarkerRef.current) {
-            currentMarkerRef.current = new window.naver.maps.Marker({
-                position: newCenter,
-                map: mapRef.current,
-                icon: {
-                  content: `
-                    <div class="current-location-marker">
-                      <div class="pulse"></div>
-                    </div>`,
-                  anchor: new window.naver.maps.Point(7, 7),
-                },
-              });
-            }
-        },
+          currentMarkerRef.current = new window.naver.maps.Marker({
+            position: newCenter,
+            map: mapRef.current,
+            icon: {
+              content: `
+                <div class="current-location-marker">
+                  <div class="pulse"></div>
+                </div>`,
+              anchor: new window.naver.maps.Point(7, 7),
+            },
+          });
+        } else {
+          currentMarkerRef.current.setPosition(newCenter);
+        }
+      },
       (error) => {
         console.error("위치 오류 발생:", error);
         setLocationError(true);
-
         setTimeout(() => setLocationError(false), 10000); // 10초 후 재시도
-        }
+      }
     );
 
     return () => {
@@ -138,49 +145,16 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
         navigator.geolocation.clearWatch(watchId.current);
       }
     };
-  }, [mapLoaded, onLocationChange, locationError]);
+  }, [mapLoaded, onLocationChange]);
+
+  // 사용자가 명소를 선택했을 때만 지도 중앙 이동
+  useEffect(() => {
+    if (mapCenter && mapRef.current) {
+      mapRef.current.panTo(new window.naver.maps.LatLng(mapCenter.lat, mapCenter.lng));
+    }
+  }, [mapCenter]);
 
   // 명소 마커 생성 및 업데이트
-  useEffect(() => {
-    if (!mapLoaded) return;
-
-    const markerIcons = {
-      default: "/icons/map-pin.png",
-      highlighted: "/icons/map-pin-active.png",
-    };
-
-    places.forEach((place) => {
-        // 새로운 마커 추가
-        if (!placeMarkersRef.current.has(place.placeId)) {
-            const marker = new window.naver.maps.Marker({
-                position: new window.naver.maps.LatLng(place.latitude, place.longitude),
-                map: mapRef.current,
-                title: place.name,
-                icon: {
-                    url: markerIcons.default,
-                    scaledSize: new window.naver.maps.Size(32, 32),
-                    anchor: new window.naver.maps.Point(16, 32),
-                  },
-                });
-        // 마커 클릭 시, 해당 명소 강조 및 지도 중앙 이동
-        window.naver.maps.Event.addListener(marker, "click", () => {
-          setHighlightedPlaceId(place.placeId);
-          mapRef.current.panTo(marker.getPosition());
-        });
-        placeMarkersRef.current.set(place.placeId, marker);
-      }
-    });
-
-    // 기존 마커 중 사라진 명소의 마커 제거
-    placeMarkersRef.current.forEach((marker, placeId) => {
-      if (!places.some((place) => place.placeId === placeId)) {
-        marker.setMap(null);
-        placeMarkersRef.current.delete(placeId);
-      }
-    });
-  }, [places, mapLoaded, setHighlightedPlaceId]);
-
-  // 클릭시 강조
   useEffect(() => {
       if (!mapLoaded) return;
 
@@ -189,14 +163,48 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
         highlighted: "/icons/map-pin-active.png",
       };
 
-      placeMarkersRef.current.forEach((marker, placeId) => {
+      // 새로 업데이트된 마커 정보를 담을 임시 맵
+      const updatedMarkers = new Map<number, any>();
+
+      places.forEach((place) => {
+        // 이미 마커가 있으면 그대로 사용, 없으면 새로 생성
+        let marker = placeMarkersRef.current.get(place.placeId);
+
+        if (!marker) {
+          marker = new window.naver.maps.Marker({
+            position: new window.naver.maps.LatLng(place.latitude, place.longitude),
+            map: mapRef.current,
+            title: place.name,
+          });
+
+          // 마커 클릭 시 명소 강조 & 지도 이동
+          window.naver.maps.Event.addListener(marker, "click", () => {
+            setHighlightedPlaceId(place.placeId);
+            mapRef.current.panTo(marker.getPosition());
+          });
+        }
+
+        // 하이라이트 적용 여부에 따른 아이콘 설정
+        const isHighlighted = place.placeId === highlightedPlaceId;
         marker.setIcon({
-          url: highlightedPlaceId === placeId ? markerIcons.highlighted : markerIcons.default,
+          url: isHighlighted ? markerIcons.highlighted : markerIcons.default,
           scaledSize: new window.naver.maps.Size(32, 32),
           anchor: new window.naver.maps.Point(16, 32),
         });
+
+        updatedMarkers.set(place.placeId, marker);
       });
-    }, [highlightedPlaceId]);
+
+      // 없어진(placeId가 더 이상 없는) 마커 제거
+      placeMarkersRef.current.forEach((marker, placeId) => {
+        if (!updatedMarkers.has(placeId)) {
+          marker.setMap(null);
+        }
+      });
+
+      // placeMarkersRef 갱신
+      placeMarkersRef.current = updatedMarkers;
+    }, [places, mapLoaded, highlightedPlaceId, setHighlightedPlaceId]);
 
   // 지도 클릭 시 강조 해제
   useEffect(() => {
@@ -210,65 +218,27 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
     };
   }, [mapLoaded, setHighlightedPlaceId]);
 
-  // 지도 중앙 이동
-  useEffect(() => {
-    if (!mapCenter || !mapRef.current) return;
-      mapRef.current.panTo(new window.naver.maps.LatLng(mapCenter.lat, mapCenter.lng));
-  }, [mapCenter]);
-
-  // 위치 오류 발생
-  useEffect(() => {
-      if (!mapLoaded || locationError) return; // 위치 오류 발생 시 일정 시간 동안 추가 요청 방지
-
-      watchId.current = getUserLocation(
-          ({ lat, lng }) => {
-              const lastLocation = lastLocationRef.current;
-              const distance = lastLocation
-                  ? calculateDistance(lastLocation.lat, lastLocation.lng, lat, lng)
-                  : Infinity;
-
-              if (distance > 20) { // 20m 이상 이동한 경우에만 업데이트
-                  onLocationChange({ lat, lng });
-                  saveUserLocation(lat, lng);
-                  lastLocationRef.current = { lat, lng };
-                  setLocationError(false);
-              }
-          },
-          (error) => {
-              console.error("위치 오류 발생:", error);
-              if (!locationError) {
-                  setLocationError(true);
-                  setTimeout(() => setLocationError(false), 10000); // 10초 후 재시도
-              }
-          }
-      );
-
-      return () => {
-          if (watchId.current !== null) {
-              navigator.geolocation.clearWatch(watchId.current);
-          }
-      };
-  }, [locationError]);
-
-  // 현위치 버튼
+// 현위치버튼
   const handleRecenter = useCallback(() => {
-    if (!mapRef.current || !currentMarkerRef.current || !lastLocationRef.current) {
-      console.warn("지도 또는 마커 정보 없음. 현위치 버튼 동작 안함.");
-      return;
-    }
+      if (!mapRef.current || !currentMarkerRef.current || !lastLocationRef.current) {
+        console.warn("지도 혹은 현재 위치 정보가 없습니다. 현위치 버튼 동작 안함.");
+        return;
+      }
 
-    const { lat, lng } = lastLocationRef.current;
-    const newCenter = new window.naver.maps.LatLng(lat, lng);
-    mapRef.current.panTo(newCenter);
+      const { lat, lng } = lastLocationRef.current;
+      const newCenter = new window.naver.maps.LatLng(lat, lng);
+      console.log(lat, lng);
 
-    if (currentMarkerRef.current) {
       currentMarkerRef.current.setPosition(newCenter);
-    }
-  }, []);
+      mapRef.current.panTo(newCenter);
 
+    }, []);
 
   return (
     <div id="map" ref={mapContainerRef} style={{ width: "100%", height: "100%" }}>
+      <button id="recenter-button" onClick={handleRecenter}>
+                                  <img src="/icons/gps.png" alt="현위치" />
+                                </button>
       {locationError && <div className="location-error">위치 정보를 가져올 수 없습니다.</div>}
     </div>
   );
