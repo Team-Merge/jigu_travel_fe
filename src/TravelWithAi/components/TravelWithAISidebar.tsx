@@ -40,14 +40,19 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   onAiGuideRequest,
   onSortByDistance,
 }) => {
-  const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+    const itemRefs = useRef(new Map<number, HTMLDivElement>());
 
   // 강조된 명소가 보이도록 스크롤 처리
   useEffect(() => {
-    if (highlightedPlaceId && itemRefs.current[highlightedPlaceId]) {
-      itemRefs.current[highlightedPlaceId]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-  }, [highlightedPlaceId]);
+    if (highlightedPlaceId) {
+           setTimeout(() => {
+             const element = itemRefs.current.get(highlightedPlaceId);
+             if (element) {
+               element.scrollIntoView({ behavior: "smooth", block: "nearest" });
+             }
+           }, 50); // 50ms 딜레이 추가
+         }
+       }, [highlightedPlaceId]);
 
   return (
     <div className="map-sidebar">
@@ -76,9 +81,12 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
           places.map((place) => (
             <div
               key={place.placeId}
-              ref={(el) => (itemRefs.current[place.placeId] = el)}
-              className={`place-item ${highlightedPlaceId === place.placeId ? "highlighted" : ""}`}
-              onClick={() => onPlaceClick(place.placeId, place.latitude, place.longitude)}
+              ref={(el) => {
+                  if (el) itemRefs.current.set(place.placeId, el);
+                  else itemRefs.current.delete(place.placeId);
+              }}
+                className={`place-item ${highlightedPlaceId === place.placeId ? "highlighted" : ""}`}
+                onClick={() => onPlaceClick(place.placeId, place.latitude, place.longitude)}
             >
               <div className="place-header">
                 <h3>{place.name}</h3>
@@ -91,9 +99,11 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
               <p className="place-address">{place.address}</p>
               <p className="place-tel">{place.tel ? place.tel : "정보 없음"}</p>
               {/* AI 명소 안내 버튼 */}
+              {place.name && (
               <button className="ai-guide-button" onClick={() => onAiGuideRequest(place.name)}>
                 AI 명소 안내받기
               </button>
+              )}
               </div>
           ))
         ) : (
