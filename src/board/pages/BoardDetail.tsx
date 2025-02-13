@@ -44,7 +44,9 @@ const BoardDetail: React.FC = () => {
       try {
         console.log("[DEBUG] 게시글 요청 ID:", postId);
         const data = await getPostDetail(Number(postId));
-        setPost(data);
+        const json = await data.json()
+        
+        setPost(json.data);
       } catch (error) {
         console.error("게시글 불러오기 실패:", error);
       }
@@ -97,37 +99,9 @@ const BoardDetail: React.FC = () => {
   }, [menuOpen]);
 
   let currentUserNickname = "";
-
-  if (token) {
-    try {
-      const decoded = jwtDecode<{ sub?: string }>(token);
-      console.log("[DEBUG] 디코딩된 토큰 데이터:", decoded);
-  
-      if (decoded.sub) {
-        currentUserNickname = decoded.sub;
-      } else {
-        console.warn("[WARN] 토큰에 nickname 필드가 없습니다.");
-      }
-    } catch (error) {
-      console.error("[ERROR] JWT 디코딩 실패:", error);
-    }
-  }
   
   console.log("[DEBUG] 현재 로그인한 사용자 닉네임:", currentUserNickname);
 
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      if (!postId) return;
-      try {
-        const data = await getPostDetail(Number(postId));
-        setPost(data);
-      } catch (error) {
-        console.error("게시글 불러오기 실패:", error);
-      }
-    };
-    fetchPost();
-  }, [postId]);
 
   return (
     <div className="board-detail-wrapper">
@@ -160,7 +134,8 @@ const BoardDetail: React.FC = () => {
                   </div>
 
                   {/* ✅ 작성자만 메뉴 보이기 */}
-                  {post.nickname === currentUserNickname && (
+                  {/* {post.nickname === currentUserNickname && ( */}
+                  {token && (
                     <div className="detail-menu-container" ref={menuRef}>
                       <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
                         <CgMoreVertical size={20} />

@@ -21,12 +21,13 @@ const BoardList: React.FC = () => {
     const fetchPosts = async (page: number) => {
       try {
         const response = await getBoardList(page, 10); // 
+        const json = await response.json()
 
-        console.log("API 응답 데이터:", response);
+        console.log("API 응답 데이터:", json);
 
-        setPosts(response.data.posts); //`posts` 대신 `content` 사용???
-        setTotalPages(response.data.totalPages);
-        setTotalItems(response.data.totalItems);
+        setPosts(json.data.posts); //`posts` 대신 `content` 사용???
+        setTotalPages(json.data.totalPages);
+        setTotalItems(json.data.totalItems);
       } catch (error) {
         console.error("게시글 목록 가져오기 실패:", error);
       } finally {
@@ -34,20 +35,20 @@ const BoardList: React.FC = () => {
       }
     };
 
-  const goToNextPage = () => {
-    if (currentPage < totalPages - 1) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const goToPrevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected);
+  };
+
+  const handleCreateClick = () => {
+    const jwtToken = localStorage.getItem("jwt");
+
+    if (!jwtToken) {
+      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+      navigate("/auth/login"); 
+    } else {
+      navigate("/board/create");
+    }
   };
 
   return (
@@ -101,16 +102,6 @@ const BoardList: React.FC = () => {
         </>
       )}
       </div>
-      
-      {/* <div className="pagination-buttons">
-          <button onClick={goToPrevPage} disabled={currentPage === 0}>
-            ◀ 이전
-          </button>
-          <span>{currentPage + 1} / {totalPages}</span>
-          <button onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>
-            다음 ▶
-          </button>
-        </div> */}
       <ReactPaginate
             previousLabel="〈"
             nextLabel="〉"
@@ -127,7 +118,7 @@ const BoardList: React.FC = () => {
           />
       </div>
     </div>
-    <button className="floating-button" onClick={() => navigate(`/board/create`)}>
+    <button className="floating-button" onClick={handleCreateClick}>
       +
     </button>
     </div>
