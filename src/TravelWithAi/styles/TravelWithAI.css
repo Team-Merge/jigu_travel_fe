@@ -69,27 +69,6 @@
   height:100%;
 }
 
-#recenter-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 905;
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-#recenter-button img {
-  width: 22px;  /* 아이콘 크기 */
-  height: 22px;
-}
-
-#recenter-button:hover {
-  transform: scale(1.1);  /* 버튼 살짝 확대 */
-}
-
 @media (max-width: 1024px) {
   .map-wrapper {
     height: calc(100vh - 60px - 45vh);
@@ -99,12 +78,6 @@
   #map {
     height: 100%;
   }
-
-  #recenter-button {
-    top: auto;
-    bottom: 20px;
-    right: 20px;
-    }
 
   .places-count {
       top: 5px;

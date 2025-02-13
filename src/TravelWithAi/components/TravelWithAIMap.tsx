@@ -123,8 +123,6 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
                   anchor: new window.naver.maps.Point(7, 7),
                 },
               });
-            } else {
-                currentMarkerRef.current.setPosition(newCenter);
             }
         },
       (error) => {
@@ -271,9 +269,6 @@ const TravelWithAIMap: React.FC<TravelWithAIMapProps> = ({
 
   return (
     <div id="map" ref={mapContainerRef} style={{ width: "100%", height: "100%" }}>
-      <button id="recenter-button" onClick={handleRecenter}>
-        <img src="/icons/gps.png" alt="현위치" />
-      </button>
       {locationError && <div className="location-error">위치 정보를 가져올 수 없습니다.</div>}
     </div>
   );

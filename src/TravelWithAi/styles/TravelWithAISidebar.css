@@ -240,6 +240,27 @@
   transform: scale(0.98);
 }
 
+#recenter-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 990;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+#recenter-button img {
+  width: 22px;  /* 아이콘 크기 */
+  height: 22px;
+}
+
+#recenter-button:hover {
+  transform: scale(1.1);  /* 버튼 살짝 확대 */
+}
+
 @media (max-width: 1024px) {
   .map-sidebar {
     position: fixed;
@@ -280,4 +301,12 @@
     width: 100%;
   }
 
+  #recenter-button {
+      position: absolute;
+
+      transform: translateX(-50%);
+      z-index: 990;
+      }
+
 }
+
