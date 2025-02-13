@@ -299,6 +299,7 @@ export const getUserLocation = (
   if (!navigator.geolocation) {
     console.error("Geolocation이 지원되지 않습니다.");
     alert("현재 브라우저에서 위치 서비스를 지원하지 않습니다.");
+    window.location.href = "/";
     return;
   }
 
@@ -312,6 +313,7 @@ export const getUserLocation = (
     (error) => {
       console.error("위치 정보를 가져올 수 없습니다:", error);
       alert("위치 정보를 가져올 수 없습니다. 다시 시도해주세요.");
+      window.location.href = "/";
       if (onError) onError(error);
     },
     { enableHighAccuracy: true }
@@ -766,7 +768,6 @@ export const fetchUUID = async (): Promise<string | null> => {
     return response.data.serviceUUID; // UUID 반환
   } catch (error) {
     console.error("UUID 가져오기 오류:", error);
-    alert("서버와의 연결이 원활하지 않습니다. 다시 시도해주세요.");
     return null; // 실패 시 null 반환
   }
 };

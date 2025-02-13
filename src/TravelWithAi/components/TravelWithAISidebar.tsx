@@ -27,6 +27,7 @@ interface TravelWithAISidebarProps {
   onPlaceClick: (placeId: number, lat: number, lng: number) => void;
   onAiGuideRequest: (placeName: string) => void;
   onSortByDistance: () => void;
+  handleRecenter: () => void;
   }
 
 const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
@@ -39,6 +40,7 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
   onPlaceClick,
   onAiGuideRequest,
   onSortByDistance,
+  handleRecenter,
 }) => {
     const itemRefs = useRef(new Map<number, HTMLDivElement>());
 
@@ -55,6 +57,11 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
        }, [highlightedPlaceId]);
 
   return (
+      <>
+      {/* 현위치 버튼 */}
+      <button id="recenter-button" onClick={handleRecenter}>
+                            <img src="/icons/gps.png" alt="현위치" />
+                          </button>
     <div className="map-sidebar">
       {/* 카테고리 버튼 영역 */}
       <div className="map-sidebar-categories">
@@ -111,6 +118,7 @@ const TravelWithAISidebar: React.FC<TravelWithAISidebarProps> = ({
         )}
       </div>
     </div>
+    </>
   );
 };
 
