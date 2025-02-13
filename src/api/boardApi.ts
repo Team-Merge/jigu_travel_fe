@@ -9,7 +9,7 @@ const API_BASE_URL =
 
 /** 게시글 목록 조회 (GET) */
 export const getBoardList = async (page = 0, size = 5) => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/api/board/list?page=${page}&size=${size}`);
+  const response = await fetch(`${API_BASE_URL}/api/board/list?page=${page}&size=${size}`);
   // return response.data;
   // const json = await response.json();
 
@@ -50,8 +50,9 @@ export const createPost = async (title: string, content: string, inquiryType: st
 
 /** 게시글 상세 조회 (GET) */
 export const getPostDetail = async (boardId: number) => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/api/board/detail/${boardId}`);
-  return response.data;
+  const response = await fetch(`${API_BASE_URL}/api/board/detail/${boardId}`);
+  console.log("[DEBUG] API 응답 데이터:", response);
+  return response;
 };
 
 /** 게시글 수정 (PATCH) */
@@ -129,10 +130,11 @@ export const downloadFile = async (fileName: string) => {
   window.URL.revokeObjectURL(url);
 };
 
+
 // 댓글 조회
 export const getComments = async (boardId: number) => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/api/comments/${boardId}`);
-  return response.data;
+  const response = await fetch(`${API_BASE_URL}/api/comments/${boardId}`);
+  return await response.json();
 }
 
 // 댓글 작성

@@ -25,8 +25,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
     useEffect(() => {
         const fetchComments = async () => {
           try {
-            const response = await getComments(boardId);
-            setComments(response);
+            const commentsData = await getComments(boardId);
+            console.log("API 댓글 데이터:", commentsData);
+            setComments(commentsData.data);
           } catch (error) {
             console.error("댓글 불러오기 실패:", error);
           }
@@ -44,6 +45,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
     
       // ✅ 댓글 작성
       const handleCommentSubmit = async () => {
+        if (!token) {
+          alert("로그인이 필요합니다.");
+          return;
+        }
+
         if (!newComment.trim()) {
           alert("댓글을 입력해주세요.");
           return;
@@ -53,21 +59,31 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
           await addComment(boardId, newComment);
           setNewComment(""); // ✅ 입력창 초기화
           const updatedComments = await getComments(boardId); // ✅ 최신 댓글 불러오기
-          setComments(updatedComments);
+          setComments(updatedComments.data);
         } catch (error) {
           console.error("댓글 작성 실패:", error);
         }
       };
 
       const handleUpdateComment = async () => {
+        if (!token) {
+          alert("로그인이 필요합니다.");
+          return;
+        }
+
         if (!editingComment) return;
+
+        if (!newComment.trim()) {
+          alert("댓글을 입력해주세요.");
+          return;
+        }
       
         try {
           await updateComments(editingComment.commentId, newComment);
-          setEditingComment(null); // ✅ 수정 완료 후 초기화
-          setNewComment(""); // ✅ 입력창 초기화
-          const updatedComments = await getComments(boardId); // ✅ 최신 댓글 다시 불러오기
-          setComments(updatedComments);
+          setEditingComment(null); // 수정 완료 후 초기화
+          setNewComment(""); // 입력창 초기화
+          const updatedComments = await getComments(boardId); // 최신 댓글 다시 불러오기
+          setComments(updatedComments.data);
         } catch (error) {
           console.error("댓글 수정 실패:", error);
         }
@@ -78,8 +94,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
         setNewComment(comment.comment); // 기존 댓글 내용을 불러오기
       };
       
-      // ✅ 댓글 삭제 핸들러
       const handleDelete = async (commentId: number) => {
+        if (!token) {
+          alert("로그인이 필요합니다.");
+          return;
+        }
+
         if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
       
         try {
@@ -126,61 +146,65 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
 
       return (
         <div className="comments-section">
-          <h3>댓글</h3>
-    
-          {/* 댓글 입력창 */}
-          <div className="comment-input">
-            <textarea
-              placeholder="댓글을 입력하세요"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-            />
-            {editingComment ? (
-                <button onClick={handleUpdateComment}>수정 완료</button>
-              ) : (
-                <button onClick={handleCommentSubmit}>댓글 작성</button>
-              )}          
-              </div>
-    
-          {/* 기존 댓글 목록 */}
-          {comments.length > 0 ? (
-            <ul className="comment-list">
-            {comments.map((comment) => (
-              <li key={comment.commentId} className="comment-item">
-                <div className="comment-header">
-                  <div className="comment-info">
-                  <img 
-                        src={profile}
-                        alt="작성자 프로필"
-                        className="profile-image"
-                      />
-                  <strong>{comment.nickname}</strong>
-                  </div>
-                  {comment.nickname === currentUserNickname && (
-                    <div className="detail-menu-container" ref={menuRef}>
-                      <button className="menu-button" onClick={() => toggleMenu(comment.commentId)}>
-                        <CgMoreVertical size={20} />
-                      </button>
+            <h3>댓글</h3>
 
-                      {menuOpenId === comment.commentId && ( // 현재 댓글 id와 일치할 때만 메뉴 표시
-                        <div className="dropdown-menu">
-                          <button onClick={() => handleEdit(comment)}>수정하기</button>
-                          <button onClick={() => handleDelete(comment.commentId)}>삭제하기</button>
-                        </div>
-                      )}
-                    </div>
-                  )}
+            {/* ✅ 로그인한 사용자만 댓글 입력 가능 */}
+            {token ? (
+                <div className="comment-input">
+                    <textarea
+                        placeholder="댓글을 입력하세요"
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                    />
+                    {editingComment ? (
+                        <button onClick={handleUpdateComment}>수정 완료</button>
+                    ) : (
+                        <button onClick={handleCommentSubmit}>댓글 작성</button>
+                    )}
                 </div>
-                <p className="comment-content">{comment.comment}</p>
-                <p className="comment-date">
-                    {new Date(comment.createdAt).toLocaleDateString()}
-                  </p>
-              </li>
-            ))}
-          </ul>
-          ) : (
-            <p>아직 댓글이 없습니다.</p>
-          )}
+            ) : (
+                <p className="login-warning">💡 댓글을 작성하려면 로그인이 필요합니다.</p>
+            )}
+
+            {/* ✅ 기존 댓글 목록 (로그인하지 않아도 볼 수 있음) */}
+            {comments.length > 0 ? (
+                <ul className="comment-list">
+                    {comments.map((comment) => (
+                        <li key={comment.commentId} className="comment-item">
+                            <div className="comment-header">
+                                <div className="comment-info">
+                                    <img 
+                                        src={profile}
+                                        alt="작성자 프로필"
+                                        className="profile-image"
+                                    />
+                                    <strong>{comment.nickname}</strong>
+                                </div>
+                                
+                                {/* ✅ 로그인한 사용자만 수정/삭제 가능 */}
+                                {token && comment.nickname === currentUserNickname && (
+                                    <div className="detail-menu-container" ref={menuRef}>
+                                        <button className="menu-button" onClick={() => toggleMenu(comment.commentId)}>
+                                            <CgMoreVertical size={20} />
+                                        </button>
+
+                                        {menuOpenId === comment.commentId && ( // 현재 댓글 id와 일치할 때만 메뉴 표시
+                                            <div className="dropdown-menu">
+                                                <button onClick={() => handleEdit(comment)}>수정하기</button>
+                                                <button onClick={() => handleDelete(comment.commentId)}>삭제하기</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                            <p className="comment-content">{comment.comment}</p>
+                            <p className="comment-date">{new Date(comment.createdAt).toLocaleDateString()}</p>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>아직 댓글이 없습니다.</p>
+            )}
         </div>
       );
     };
